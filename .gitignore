@@ -1,0 +1,7 @@
+*.class
+bin
+build
+dist
+doc/api
+.settings
+appkata*.zip

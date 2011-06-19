@@ -1,0 +1,197 @@
+<?xml version="1.0" ?>
+<!DOCTYPE project>
+<project name="object-zoo AppKata CSV Viewer" default="dist-build" basedir=".">
+
+	<!-- ========== Initialize Properties ===================================== -->
+	<property file="build.properties" />
+	
+	<property name="build.dir" value="build" />
+	<property name="src.dir" value="src" />
+	<property name="src.test.dir" value="src-test" />
+	<property name="lib.dir" value="lib" />
+	<property name="lib.test.dir" value="lib-test" />
+	<property name="dist.dir" value="dist" />
+	<property name="doc.dir" value="doc" />
+	
+	<property name="component.name" value="appkata-csv" />
+	<property name="component.title" value="AppKata CSV Viewer" />
+	<property name="component.version" value="1.0" />
+	<property name="component.vendor" value="object-zoo" />
+	
+	<property name="compile.debug" value="true" />
+	<property name="compile.deprecation" value="off" />
+	<property name="compile.optimize" value="true" />
+	<property name="compile.source" value="1.6" />
+	<property name="compile.target" value="1.6" />
+	
+	<property name="source.encoding" value="UTF-8" />
+	
+	<property name="copyright.end" value="2011" />
+	
+ 	<property name="build.home" value="${basedir}/${build.dir}" />
+	<property name="src.home" value="${basedir}/${src.dir}" />
+	<property name="src.test.home" value="${basedir}/${src.test.dir}" />
+	<property name="lib.home" value="${basedir}/${lib.dir}" />
+	<property name="lib.test.home" value="${basedir}/${lib.test.dir}" />
+	<property name="dist.home" value="${basedir}/${dist.dir}" />
+	<property name="doc.home" value="${basedir}/${doc.dir}" />
+
+	<!-- The Sun Javadoc for versions prior to 1.3 are off-line. -->
+	<property name="jdk.javadoc" value="http://java.sun.com/javase/6/docs/api/" />
+	<!-- ========== Construct compile classpath =============================== -->
+	<path id="compile.classpath">
+		<pathelement location="${build.home}/classes" />
+		<fileset dir="${lib.home}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+	<!-- ========== Construct unit test classpath ============================= -->
+	<path id="test.classpath">
+		<pathelement location="${build.home}/tests" />
+		<pathelement location="${build.home}/classes" />
+		<fileset dir="${lib.home}">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${lib.test.home}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+	
+	<!-- ========== Executable Targets ======================================== -->
+	<target name="init" description="Initialize and evaluate conditionals">
+		<property name="final.name" value="${component.name}-${component.version}" />
+		<echo message="-------- ${final.name} --------" />
+		<tstamp />
+	</target>
+	<target name="prepare" depends="init" description="Prepare build directory">
+		<mkdir dir="${build.home}" />
+		<mkdir dir="${build.home}/classes" />
+		<mkdir dir="${build.home}/tests" />
+		<mkdir dir="${lib.home}" />
+	</target>
+	<target name="static" depends="prepare" description="Copy static files to build directory">
+		
+	</target>
+	<target name="compile" depends="static" description="Compile sources">
+		<javac srcdir="${src.home}"
+			   destdir="${build.home}/classes"
+			   debug="${compile.debug}"
+			   deprecation="${compile.deprecation}"
+			   encoding="${source.encoding}"
+			   target="${compile.target}"
+			   source="${compile.source}"
+			   optimize="${compile.optimize}">
+			<classpath refid="compile.classpath" />
+		</javac>
+		<copy todir="${build.home}/classes">
+			<fileset dir="${src.home}" excludes="**/*.java" />
+		</copy>
+	</target>
+	<target name="compile.tests" depends="compile" description="Compile tests">
+		<javac srcdir="${src.test.home}"
+			   destdir="${build.home}/tests"
+			   debug="${compile.debug}"
+			   deprecation="off"
+			   encoding="${source.encoding}"
+			   target="${compile.target}"
+			   source="${compile.source}"
+			   optimize="${compile.optimize}">
+			<classpath refid="test.classpath" />
+		</javac>
+		<copy todir="${build.home}/tests">
+			<fileset dir="${src.test.home}" excludes="**/*.java" />
+		</copy>
+	</target>
+	<target name="clean" description="Clean build and distribution directories">
+		<delete dir="${build.home}" />
+		<delete dir="${dist.home}" />
+		<delete dir="${doc.home}/api" />
+	</target>
+	<target name="build" depends="clean,compile" description="Clean and compile" />
+	<target name="javadoc" depends="compile" description="Create JavaDoc">
+		<mkdir dir="${doc.home}" />
+		<mkdir dir="${doc.home}/api" />
+		<javadoc sourcepath="${src.home}"
+				 excludepackagenames="org.*"
+				 encoding="${source.encoding}"
+			     destdir="${doc.home}/api"
+			     author="true" version="true"
+			     doctitle="&lt;h1&gt;${component.title}&lt;/h1&gt;"
+			     windowtitle="${component.title} (Version ${component.version})"
+			     bottom="Copyright &amp;copy; 2000-${copyright.end} - object-zoo - Tilmann Kuhn"
+			     use="true"
+			     link="${jdk.javadoc}"
+			     source="${compile.source}"
+				 overview="${src.home}/overview.html">		
+			<classpath refid="compile.classpath" />
+		</javadoc>
+	</target>
+	<target name="dist" depends="jar, javadoc" description="Create binary/source distribution">
+		<mkdir dir="${dist.home}" />
+		<copy todir="${dist.home}">
+			<fileset dir="${basedir}">
+				<include name=".project" />
+				<include name=".classpath" />
+				<include name="build.properties.example" />
+				<include name="build.xml" />
+				<include name="code-formatter.xml" />
+				<include name="LICENSE.txt" />
+				<include name="README.txt" />
+			</fileset>
+		</copy>
+		<mkdir dir="${dist.home}/${doc.dir}" />
+		<copy todir="${dist.home}/${doc.dir}">
+			<fileset dir="${doc.home}" />
+		</copy>
+		<mkdir dir="${dist.home}/${lib.dir}" />
+		<copy todir="${dist.home}/${lib.dir}">
+			<fileset dir="${lib.home}" />
+		</copy>
+		<mkdir dir="${dist.home}/${lib.test.dir}" />
+		<copy todir="${dist.home}/${lib.test.dir}">
+			<fileset dir="${lib.test.home}" />
+		</copy>
+		<mkdir dir="${dist.home}/${src.dir}" />
+		<copy todir="${dist.home}/${src.dir}">
+			<fileset dir="${src.home}" />
+		</copy>
+		<mkdir dir="${dist.home}/${src.test.dir}" />
+		<copy todir="${dist.home}/${src.test.dir}">
+			<fileset dir="${src.test.home}" />
+		</copy>
+	</target>
+	<target name="dist-build" depends="clean,dist" description="Create binary/source distribution from scratch" />
+	<target name="dist-zip" depends="dist-build" description="Create binary/source distribution package">
+		<mkdir dir="${final.name}" />
+		<move todir="${final.name}/${final.name}">
+			<fileset dir="${dist.home}" />
+		</move>
+		<zip destfile="${final.name}.zip" basedir="${final.name}" />
+		<delete dir="${final.name}" />
+	</target>
+	<target name="jar" depends="compile,test" description="Create jar">
+		<mkdir dir="${dist.home}" />
+		<jar jarfile="${dist.home}/${final.name}.jar" basedir="${build.home}/classes" excludes="**/*.html">
+		    <manifest>
+		        <attribute name="Built-By" value="${user.name}"/>
+		        <attribute name="Implementation-Vendor" value="${component.vendor}"/>
+		        <attribute name="Implementation-Title" value="${component.title}"/>
+		        <attribute name="Implementation-Version" value="${component.version}"/>
+		    </manifest>
+		</jar>
+	</target>
+	<target name="jar.deploy" depends="jar" description="Delploy jar file">
+	    <delete file="${jar.deploy}/${component.name}-*.jar" />
+	    <copy file="${dist.home}/${final.name}.jar" todir="${jar.deploy}" />
+	</target>
+	<target name="test" depends="compile.tests" description="Run all tests">
+		<junit printsummary="yes" showoutput="false" fork="true" forkmode="perBatch" haltonerror="true" haltonfailure="true">
+	        <classpath refid="test.classpath" />
+		    <batchtest fork="yes">
+		        <fileset dir="${src.test.home}">
+		            <include name="**/*Test.java" />
+		        </fileset>
+		  </batchtest>
+		</junit>
+	</target>
+</project>
