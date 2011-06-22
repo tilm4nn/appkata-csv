@@ -24,15 +24,27 @@
  */
 package net.objectzoo.appkata.csv.flow.displaypage;
 
+import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
+import net.objectzoo.ebc.DependsOn;
 import net.objectzoo.ebc.ProcessAndSignalBase;
 
-public class DisplayPageTable extends ProcessAndSignalBase<String>
+public class DisplayPageTable extends ProcessAndSignalBase<String> implements
+	DependsOn<ConsoleAdapterContract>
 {
+	private ConsoleAdapterContract consoleAdapter;
 	
 	@Override
-	protected void process(String parameter)
+	protected void process(String renderedPage)
 	{
+		consoleAdapter.output(renderedPage);
+		
 		sendSignal();
+	}
+	
+	@Override
+	public void inject(ConsoleAdapterContract dependency)
+	{
+		this.consoleAdapter = dependency;
 	}
 	
 }

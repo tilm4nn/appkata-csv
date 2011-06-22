@@ -24,14 +24,17 @@
  */
 package net.objectzoo.appkata.csv;
 
+import net.objectzoo.appkata.csv.dependencies.ConsoleAdapter;
+import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
 import net.objectzoo.appkata.csv.dependencies.TextFileAdapter;
+import net.objectzoo.appkata.csv.dependencies.TextFileAdapterContract;
 import net.objectzoo.appkata.csv.flow.DisplayExitCommandAndWait;
 import net.objectzoo.appkata.csv.flow.MainBoard;
 import net.objectzoo.appkata.csv.flow.ReadLines;
 import net.objectzoo.appkata.csv.flow.SeparateHeaderAndData;
 import net.objectzoo.appkata.csv.flow.SplitLines;
-import net.objectzoo.appkata.csv.flow.displaypage.Board;
 import net.objectzoo.appkata.csv.flow.displaypage.DetermineColumnLengths;
+import net.objectzoo.appkata.csv.flow.displaypage.DisplayPageBoard;
 import net.objectzoo.appkata.csv.flow.displaypage.DisplayPageTable;
 import net.objectzoo.appkata.csv.flow.displaypage.RenderPageTable;
 
@@ -39,13 +42,18 @@ public class Program
 {
 	public static void main(String... args)
 	{
-		TextFileAdapter textFileAdapter = new TextFileAdapter();
+		TextFileAdapterContract textFileAdapter = new TextFileAdapter();
+		ConsoleAdapterContract consoleAdapter = new ConsoleAdapter();
 		ReadLines readLines = new ReadLines();
-		new MainBoard(readLines, new SplitLines(), new SeparateHeaderAndData(), new Board(
-			new DetermineColumnLengths(), new RenderPageTable(), new DisplayPageTable()),
-			new DisplayExitCommandAndWait());
+		DisplayPageTable displayPageTable = new DisplayPageTable();
+		DisplayExitCommandAndWait displayExitCommandAndWait = new DisplayExitCommandAndWait();
+		new MainBoard(readLines, new SplitLines(), new SeparateHeaderAndData(),
+			new DisplayPageBoard(new DetermineColumnLengths(), new RenderPageTable(),
+				displayPageTable), displayExitCommandAndWait);
 		
 		readLines.inject(textFileAdapter);
+		displayPageTable.inject(consoleAdapter);
+		displayExitCommandAndWait.inject(consoleAdapter);
 		
 		readLines.run(args);
 	}

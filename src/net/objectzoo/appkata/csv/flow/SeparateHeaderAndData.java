@@ -24,7 +24,6 @@
  */
 package net.objectzoo.appkata.csv.flow;
 
-import java.util.Collections;
 import java.util.List;
 
 import net.objectzoo.appkata.csv.data.CsvLine;
@@ -63,10 +62,10 @@ public class SeparateHeaderAndData extends ProcessBase<List<CsvLine>>
 	}
 	
 	@Override
-	protected void process(List<CsvLine> parameter)
+	protected void process(List<CsvLine> csvLines)
 	{
-		sendNewHeader(new CsvLine());
-		sendNewData(Collections.<CsvLine> emptyList());
+		sendNewHeader(csvLines.get(0));
+		sendNewData(csvLines.subList(1, csvLines.size()));
 	}
 	
 }

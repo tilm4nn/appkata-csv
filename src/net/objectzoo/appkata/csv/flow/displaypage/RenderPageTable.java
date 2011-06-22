@@ -26,6 +26,7 @@ package net.objectzoo.appkata.csv.flow.displaypage;
 
 import java.util.List;
 
+import net.objectzoo.appkata.csv.data.CsvLine;
 import net.objectzoo.appkata.csv.data.Page;
 import net.objectzoo.ebc.Pair;
 import net.objectzoo.ebc.ProcessAndResultBase;
@@ -34,9 +35,45 @@ public class RenderPageTable extends ProcessAndResultBase<Pair<Page, List<Intege
 {
 	
 	@Override
-	protected void process(Pair<Page, List<Integer>> parameter)
+	protected void process(Pair<Page, List<Integer>> pageAndColumnLengths)
 	{
-		sendResult("");
+		Page page = pageAndColumnLengths.getItem1();
+		List<Integer> columnLengths = pageAndColumnLengths.getItem2();
+		
+		String renderedPage = renderCsvLine(page.getHeader(), columnLengths);
+		
+		renderedPage += renderHorizontalLine(columnLengths);
+		
+		for (CsvLine csvLine : page.getData())
+		{
+			renderedPage += renderCsvLine(csvLine, columnLengths);
+		}
+		
+		sendResult(renderedPage);
+	}
+	
+	static String renderHorizontalLine(List<Integer> columnLengths)
+	{
+		String lineFormat = "";
+		for (int i = 0; i < columnLengths.size(); i++)
+		{
+			lineFormat += "%1$" + columnLengths.get(i) + "s+";
+		}
+		lineFormat += "\n";
+		
+		return String.format(lineFormat, " ").replace(' ', '-');
+	}
+	
+	static String renderCsvLine(CsvLine csvLine, List<Integer> columnLengths)
+	{
+		String lineFormat = "";
+		for (int i = 0; i < columnLengths.size(); i++)
+		{
+			lineFormat += "%" + (i + 1) + "$-" + columnLengths.get(i) + "s|";
+		}
+		lineFormat += "\n";
+		
+		return String.format(lineFormat, csvLine.getValues().toArray());
 	}
 	
 }

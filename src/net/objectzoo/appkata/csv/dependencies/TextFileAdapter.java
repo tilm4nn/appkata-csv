@@ -24,7 +24,39 @@
  */
 package net.objectzoo.appkata.csv.dependencies;
 
-public class TextFileAdapter
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class TextFileAdapter implements TextFileAdapterContract
 {
-	
+	/**
+	 * @see net.objectzoo.appkata.csv.dependencies.TextFileAdapterContract#readLines(java.lang.String,
+	 *      int)
+	 */
+	@Override
+	public List<String> readLines(String filename, int numberOfLines) throws IOException
+	{
+		BufferedReader reader = new BufferedReader(new FileReader(filename));
+		try
+		{
+			List<String> result = new ArrayList<String>(numberOfLines);
+			for (int i = 0; i < numberOfLines; i++)
+			{
+				String line = reader.readLine();
+				if (line == null)
+				{
+					return result;
+				}
+				result.add(line);
+			}
+			return result;
+		}
+		finally
+		{
+			reader.close();
+		}
+	}
 }

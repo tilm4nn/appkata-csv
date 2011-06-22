@@ -24,7 +24,59 @@
  */
 package net.objectzoo.appkata.csv.data;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class CsvLine
 {
+	private final List<String> values;
+	
+	public CsvLine(List<String> values)
+	{
+		this.values = new ArrayList<String>(values.size());
+		this.values.addAll(values);
+	}
+	
+	public CsvLine(String... values)
+	{
+		this.values = new ArrayList<String>(values.length);
+		Collections.addAll(this.values, values);
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((values == null) ? 0 : values.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		CsvLine other = (CsvLine) obj;
+		if (values == null)
+		{
+			if (other.values != null) return false;
+		}
+		else if (!values.equals(other.values)) return false;
+		return true;
+	}
+	
+	public List<String> getValues()
+	{
+		return values;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return values.toString();
+	}
 	
 }

@@ -24,9 +24,10 @@
  */
 package net.objectzoo.appkata.csv.flow.displaypage;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
+import net.objectzoo.appkata.csv.data.CsvLine;
 import net.objectzoo.appkata.csv.data.Page;
 import net.objectzoo.ebc.ProcessAndResultBase;
 
@@ -34,9 +35,39 @@ public class DetermineColumnLengths extends ProcessAndResultBase<Page, List<Inte
 {
 	
 	@Override
-	protected void process(Page parameter)
+	protected void process(Page page)
 	{
-		sendResult(Collections.<Integer> emptyList());
+		List<Integer> maxColumnLengths = getColumnLengths(page.getHeader());
+		
+		for (CsvLine dataLine : page.getData())
+		{
+			updateMaxVaules(maxColumnLengths, getColumnLengths(dataLine));
+		}
+		
+		sendResult(maxColumnLengths);
+	}
+	
+	static void updateMaxVaules(List<Integer> maxValues, List<Integer> currentValues)
+	{
+		for (int i = 0; i < currentValues.size(); i++)
+		{
+			if (currentValues.get(i) > maxValues.get(i))
+			{
+				maxValues.set(i, currentValues.get(i));
+			}
+		}
+	}
+	
+	static List<Integer> getColumnLengths(CsvLine csvLine)
+	{
+		List<Integer> lengths = new ArrayList<Integer>(csvLine.getValues().size());
+		
+		for (String value : csvLine.getValues())
+		{
+			lengths.add(value.length());
+		}
+		
+		return lengths;
 	}
 	
 }

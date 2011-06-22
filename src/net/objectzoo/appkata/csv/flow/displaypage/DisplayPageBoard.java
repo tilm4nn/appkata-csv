@@ -32,13 +32,13 @@ import net.objectzoo.ebc.JoinToPair;
 import net.objectzoo.events.Event0;
 import net.objectzoo.events.impl.EventDistributor;
 
-public class Board
+public class DisplayPageBoard
 {
 	private Action<Page> process;
 	
 	private Event0 signal;
 	
-	public Board(DetermineColumnLengths determineColumnLengths, RenderPageTable renderPageTable,
+	public DisplayPageBoard(DetermineColumnLengths determineColumnLengths, RenderPageTable renderPageTable,
 				 DisplayPageTable displayPageTable)
 	{
 		EventDistributor<Page> split = new EventDistributor<Page>();

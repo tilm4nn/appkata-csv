@@ -28,13 +28,13 @@ import java.util.List;
 
 import net.objectzoo.appkata.csv.data.CsvLine;
 import net.objectzoo.appkata.csv.data.Page;
-import net.objectzoo.appkata.csv.flow.displaypage.Board;
+import net.objectzoo.appkata.csv.flow.displaypage.DisplayPageBoard;
 import net.objectzoo.ebc.Join;
 
 public class MainBoard
 {
 	public MainBoard(ReadLines readLines, SplitLines splitLines,
-					 SeparateHeaderAndData separateHeaderAndData, Board displayPage,
+					 SeparateHeaderAndData separateHeaderAndData, DisplayPageBoard displayPage,
 					 DisplayExitCommandAndWait displayExitCommandAndWait)
 	{
 		Join<CsvLine, List<CsvLine>, Page> join = new Join<CsvLine, List<CsvLine>, Page>()

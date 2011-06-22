@@ -28,8 +28,29 @@ import java.util.List;
 
 public class Page
 {
+	private final CsvLine header;
+	
+	private final List<CsvLine> data;
+	
+	@Override
+	public String toString()
+	{
+		return "Page [header=" + header + ", data=" + data + "]";
+	}
+	
+	public CsvLine getHeader()
+	{
+		return header;
+	}
+	
+	public List<CsvLine> getData()
+	{
+		return data;
+	}
+	
 	public Page(CsvLine header, List<CsvLine> data)
 	{
-		
+		this.header = header;
+		this.data = data;
 	}
 }

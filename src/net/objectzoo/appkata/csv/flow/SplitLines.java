@@ -24,7 +24,7 @@
  */
 package net.objectzoo.appkata.csv.flow;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.objectzoo.appkata.csv.data.CsvLine;
@@ -33,8 +33,21 @@ import net.objectzoo.ebc.ProcessAndResultBase;
 public class SplitLines extends ProcessAndResultBase<List<String>, List<CsvLine>>
 {
 	@Override
-	protected void process(List<String> parameter)
+	protected void process(List<String> textLines)
 	{
-		sendResult(Collections.<CsvLine> emptyList());
+		List<CsvLine> csvLines = new ArrayList<CsvLine>(textLines.size());
+		
+		for (String textLine : textLines)
+		{
+			csvLines.add(splitLine(textLine));
+		}
+		
+		sendResult(csvLines);
+	}
+	
+	static CsvLine splitLine(String textLine)
+	{
+		String[] values = textLine.split(";");
+		return new CsvLine(values);
 	}
 }

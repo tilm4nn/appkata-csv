@@ -24,21 +24,23 @@
  */
 package net.objectzoo.appkata.csv.flow;
 
-import java.util.Collections;
+import java.io.IOException;
 import java.util.List;
 
-import net.objectzoo.appkata.csv.dependencies.TextFileAdapter;
+import net.objectzoo.appkata.csv.dependencies.TextFileAdapterContract;
 import net.objectzoo.ebc.DependsOn;
 import net.objectzoo.ebc.EntryPoint;
 import net.objectzoo.ebc.ResultBase;
 
 public class ReadLines extends ResultBase<List<String>> implements EntryPoint,
-	DependsOn<TextFileAdapter>
+	DependsOn<TextFileAdapterContract>
 {
-	private TextFileAdapter textFileAdapter;
+	private static final int DEFAULT_NUMBER_OF_DATA_LINES = 20;
+	
+	private TextFileAdapterContract textFileAdapter;
 	
 	@Override
-	public void inject(TextFileAdapter dependency)
+	public void inject(TextFileAdapterContract dependency)
 	{
 		log.finer("inject");
 		
@@ -50,7 +52,45 @@ public class ReadLines extends ResultBase<List<String>> implements EntryPoint,
 	{
 		log.finer("run");
 		
-		sendResult(Collections.<String> emptyList());
+		String filename = determineFilename(parameters);
+		int numberOfLinesToRead = determineNumberOfLines(parameters) + 1;
+		
+		try
+		{
+			List<String> lines = textFileAdapter.readLines(filename, numberOfLinesToRead);
+			
+			sendResult(lines);
+		}
+		catch (IOException e)
+		{
+			throw new IllegalArgumentException("Problem while reading input file.", e);
+		}
+		
+	}
+	
+	static int determineNumberOfLines(String... parameters) throws NumberFormatException
+	{
+		int numberOfLines = DEFAULT_NUMBER_OF_DATA_LINES;
+		
+		if (parameters.length > 1)
+		{
+			numberOfLines = Integer.parseInt(parameters[1]);
+		}
+		
+		return numberOfLines;
+	}
+	
+	static String determineFilename(String... parameters) throws IllegalArgumentException
+	{
+		if (parameters.length > 0)
+		{
+			return parameters[0];
+		}
+		else
+		{
+			throw new IllegalArgumentException(
+				"The CSV file name must be given as first command line parameter.");
+		}
 	}
 	
 }
