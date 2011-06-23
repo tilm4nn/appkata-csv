@@ -37,7 +37,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import net.objectzoo.appkata.csv.dependencies.TextFileAdapterContract;
-import net.objectzoo.delegates.Action;
+import net.objectzoo.ebc.TestAction;
 
 public class ReadLinesTest
 {
@@ -45,19 +45,20 @@ public class ReadLinesTest
 	
 	private TextFileAdapterContract textFileAdapterMock;
 	
-	private Action<List<String>> resultActionMock;
+	private TestAction<List<String>> resultAction;
 	
 	private ReadLines sut;
 	
-	@SuppressWarnings("unchecked")
 	@Before
 	public void setup()
 	{
 		mockery = new Mockery();
 		textFileAdapterMock = mockery.mock(TextFileAdapterContract.class);
-		resultActionMock = mockery.mock(Action.class);
+		resultAction = new TestAction<List<String>>();
 		
 		sut = new ReadLines();
+		sut.getResult().subscribe(resultAction);
+		sut.inject(textFileAdapterMock);
 	}
 	
 	@Test
@@ -79,8 +80,6 @@ public class ReadLinesTest
 	@Test
 	public void readsNumberPlusOneLines() throws IOException
 	{
-		sut.inject(textFileAdapterMock);
-		
 		mockery.checking(new Expectations()
 		{
 			{
@@ -96,21 +95,18 @@ public class ReadLinesTest
 	@Test
 	public void sendsReadLines() throws IOException
 	{
-		sut.inject(textFileAdapterMock);
-		sut.getResult().subscribe(resultActionMock);
-		
 		mockery.checking(new Expectations()
 		{
 			{
 				allowing(textFileAdapterMock).readLines(with(Matchers.<String> anything()),
 					with(Matchers.<Integer> anything()));
 				will(returnValue(list("Line1", "Line2")));
-				
-				oneOf(resultActionMock).invoke(list("Line1", "Line2"));
 			}
 		});
 		
 		sut.run("filename", "10");
+		
+		assertEquals(list("Line1", "Line2"), resultAction.getResult());
 		
 		mockery.assertIsSatisfied();
 	}

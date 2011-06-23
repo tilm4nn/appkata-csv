@@ -27,18 +27,17 @@ package net.objectzoo.appkata.csv.flow.displaypage;
 import org.hamcrest.Matchers;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
-import org.jmock.Sequence;
 import org.junit.Before;
 import org.junit.Test;
 
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
-import net.objectzoo.delegates.Action0;
+import net.objectzoo.ebc.TestAction0;
 
 public class DisplayPageTableTest
 {
 	private Mockery mockery;
 	
-	private Action0 signalActionMock;
+	private TestAction0 signalAction;
 	
 	private ConsoleAdapterContract consoleAdapterMock;
 	
@@ -48,17 +47,17 @@ public class DisplayPageTableTest
 	public void setup()
 	{
 		mockery = new Mockery();
-		signalActionMock = mockery.mock(Action0.class);
 		consoleAdapterMock = mockery.mock(ConsoleAdapterContract.class);
+		signalAction = new TestAction0();
 		
 		sut = new DisplayPageTable();
+		sut.getSignal().subscribe(signalAction);
+		sut.inject(consoleAdapterMock);
 	}
 	
 	@Test
 	public void outputsTableToTheConsole()
 	{
-		sut.inject(consoleAdapterMock);
-		
 		mockery.checking(new Expectations()
 		{
 			{
@@ -72,26 +71,17 @@ public class DisplayPageTableTest
 	}
 	
 	@Test
-	public void sendsSignalAfterOutput()
+	public void sendsSignal()
 	{
-		sut.inject(consoleAdapterMock);
-		sut.getSignal().subscribe(signalActionMock);
-		
 		mockery.checking(new Expectations()
 		{
 			{
-				Sequence sequence = mockery.sequence("singalAfterOutput");
-				
-				oneOf(consoleAdapterMock).output(with(Matchers.<String> anything()));
-				inSequence(sequence);
-				
-				oneOf(signalActionMock).invoke();
-				inSequence(sequence);
+				allowing(consoleAdapterMock).output(with(Matchers.<String> anything()));
 			}
 		});
 		
 		sut.process("TableContents");
 		
-		mockery.assertIsSatisfied();
+		signalAction.assertInvoked();
 	}
 }
