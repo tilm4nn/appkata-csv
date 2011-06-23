@@ -86,7 +86,7 @@ public class Feature11Test
 				
 				oneOf(consoleAdapterMock).output(expected);
 				
-				oneOf(consoleAdapterMock).output("\neX(it\n");
+				oneOf(consoleAdapterMock).output(with(any(String.class)));
 				
 				oneOf(consoleAdapterMock).input();
 				will(returnValue('x'));

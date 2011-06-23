@@ -48,6 +48,10 @@ public class MainBoard
 		separateHeaderAndData.getNewData().subscribe(divideIntoPageSize.getProcess());
 		divideIntoPageSize.getResult().subscribe(join.getInput2());
 		join.getResult().subscribe(selectPage.getProcess());
+		repeatedWaitForCommand.getNextPageCommand().subscribe(selectPage.getNextPage());
+		repeatedWaitForCommand.getPreviousPageCommand().subscribe(selectPage.getPreviousPage());
+		repeatedWaitForCommand.getFirstPageCommand().subscribe(selectPage.getFirstPage());
+		repeatedWaitForCommand.getLastPageCommand().subscribe(selectPage.getLastPage());
 		selectPage.getResult().subscribe(displayPage.getProcess());
 		displayPage.getSingal().subscribe(displayCommands.getStart());
 	}

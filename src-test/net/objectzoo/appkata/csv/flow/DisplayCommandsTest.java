@@ -28,10 +28,14 @@ import org.hamcrest.Matchers;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.experimental.theories.DataPoints;
+import org.junit.experimental.theories.Theories;
+import org.junit.experimental.theories.Theory;
+import org.junit.runner.RunWith;
 
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
 
+@RunWith(Theories.class)
 public class DisplayCommandsTest
 {
 	private Mockery mockery;
@@ -49,15 +53,19 @@ public class DisplayCommandsTest
 		sut = new DisplayCommands();
 	}
 	
-	@Test
-	public void outputsExitCommandToTheConsole()
+	@DataPoints
+	public static final String[] candidates = { "N(ext page", "P(revious page", "F(irst page",
+			"L(ast page", "eX(it" };
+	
+	@Theory
+	public void outputsCommandToTheConsole(final String command)
 	{
 		sut.inject(consoleAdapterMock);
 		
 		mockery.checking(new Expectations()
 		{
 			{
-				oneOf(consoleAdapterMock).output(with(Matchers.containsString("\neX(it\n")));
+				oneOf(consoleAdapterMock).output(with(Matchers.containsString(command)));
 			}
 		});
 		

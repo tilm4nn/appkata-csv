@@ -24,7 +24,6 @@
  */
 package net.objectzoo.appkata.csv.flow;
 
-import org.hamcrest.Matchers;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.Sequence;
@@ -32,6 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
+import net.objectzoo.ebc.TestAction0;
 
 public class RepeatedWaitForCommandTest
 {
@@ -41,27 +41,28 @@ public class RepeatedWaitForCommandTest
 	
 	private RepeatedWaitForCommand sut;
 	
+	private TestAction0 resultAction;
+	
 	@Before
 	public void setup()
 	{
 		mockery = new Mockery();
 		consoleAdapterMock = mockery.mock(ConsoleAdapterContract.class);
 		
+		resultAction = new TestAction0();
+		
 		sut = new RepeatedWaitForCommand();
+		sut.inject(consoleAdapterMock);
 	}
 	
 	@Test
 	public void waits10TimesForInputOfX()
 	{
-		sut.inject(consoleAdapterMock);
 		
 		mockery.checking(new Expectations()
 		{
 			{
 				Sequence sequence = mockery.sequence("inputCommandSequence");
-				
-				allowing(consoleAdapterMock).output(with(Matchers.<String> anything()));
-				inSequence(sequence);
 				
 				exactly(10).of(consoleAdapterMock).input();
 				inSequence(sequence);
@@ -75,6 +76,110 @@ public class RepeatedWaitForCommandTest
 		
 		sut.run();
 		
+		mockery.assertIsSatisfied();
+	}
+	
+	@Test
+	public void signalsNextPageCommandForInputOfX()
+	{
+		sut.getNextPageCommand().subscribe(resultAction);
+		
+		mockery.checking(new Expectations()
+		{
+			{
+				Sequence sequence = mockery.sequence("inputCommandSequence");
+				
+				oneOf(consoleAdapterMock).input();
+				inSequence(sequence);
+				will(returnValue('n'));
+				
+				oneOf(consoleAdapterMock).input();
+				inSequence(sequence);
+				will(returnValue('x'));
+			}
+		});
+		
+		sut.run();
+		
+		resultAction.assertInvoked();
+		mockery.assertIsSatisfied();
+	}
+	
+	@Test
+	public void signalsPreviousPageCommandForInputOfX()
+	{
+		sut.getPreviousPageCommand().subscribe(resultAction);
+		
+		mockery.checking(new Expectations()
+		{
+			{
+				Sequence sequence = mockery.sequence("inputCommandSequence");
+				
+				oneOf(consoleAdapterMock).input();
+				inSequence(sequence);
+				will(returnValue('p'));
+				
+				oneOf(consoleAdapterMock).input();
+				inSequence(sequence);
+				will(returnValue('x'));
+			}
+		});
+		
+		sut.run();
+		
+		resultAction.assertInvoked();
+		mockery.assertIsSatisfied();
+	}
+	
+	@Test
+	public void signalsFirstPageCommandForInputOfX()
+	{
+		sut.getFirstPageCommand().subscribe(resultAction);
+		
+		mockery.checking(new Expectations()
+		{
+			{
+				Sequence sequence = mockery.sequence("inputCommandSequence");
+				
+				oneOf(consoleAdapterMock).input();
+				inSequence(sequence);
+				will(returnValue('f'));
+				
+				oneOf(consoleAdapterMock).input();
+				inSequence(sequence);
+				will(returnValue('x'));
+			}
+		});
+		
+		sut.run();
+		
+		resultAction.assertInvoked();
+		mockery.assertIsSatisfied();
+	}
+	
+	@Test
+	public void signalsLastPageCommandForInputOfX()
+	{
+		sut.getLastPageCommand().subscribe(resultAction);
+		
+		mockery.checking(new Expectations()
+		{
+			{
+				Sequence sequence = mockery.sequence("inputCommandSequence");
+				
+				oneOf(consoleAdapterMock).input();
+				inSequence(sequence);
+				will(returnValue('l'));
+				
+				oneOf(consoleAdapterMock).input();
+				inSequence(sequence);
+				will(returnValue('x'));
+			}
+		});
+		
+		sut.run();
+		
+		resultAction.assertInvoked();
 		mockery.assertIsSatisfied();
 	}
 	

@@ -28,11 +28,18 @@ import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
 import net.objectzoo.ebc.DependsOn;
 import net.objectzoo.ebc.EntryPoint;
 import net.objectzoo.ebc.SignalBase;
+import net.objectzoo.events.Event0;
+import net.objectzoo.events.impl.Event0Distributor;
 
 public class RepeatedWaitForCommand extends SignalBase implements
 	DependsOn<ConsoleAdapterContract>, EntryPoint
 {
 	private ConsoleAdapterContract consoleAdapter;
+	
+	private final Event0Distributor nextPageCommand = new Event0Distributor();
+	private final Event0Distributor previousPageCommand = new Event0Distributor();
+	private final Event0Distributor lastPageCommand = new Event0Distributor();
+	private final Event0Distributor firstPageCommand = new Event0Distributor();
 	
 	@Override
 	public void inject(ConsoleAdapterContract dependency)
@@ -53,7 +60,47 @@ public class RepeatedWaitForCommand extends SignalBase implements
 		while (input != 'x')
 		{
 			input = consoleAdapter.input();
+			handleInput(input);
 		}
+	}
+	
+	private void handleInput(char input)
+	{
+		switch (input)
+		{
+			case 'n':
+				nextPageCommand.invoke();
+				break;
+			case 'p':
+				previousPageCommand.invoke();
+				break;
+			case 'f':
+				firstPageCommand.invoke();
+				break;
+			case 'l':
+				lastPageCommand.invoke();
+				break;
+		}
+	}
+	
+	public Event0 getNextPageCommand()
+	{
+		return nextPageCommand;
+	}
+	
+	public Event0 getPreviousPageCommand()
+	{
+		return previousPageCommand;
+	}
+	
+	public Event0 getFirstPageCommand()
+	{
+		return firstPageCommand;
+	}
+	
+	public Event0 getLastPageCommand()
+	{
+		return lastPageCommand;
 	}
 	
 }
