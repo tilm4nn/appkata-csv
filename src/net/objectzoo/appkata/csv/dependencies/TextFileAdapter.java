@@ -27,7 +27,7 @@ package net.objectzoo.appkata.csv.dependencies;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class TextFileAdapter implements TextFileAdapterContract
@@ -42,7 +42,7 @@ public class TextFileAdapter implements TextFileAdapterContract
 		BufferedReader reader = new BufferedReader(new FileReader(filename));
 		try
 		{
-			List<String> result = new ArrayList<String>(numberOfLines);
+			List<String> result = new LinkedList<String>();
 			for (int i = 0; i < numberOfLines; i++)
 			{
 				String line = reader.readLine();

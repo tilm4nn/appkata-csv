@@ -34,9 +34,12 @@ import org.junit.Test;
 
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
 import net.objectzoo.appkata.csv.dependencies.TextFileAdapterContract;
-import net.objectzoo.appkata.csv.flow.DisplayExitCommandAndWait;
+import net.objectzoo.appkata.csv.flow.DisplayCommands;
+import net.objectzoo.appkata.csv.flow.DivideIntoPageSize;
 import net.objectzoo.appkata.csv.flow.MainBoard;
 import net.objectzoo.appkata.csv.flow.ReadLines;
+import net.objectzoo.appkata.csv.flow.RepeatedWaitForCommand;
+import net.objectzoo.appkata.csv.flow.SelectPage;
 import net.objectzoo.appkata.csv.flow.SeparateHeaderAndData;
 import net.objectzoo.appkata.csv.flow.SplitLines;
 import net.objectzoo.appkata.csv.flow.displaypage.DetermineColumnLengths;
@@ -55,15 +58,22 @@ public class Feature11Test
 		final ConsoleAdapterContract consoleAdapterMock = mockery.mock(ConsoleAdapterContract.class);
 		
 		ReadLines readLines = new ReadLines();
+		DivideIntoPageSize divideIntoPageSize = new DivideIntoPageSize();
 		DisplayPageTable displayPageTable = new DisplayPageTable();
-		DisplayExitCommandAndWait displayExitCommandAndWait = new DisplayExitCommandAndWait();
-		new MainBoard(readLines, new SplitLines(), new SeparateHeaderAndData(),
+		DisplayCommands displayCommands = new DisplayCommands();
+		RepeatedWaitForCommand repeatedWaitForCommand = new RepeatedWaitForCommand();
+		new MainBoard(repeatedWaitForCommand, readLines, new SplitLines(),
+			new SeparateHeaderAndData(), divideIntoPageSize, new SelectPage(),
 			new DisplayPageBoard(new DetermineColumnLengths(), new RenderPageTable(),
-				displayPageTable), displayExitCommandAndWait);
+				displayPageTable), displayCommands);
 		
 		readLines.inject(textFileAdapterMock);
 		displayPageTable.inject(consoleAdapterMock);
-		displayExitCommandAndWait.inject(consoleAdapterMock);
+		displayCommands.inject(consoleAdapterMock);
+		repeatedWaitForCommand.inject(consoleAdapterMock);
+		
+		readLines.configure("filename");
+		divideIntoPageSize.configure("", "5");
 		
 		final String expected = "666666    |88888888|\n" + "----------+--------+\n"
 			+ "88888888  |4444    |\n" + "1010101010|22      |\n";
@@ -71,7 +81,7 @@ public class Feature11Test
 		mockery.checking(new Expectations()
 		{
 			{
-				oneOf(textFileAdapterMock).readLines("filename", 6);
+				oneOf(textFileAdapterMock).readLines("filename", Integer.MAX_VALUE);
 				will(returnValue(list("666666;88888888", "88888888;4444", "1010101010;22")));
 				
 				oneOf(consoleAdapterMock).output(expected);
@@ -83,7 +93,7 @@ public class Feature11Test
 			}
 		});
 		
-		readLines.run("filename", "5");
+		repeatedWaitForCommand.run();
 		
 		mockery.assertIsSatisfied();
 	}

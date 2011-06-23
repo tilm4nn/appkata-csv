@@ -26,29 +26,34 @@ package net.objectzoo.appkata.csv.flow;
 
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
 import net.objectzoo.ebc.DependsOn;
-import net.objectzoo.ebc.StartBase;
+import net.objectzoo.ebc.EntryPoint;
+import net.objectzoo.ebc.SignalBase;
 
-public class DisplayExitCommandAndWait extends StartBase implements
-	DependsOn<ConsoleAdapterContract>
+public class RepeatedWaitForCommand extends SignalBase implements
+	DependsOn<ConsoleAdapterContract>, EntryPoint
 {
 	private ConsoleAdapterContract consoleAdapter;
-	
-	@Override
-	protected void start()
-	{
-		consoleAdapter.output("\neX(it\n");
-		
-		char input = ' ';
-		while (input != 'x')
-		{
-			input = consoleAdapter.input();
-		}
-	}
 	
 	@Override
 	public void inject(ConsoleAdapterContract dependency)
 	{
 		this.consoleAdapter = dependency;
+	}
+	
+	@Override
+	public void run(String... parameters)
+	{
+		sendSignal();
+		repeatedWaitForCommand();
+	}
+	
+	private void repeatedWaitForCommand()
+	{
+		char input = ' ';
+		while (input != 'x')
+		{
+			input = consoleAdapter.input();
+		}
 	}
 	
 }

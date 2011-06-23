@@ -30,7 +30,7 @@ import net.objectzoo.events.Event0;
 import net.objectzoo.events.impl.Event0Distributor;
 import net.objectzoo.logging.LoggerFactory;
 
-public class SignalBase<ResultParameter>
+public class SignalBase
 {
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 	

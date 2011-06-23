@@ -28,9 +28,12 @@ import net.objectzoo.appkata.csv.dependencies.ConsoleAdapter;
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
 import net.objectzoo.appkata.csv.dependencies.TextFileAdapter;
 import net.objectzoo.appkata.csv.dependencies.TextFileAdapterContract;
-import net.objectzoo.appkata.csv.flow.DisplayExitCommandAndWait;
+import net.objectzoo.appkata.csv.flow.DisplayCommands;
+import net.objectzoo.appkata.csv.flow.DivideIntoPageSize;
 import net.objectzoo.appkata.csv.flow.MainBoard;
 import net.objectzoo.appkata.csv.flow.ReadLines;
+import net.objectzoo.appkata.csv.flow.RepeatedWaitForCommand;
+import net.objectzoo.appkata.csv.flow.SelectPage;
 import net.objectzoo.appkata.csv.flow.SeparateHeaderAndData;
 import net.objectzoo.appkata.csv.flow.SplitLines;
 import net.objectzoo.appkata.csv.flow.displaypage.DetermineColumnLengths;
@@ -45,16 +48,23 @@ public class Program
 		TextFileAdapterContract textFileAdapter = new TextFileAdapter();
 		ConsoleAdapterContract consoleAdapter = new ConsoleAdapter();
 		ReadLines readLines = new ReadLines();
+		DivideIntoPageSize divideIntoPageSize = new DivideIntoPageSize();
 		DisplayPageTable displayPageTable = new DisplayPageTable();
-		DisplayExitCommandAndWait displayExitCommandAndWait = new DisplayExitCommandAndWait();
-		new MainBoard(readLines, new SplitLines(), new SeparateHeaderAndData(),
+		DisplayCommands displayCommands = new DisplayCommands();
+		RepeatedWaitForCommand repeatedWaitForCommand = new RepeatedWaitForCommand();
+		new MainBoard(repeatedWaitForCommand, readLines, new SplitLines(),
+			new SeparateHeaderAndData(), divideIntoPageSize, new SelectPage(),
 			new DisplayPageBoard(new DetermineColumnLengths(), new RenderPageTable(),
-				displayPageTable), displayExitCommandAndWait);
+				displayPageTable), displayCommands);
 		
 		readLines.inject(textFileAdapter);
 		displayPageTable.inject(consoleAdapter);
-		displayExitCommandAndWait.inject(consoleAdapter);
+		displayCommands.inject(consoleAdapter);
+		repeatedWaitForCommand.inject(consoleAdapter);
 		
-		readLines.run(args);
+		readLines.configure(args);
+		divideIntoPageSize.configure(args);
+		
+		repeatedWaitForCommand.run(args);
 	}
 }

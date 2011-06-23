@@ -24,84 +24,58 @@
  */
 package net.objectzoo.appkata.csv.flow;
 
-import static junit.framework.Assert.assertEquals;
-import static net.objectzoo.appkata.csv.Utils.list;
-
-import java.io.IOException;
-import java.util.List;
-
 import org.hamcrest.Matchers;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
+import org.jmock.Sequence;
 import org.junit.Before;
 import org.junit.Test;
 
-import net.objectzoo.appkata.csv.dependencies.TextFileAdapterContract;
-import net.objectzoo.ebc.TestAction;
+import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
 
-public class ReadLinesTest
+public class RepeatedWaitForCommandTest
 {
 	private Mockery mockery;
 	
-	private TextFileAdapterContract textFileAdapterMock;
+	private ConsoleAdapterContract consoleAdapterMock;
 	
-	private TestAction<List<String>> resultAction;
-	
-	private ReadLines sut;
+	private RepeatedWaitForCommand sut;
 	
 	@Before
 	public void setup()
 	{
 		mockery = new Mockery();
-		textFileAdapterMock = mockery.mock(TextFileAdapterContract.class);
-		resultAction = new TestAction<List<String>>();
+		consoleAdapterMock = mockery.mock(ConsoleAdapterContract.class);
 		
-		sut = new ReadLines();
-		sut.getResult().subscribe(resultAction);
-		sut.inject(textFileAdapterMock);
+		sut = new RepeatedWaitForCommand();
 	}
 	
 	@Test
-	public void determineFilenameReturnsFirstParameter()
+	public void waits10TimesForInputOfX()
 	{
-		String filename = ReadLines.determineFilename("foo", "bar", "baz");
+		sut.inject(consoleAdapterMock);
 		
-		assertEquals("foo", filename);
-	}
-	
-	@Test
-	public void readsCorrectNumberOfLines() throws IOException
-	{
 		mockery.checking(new Expectations()
 		{
 			{
-				oneOf(textFileAdapterMock).readLines("filename", Integer.MAX_VALUE);
+				Sequence sequence = mockery.sequence("inputCommandSequence");
+				
+				allowing(consoleAdapterMock).output(with(Matchers.<String> anything()));
+				inSequence(sequence);
+				
+				exactly(10).of(consoleAdapterMock).input();
+				inSequence(sequence);
+				will(returnValue('Q'));
+				
+				oneOf(consoleAdapterMock).input();
+				inSequence(sequence);
+				will(returnValue('x'));
 			}
 		});
 		
-		sut.configure("filename");
-		sut.start();
+		sut.run();
 		
 		mockery.assertIsSatisfied();
 	}
 	
-	@Test
-	public void sendsReadLines() throws IOException
-	{
-		mockery.checking(new Expectations()
-		{
-			{
-				allowing(textFileAdapterMock).readLines(with(Matchers.<String> anything()),
-					with(Matchers.<Integer> anything()));
-				will(returnValue(list("Line1", "Line2")));
-			}
-		});
-		
-		sut.configure("filename");
-		sut.start();
-		
-		assertEquals(list("Line1", "Line2"), resultAction.getResult());
-		
-		mockery.assertIsSatisfied();
-	}
 }

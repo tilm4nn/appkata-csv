@@ -28,6 +28,6 @@ public abstract class JoinToPair<Input1, Input2> extends Join<Input1, Input2, Pa
 {
 	public JoinToPair()
 	{
-		super();
+		super(Pair.class);
 	}
 }

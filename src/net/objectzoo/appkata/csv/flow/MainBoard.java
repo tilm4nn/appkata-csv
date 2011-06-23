@@ -24,28 +24,31 @@
  */
 package net.objectzoo.appkata.csv.flow;
 
-import java.util.List;
-
 import net.objectzoo.appkata.csv.data.CsvLine;
 import net.objectzoo.appkata.csv.data.Page;
+import net.objectzoo.appkata.csv.data.PageData;
 import net.objectzoo.appkata.csv.flow.displaypage.DisplayPageBoard;
-import net.objectzoo.ebc.Join;
+import net.objectzoo.ebc.JoinObjectAndCollection;
 
 public class MainBoard
 {
-	public MainBoard(ReadLines readLines, SplitLines splitLines,
-					 SeparateHeaderAndData separateHeaderAndData, DisplayPageBoard displayPage,
-					 DisplayExitCommandAndWait displayExitCommandAndWait)
+	public MainBoard(RepeatedWaitForCommand repeatedWaitForCommand, ReadLines readLines,
+					 SplitLines splitLines, SeparateHeaderAndData separateHeaderAndData,
+					 DivideIntoPageSize divideIntoPageSize, SelectPage selectPage,
+					 DisplayPageBoard displayPage, DisplayCommands displayCommands)
 	{
-		Join<CsvLine, List<CsvLine>, Page> join = new Join<CsvLine, List<CsvLine>, Page>()
+		JoinObjectAndCollection<CsvLine, PageData, Page> join = new JoinObjectAndCollection<CsvLine, PageData, Page>()
 		{
 		};
 		
+		repeatedWaitForCommand.getSignal().subscribe(readLines.getStart());
 		readLines.getResult().subscribe(splitLines.getProcess());
 		splitLines.getResult().subscribe(separateHeaderAndData.getProcess());
 		separateHeaderAndData.getNewHeader().subscribe(join.getInput1());
-		separateHeaderAndData.getNewData().subscribe(join.getInput2());
-		join.getResult().subscribe(displayPage.getProcess());
-		displayPage.getSingal().subscribe(displayExitCommandAndWait.getStart());
+		separateHeaderAndData.getNewData().subscribe(divideIntoPageSize.getProcess());
+		divideIntoPageSize.getResult().subscribe(join.getInput2());
+		join.getResult().subscribe(selectPage.getProcess());
+		selectPage.getResult().subscribe(displayPage.getProcess());
+		displayPage.getSingal().subscribe(displayCommands.getStart());
 	}
 }

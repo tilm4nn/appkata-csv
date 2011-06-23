@@ -28,16 +28,23 @@ import java.io.IOException;
 import java.util.List;
 
 import net.objectzoo.appkata.csv.dependencies.TextFileAdapterContract;
+import net.objectzoo.ebc.Configurable;
 import net.objectzoo.ebc.DependsOn;
-import net.objectzoo.ebc.EntryPoint;
-import net.objectzoo.ebc.ResultBase;
+import net.objectzoo.ebc.StartAndResultBase;
 
-public class ReadLines extends ResultBase<List<String>> implements EntryPoint,
-	DependsOn<TextFileAdapterContract>
+public class ReadLines extends StartAndResultBase<List<String>> implements
+	DependsOn<TextFileAdapterContract>, Configurable
 {
-	private static final int DEFAULT_NUMBER_OF_DATA_LINES = 20;
 	
 	private TextFileAdapterContract textFileAdapter;
+	
+	private String filename;
+	
+	@Override
+	public void configure(String... configuration)
+	{
+		filename = determineFilename(configuration);
+	}
 	
 	@Override
 	public void inject(TextFileAdapterContract dependency)
@@ -48,16 +55,11 @@ public class ReadLines extends ResultBase<List<String>> implements EntryPoint,
 	}
 	
 	@Override
-	public void run(String... parameters)
+	protected void start()
 	{
-		log.finer("run");
-		
-		String filename = determineFilename(parameters);
-		int numberOfLinesToRead = determineNumberOfLines(parameters) + 1;
-		
 		try
 		{
-			List<String> lines = textFileAdapter.readLines(filename, numberOfLinesToRead);
+			List<String> lines = textFileAdapter.readLines(filename, Integer.MAX_VALUE);
 			
 			sendResult(lines);
 		}
@@ -65,19 +67,6 @@ public class ReadLines extends ResultBase<List<String>> implements EntryPoint,
 		{
 			throw new IllegalArgumentException("Problem while reading input file.", e);
 		}
-		
-	}
-	
-	static int determineNumberOfLines(String... parameters) throws NumberFormatException
-	{
-		int numberOfLines = DEFAULT_NUMBER_OF_DATA_LINES;
-		
-		if (parameters.length > 1)
-		{
-			numberOfLines = Integer.parseInt(parameters[1]);
-		}
-		
-		return numberOfLines;
 	}
 	
 	static String determineFilename(String... parameters) throws IllegalArgumentException
