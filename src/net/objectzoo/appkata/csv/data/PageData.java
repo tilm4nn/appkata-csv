@@ -4,16 +4,16 @@ import java.util.List;
 
 public class PageData
 {
-	private final List<CsvLine> data;
+	private final List<CsvRecord> records;
 	
-	public PageData(List<CsvLine> data)
+	public PageData(List<CsvRecord> data)
 	{
-		this.data = data;
+		this.records = data;
 	}
 	
-	public List<CsvLine> getData()
+	public List<CsvRecord> getRecords()
 	{
-		return data;
+		return records;
 	}
 	
 	@Override
@@ -21,7 +21,7 @@ public class PageData
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((data == null) ? 0 : data.hashCode());
+		result = prime * result + ((records == null) ? 0 : records.hashCode());
 		return result;
 	}
 	
@@ -32,17 +32,17 @@ public class PageData
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		PageData other = (PageData) obj;
-		if (data == null)
+		if (records == null)
 		{
-			if (other.data != null) return false;
+			if (other.records != null) return false;
 		}
-		else if (!data.equals(other.data)) return false;
+		else if (!records.equals(other.records)) return false;
 		return true;
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "PageData [data=" + data + "]";
+		return "PageData [records=" + records + "]";
 	}
 }

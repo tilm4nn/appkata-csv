@@ -24,17 +24,12 @@
  */
 package net.objectzoo.appkata.csv.flow.displaypage;
 
-import static net.objectzoo.appkata.csv.Utils.list;
-
-import java.util.List;
-
 import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import net.objectzoo.appkata.csv.data.CsvLine;
-import net.objectzoo.appkata.csv.data.Page;
+import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
 import net.objectzoo.ebc.Pair;
 import net.objectzoo.ebc.TestAction;
 
@@ -42,14 +37,14 @@ public class RenderPageTableTest
 {
 	private TestAction<String> resultAction;
 	
-	private RenderPageTable sut;
+	private RenderPageViewModel sut;
 	
 	@Before
 	public void setup()
 	{
 		resultAction = new TestAction<String>();
 		
-		sut = new RenderPageTable();
+		sut = new RenderPageViewModel();
 		sut.getResult().subscribe(resultAction);
 	}
 	
@@ -59,8 +54,9 @@ public class RenderPageTableTest
 		final String expected = "666666    |88888888|\n" + "----------+--------+\n"
 			+ "88888888  |4444    |\n" + "1010101010|22      |\n";
 		
-		sut.process(new Pair<Page, List<Integer>>(new Page(new CsvLine("666666", "88888888"), list(
-			new CsvLine("88888888", "4444"), new CsvLine("1010101010", "22"))), list(10, 8)));
+		sut.process(new Pair<PageViewModel, int[]>(new PageViewModel(new String[] { "666666",
+				"88888888" }, new String[][] { { "88888888", "4444" }, { "1010101010", "22" } }),
+			new int[] { 10, 8 }));
 		
 		Assert.assertEquals(expected, resultAction.getResult());
 	}

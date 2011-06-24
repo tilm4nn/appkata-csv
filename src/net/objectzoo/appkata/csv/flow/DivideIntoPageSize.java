@@ -3,12 +3,12 @@ package net.objectzoo.appkata.csv.flow;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.objectzoo.appkata.csv.data.CsvLine;
+import net.objectzoo.appkata.csv.data.CsvRecord;
 import net.objectzoo.appkata.csv.data.PageData;
 import net.objectzoo.ebc.Configurable;
 import net.objectzoo.ebc.ProcessAndResultBase;
 
-public class DivideIntoPageSize extends ProcessAndResultBase<List<CsvLine>, List<PageData>>
+public class DivideIntoPageSize extends ProcessAndResultBase<List<CsvRecord>, List<PageData>>
 	implements Configurable
 {
 	private static final int DEFAULT_NUMBER_OF_DATA_LINES = 20;
@@ -34,7 +34,7 @@ public class DivideIntoPageSize extends ProcessAndResultBase<List<CsvLine>, List
 	}
 	
 	@Override
-	protected void process(List<CsvLine> dataLines)
+	protected void process(List<CsvRecord> dataLines)
 	{
 		int pageCount = dataLines.size() / pageSize;
 		int remainder = dataLines.size() % pageSize;

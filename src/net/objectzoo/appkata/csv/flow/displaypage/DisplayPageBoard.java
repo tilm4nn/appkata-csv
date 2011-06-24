@@ -24,9 +24,8 @@
  */
 package net.objectzoo.appkata.csv.flow.displaypage;
 
-import java.util.List;
-
 import net.objectzoo.appkata.csv.data.Page;
+import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
 import net.objectzoo.delegates.Action;
 import net.objectzoo.ebc.JoinToPair;
 import net.objectzoo.events.Event0;
@@ -38,21 +37,24 @@ public class DisplayPageBoard
 	
 	private Event0 signal;
 	
-	public DisplayPageBoard(DetermineColumnLengths determineColumnLengths, RenderPageTable renderPageTable,
-				 DisplayPageTable displayPageTable)
+	public DisplayPageBoard(MapToPageViewModel mapToPageViewModel,
+							DetermineColumnLengths determineColumnLengths,
+							RenderPageViewModel renderPageViewModel,
+							DisplayPageViewModel displayPageViewModel)
 	{
-		EventDistributor<Page> split = new EventDistributor<Page>();
-		JoinToPair<Page, List<Integer>> join = new JoinToPair<Page, List<Integer>>()
+		EventDistributor<PageViewModel> split = new EventDistributor<PageViewModel>();
+		JoinToPair<PageViewModel, int[]> join = new JoinToPair<PageViewModel, int[]>()
 		{
 		};
 		
-		process = split;
+		process = mapToPageViewModel.getProcess();
+		mapToPageViewModel.getResult().subscribe(split);
 		split.subscribe(determineColumnLengths.getProcess());
 		split.subscribe(join.getInput1());
 		determineColumnLengths.getResult().subscribe(join.getInput2());
-		join.getResult().subscribe(renderPageTable.getProcess());
-		renderPageTable.getResult().subscribe(displayPageTable.getProcess());
-		signal = displayPageTable.getSignal();
+		join.getResult().subscribe(renderPageViewModel.getProcess());
+		renderPageViewModel.getResult().subscribe(displayPageViewModel.getProcess());
+		signal = displayPageViewModel.getSignal();
 	}
 	
 	public Action<Page> getProcess()

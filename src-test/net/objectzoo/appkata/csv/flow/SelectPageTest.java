@@ -7,14 +7,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 import net.objectzoo.appkata.csv.data.CsvLine;
+import net.objectzoo.appkata.csv.data.CsvRecord;
 import net.objectzoo.appkata.csv.data.Page;
 import net.objectzoo.ebc.TestAction;
 
 public class SelectPageTest
 {
-	private Page PAGE_1 = new Page(new CsvLine("foo"), list(new CsvLine("foo")));
-	private Page PAGE_2 = new Page(new CsvLine("bar"), list(new CsvLine("bar")));
-	private Page PAGE_3 = new Page(new CsvLine("baz"), list(new CsvLine("baz")));
+	private Page PAGE_1 = new Page(new CsvLine("foo"), list(new CsvRecord(1, new CsvLine("foo"))));
+	private Page PAGE_2 = new Page(new CsvLine("bar"), list(new CsvRecord(2, new CsvLine("bar"))));
+	private Page PAGE_3 = new Page(new CsvLine("baz"), list(new CsvRecord(3, new CsvLine("baz"))));
 	
 	private TestAction<Page> resultAction;
 	

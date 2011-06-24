@@ -41,7 +41,7 @@ public class DisplayPageTableTest
 	
 	private ConsoleAdapterContract consoleAdapterMock;
 	
-	private DisplayPageTable sut;
+	private DisplayPageViewModel sut;
 	
 	@Before
 	public void setup()
@@ -50,7 +50,7 @@ public class DisplayPageTableTest
 		consoleAdapterMock = mockery.mock(ConsoleAdapterContract.class);
 		signalAction = new TestAction0();
 		
-		sut = new DisplayPageTable();
+		sut = new DisplayPageViewModel();
 		sut.getSignal().subscribe(signalAction);
 		sut.inject(consoleAdapterMock);
 	}

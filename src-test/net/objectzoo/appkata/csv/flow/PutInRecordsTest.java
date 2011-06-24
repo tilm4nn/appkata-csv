@@ -22,29 +22,42 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package net.objectzoo.appkata.csv.flow.displaypage;
+package net.objectzoo.appkata.csv.flow;
 
-import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
-import net.objectzoo.ebc.DependsOn;
-import net.objectzoo.ebc.ProcessAndSignalBase;
+import static junit.framework.Assert.assertEquals;
+import static net.objectzoo.appkata.csv.Utils.list;
 
-public class DisplayPageTable extends ProcessAndSignalBase<String> implements
-	DependsOn<ConsoleAdapterContract>
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import net.objectzoo.appkata.csv.data.CsvLine;
+import net.objectzoo.appkata.csv.data.CsvRecord;
+import net.objectzoo.ebc.TestAction;
+
+public class PutInRecordsTest
 {
-	private ConsoleAdapterContract consoleAdapter;
+	private TestAction<List<CsvRecord>> resultAction;
 	
-	@Override
-	protected void process(String renderedPage)
+	private PutInRecords sut;
+	
+	@Before
+	public void setup()
 	{
-		consoleAdapter.output(renderedPage);
+		resultAction = new TestAction<List<CsvRecord>>();
 		
-		sendSignal();
+		sut = new PutInRecords();
+		sut.getResult().subscribe(resultAction);
 	}
 	
-	@Override
-	public void inject(ConsoleAdapterContract dependency)
+	@Test
+	public void createsTwoRecords()
 	{
-		this.consoleAdapter = dependency;
+		sut.process(list(new CsvLine("Value1", "Value2"), new CsvLine("Value3", "Value4")));
+		
+		assertEquals(
+			list(new CsvRecord(1, new CsvLine("Value1", "Value2")), new CsvRecord(2, new CsvLine(
+				"Value3", "Value4"))), resultAction.getResult());
 	}
-	
 }

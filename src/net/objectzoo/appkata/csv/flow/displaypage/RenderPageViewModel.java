@@ -24,56 +24,53 @@
  */
 package net.objectzoo.appkata.csv.flow.displaypage;
 
-import java.util.List;
-
-import net.objectzoo.appkata.csv.data.CsvLine;
-import net.objectzoo.appkata.csv.data.Page;
+import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
 import net.objectzoo.ebc.Pair;
 import net.objectzoo.ebc.ProcessAndResultBase;
 
-public class RenderPageTable extends ProcessAndResultBase<Pair<Page, List<Integer>>, String>
+public class RenderPageViewModel extends ProcessAndResultBase<Pair<PageViewModel, int[]>, String>
 {
 	
 	@Override
-	protected void process(Pair<Page, List<Integer>> pageAndColumnLengths)
+	protected void process(Pair<PageViewModel, int[]> pageViewModelAndColumnLengths)
 	{
-		Page page = pageAndColumnLengths.getItem1();
-		List<Integer> columnLengths = pageAndColumnLengths.getItem2();
+		PageViewModel pageVm = pageViewModelAndColumnLengths.getItem1();
+		int[] columnLengths = pageViewModelAndColumnLengths.getItem2();
 		
-		String renderedPage = renderCsvLine(page.getHeader(), columnLengths);
+		String renderedPage = renderRow(pageVm.getHeader(), columnLengths);
 		
 		renderedPage += renderHorizontalLine(columnLengths);
 		
-		for (CsvLine csvLine : page.getData())
+		for (String[] row : pageVm.getRows())
 		{
-			renderedPage += renderCsvLine(csvLine, columnLengths);
+			renderedPage += renderRow(row, columnLengths);
 		}
 		
 		sendResult(renderedPage);
 	}
 	
-	static String renderHorizontalLine(List<Integer> columnLengths)
+	static String renderHorizontalLine(int[] columnLengths)
 	{
 		String lineFormat = "";
-		for (int i = 0; i < columnLengths.size(); i++)
+		for (int i = 0; i < columnLengths.length; i++)
 		{
-			lineFormat += "%1$" + columnLengths.get(i) + "s+";
+			lineFormat += "%1$" + columnLengths[i] + "s+";
 		}
 		lineFormat += "\n";
 		
 		return String.format(lineFormat, " ").replace(' ', '-');
 	}
 	
-	static String renderCsvLine(CsvLine csvLine, List<Integer> columnLengths)
+	static String renderRow(String[] row, int[] columnLengths)
 	{
 		String lineFormat = "";
-		for (int i = 0; i < columnLengths.size(); i++)
+		for (int i = 0; i < columnLengths.length; i++)
 		{
-			lineFormat += "%" + (i + 1) + "$-" + columnLengths.get(i) + "s|";
+			lineFormat += "%" + (i + 1) + "$-" + columnLengths[i] + "s|";
 		}
 		lineFormat += "\n";
 		
-		return String.format(lineFormat, csvLine.getValues().toArray());
+		return String.format(lineFormat, (Object[]) row);
 	}
 	
 }

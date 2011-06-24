@@ -34,8 +34,9 @@ public class MainBoard
 {
 	public MainBoard(RepeatedWaitForCommand repeatedWaitForCommand, ReadLines readLines,
 					 SplitLines splitLines, SeparateHeaderAndData separateHeaderAndData,
-					 DivideIntoPageSize divideIntoPageSize, SelectPage selectPage,
-					 DisplayPageBoard displayPage, DisplayCommands displayCommands)
+					 PutInRecords putInRecords, DivideIntoPageSize divideIntoPageSize,
+					 SelectPage selectPage, DisplayPageBoard displayPage,
+					 DisplayCommands displayCommands)
 	{
 		JoinObjectAndCollection<CsvLine, PageData, Page> join = new JoinObjectAndCollection<CsvLine, PageData, Page>()
 		{
@@ -45,7 +46,8 @@ public class MainBoard
 		readLines.getResult().subscribe(splitLines.getProcess());
 		splitLines.getResult().subscribe(separateHeaderAndData.getProcess());
 		separateHeaderAndData.getNewHeader().subscribe(join.getInput1());
-		separateHeaderAndData.getNewData().subscribe(divideIntoPageSize.getProcess());
+		separateHeaderAndData.getNewData().subscribe(putInRecords.getProcess());
+		putInRecords.getResult().subscribe(divideIntoPageSize.getProcess());
 		divideIntoPageSize.getResult().subscribe(join.getInput2());
 		join.getResult().subscribe(selectPage.getProcess());
 		repeatedWaitForCommand.getNextPageCommand().subscribe(selectPage.getNextPage());

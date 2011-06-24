@@ -30,6 +30,7 @@ import java.io.IOException;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
+import org.jmock.Sequence;
 import org.junit.Test;
 
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
@@ -37,6 +38,7 @@ import net.objectzoo.appkata.csv.dependencies.TextFileAdapterContract;
 import net.objectzoo.appkata.csv.flow.DisplayCommands;
 import net.objectzoo.appkata.csv.flow.DivideIntoPageSize;
 import net.objectzoo.appkata.csv.flow.MainBoard;
+import net.objectzoo.appkata.csv.flow.PutInRecords;
 import net.objectzoo.appkata.csv.flow.ReadLines;
 import net.objectzoo.appkata.csv.flow.RepeatedWaitForCommand;
 import net.objectzoo.appkata.csv.flow.SelectPage;
@@ -44,28 +46,29 @@ import net.objectzoo.appkata.csv.flow.SeparateHeaderAndData;
 import net.objectzoo.appkata.csv.flow.SplitLines;
 import net.objectzoo.appkata.csv.flow.displaypage.DetermineColumnLengths;
 import net.objectzoo.appkata.csv.flow.displaypage.DisplayPageBoard;
-import net.objectzoo.appkata.csv.flow.displaypage.DisplayPageTable;
-import net.objectzoo.appkata.csv.flow.displaypage.RenderPageTable;
+import net.objectzoo.appkata.csv.flow.displaypage.DisplayPageViewModel;
+import net.objectzoo.appkata.csv.flow.displaypage.MapToPageViewModel;
+import net.objectzoo.appkata.csv.flow.displaypage.RenderPageViewModel;
 
-public class Feature11Test
+public class DisplayFirstPageTest
 {
 	
 	@Test
 	public void rendersTableWithTwoColumnsAndTwoDataRows() throws IOException
 	{
-		Mockery mockery = new Mockery();
+		final Mockery mockery = new Mockery();
 		final TextFileAdapterContract textFileAdapterMock = mockery.mock(TextFileAdapterContract.class);
 		final ConsoleAdapterContract consoleAdapterMock = mockery.mock(ConsoleAdapterContract.class);
 		
 		ReadLines readLines = new ReadLines();
 		DivideIntoPageSize divideIntoPageSize = new DivideIntoPageSize();
-		DisplayPageTable displayPageTable = new DisplayPageTable();
+		DisplayPageViewModel displayPageTable = new DisplayPageViewModel();
 		DisplayCommands displayCommands = new DisplayCommands();
 		RepeatedWaitForCommand repeatedWaitForCommand = new RepeatedWaitForCommand();
 		new MainBoard(repeatedWaitForCommand, readLines, new SplitLines(),
-			new SeparateHeaderAndData(), divideIntoPageSize, new SelectPage(),
-			new DisplayPageBoard(new DetermineColumnLengths(), new RenderPageTable(),
-				displayPageTable), displayCommands);
+			new SeparateHeaderAndData(), new PutInRecords(), divideIntoPageSize, new SelectPage(),
+			new DisplayPageBoard(new MapToPageViewModel(), new DetermineColumnLengths(),
+				new RenderPageViewModel(), displayPageTable), displayCommands);
 		
 		readLines.inject(textFileAdapterMock);
 		displayPageTable.inject(consoleAdapterMock);
@@ -75,20 +78,26 @@ public class Feature11Test
 		readLines.configure("filename");
 		divideIntoPageSize.configure("", "5");
 		
-		final String expected = "666666    |88888888|\n" + "----------+--------+\n"
-			+ "88888888  |4444    |\n" + "1010101010|22      |\n";
+		final String expected = "No.|666666    |88888888|\n" + "---+----------+--------+\n"
+			+ "1  |88888888  |4444    |\n" + "2  |1010101010|22      |\n";
 		
 		mockery.checking(new Expectations()
 		{
 			{
+				Sequence sequence = mockery.sequence("ioSequence");
+				
 				oneOf(textFileAdapterMock).readLines("filename", Integer.MAX_VALUE);
+				inSequence(sequence);
 				will(returnValue(list("666666;88888888", "88888888;4444", "1010101010;22")));
 				
 				oneOf(consoleAdapterMock).output(expected);
+				inSequence(sequence);
 				
 				oneOf(consoleAdapterMock).output(with(any(String.class)));
+				inSequence(sequence);
 				
 				oneOf(consoleAdapterMock).input();
+				inSequence(sequence);
 				will(returnValue('x'));
 			}
 		});

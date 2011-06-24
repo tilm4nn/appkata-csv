@@ -1,10 +1,13 @@
 package net.objectzoo.ebc;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 
 import net.objectzoo.delegates.Action;
 
@@ -91,23 +94,38 @@ abstract class JoinBase<Input1, Input2, Output, OutputElement> extends ResultBas
 		return (ParameterizedType) genericSuperclass;
 	}
 	
+	public static Class<?> getRawType(Type type)
+	{
+		if (type instanceof Class<?>)
+		{
+			return (Class<?>) type;
+		}
+		if (type instanceof ParameterizedType)
+		{
+			return (Class<?>) ((ParameterizedType) type).getRawType();
+		}
+		if (type instanceof GenericArrayType)
+		{
+			Class<?> elementType = getRawType(((GenericArrayType) type).getGenericComponentType());
+			return Array.newInstance(elementType, 0).getClass();
+		}
+		if (type instanceof TypeVariable)
+		{
+			return getRawType(((TypeVariable<?>) type).getBounds()[0]);
+		}
+		if (type instanceof WildcardType)
+		{
+			return getRawType(((WildcardType) type).getUpperBounds()[0]);
+		}
+		throw new IllegalArgumentException("The type " + type
+			+ " given as type parameter cannot be converted into a valid Java Class.");
+	}
+	
 	private static Class<?> getTypeArgument(ParameterizedType genericType, int numberOfArgument)
 	{
 		Type typeArgument = genericType.getActualTypeArguments()[numberOfArgument];
-		if (typeArgument instanceof TypeVariable)
-		{
-			typeArgument = ((TypeVariable<?>) typeArgument).getBounds()[0];
-		}
-		if (typeArgument instanceof Class)
-		{
-			return (Class<?>) typeArgument;
-		}
-		if (typeArgument instanceof ParameterizedType)
-		{
-			return (Class<?>) ((ParameterizedType) typeArgument).getRawType();
-		}
-		throw new IllegalArgumentException("The type " + typeArgument
-			+ " given as type parameter is not a valid Java Class.");
+		
+		return getRawType(typeArgument);
 	}
 	
 	private Input1 lastInput1;

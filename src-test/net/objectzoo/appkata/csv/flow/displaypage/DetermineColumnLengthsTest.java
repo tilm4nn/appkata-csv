@@ -24,28 +24,24 @@
  */
 package net.objectzoo.appkata.csv.flow.displaypage;
 
-import static junit.framework.Assert.assertEquals;
-import static net.objectzoo.appkata.csv.Utils.list;
-
-import java.util.List;
+import static org.junit.Assert.assertArrayEquals;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import net.objectzoo.appkata.csv.data.CsvLine;
-import net.objectzoo.appkata.csv.data.Page;
+import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
 import net.objectzoo.ebc.TestAction;
 
 public class DetermineColumnLengthsTest
 {
-	private TestAction<List<Integer>> resultAction;
+	private TestAction<int[]> resultAction;
 	
 	private DetermineColumnLengths sut;
 	
 	@Before
 	public void setup()
 	{
-		resultAction = new TestAction<List<Integer>>();
+		resultAction = new TestAction<int[]>();
 		
 		sut = new DetermineColumnLengths();
 		sut.getResult().subscribe(resultAction);
@@ -54,18 +50,19 @@ public class DetermineColumnLengthsTest
 	@Test
 	public void takesMaxLengthFromHeader()
 	{
-		sut.process(new Page(new CsvLine("VeryLong", "EvenLonger"), list(new CsvLine("Short",
-			"Values"))));
+		sut.process(new PageViewModel(new String[] { "VeryLong", "EvenLonger" }, new String[][] { {
+				"Short", "Values" } }));
 		
-		assertEquals(list(8, 10), resultAction.getResult());
+		assertArrayEquals(new int[] { 8, 10 }, resultAction.getResult());
 	}
 	
 	@Test
 	public void takesMaxLengthFromData()
 	{
-		sut.process(new Page(new CsvLine("Short", "Values"), list(
-			new CsvLine("VeryLong", "Values"), new CsvLine("Short", "EvenLonger"))));
+		sut.process(new PageViewModel(new String[] { "Short", "Values" }, new String[][] {
+				{ "VeryLong", "Values" }, { "Short", "EvenLonger" } }));
 		
-		assertEquals(list(8, 10), resultAction.getResult());
+		assertArrayEquals(new int[] { 8, 10 }, resultAction.getResult());
+		
 	}
 }

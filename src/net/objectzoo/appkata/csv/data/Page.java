@@ -30,12 +30,12 @@ public class Page
 {
 	private final CsvLine header;
 	
-	private final List<CsvLine> data;
+	private final List<CsvRecord> records;
 	
 	@Override
 	public String toString()
 	{
-		return "Page [header=" + header + ", data=" + data + "]";
+		return "Page [header=" + header + ", records=" + records + "]";
 	}
 	
 	public CsvLine getHeader()
@@ -43,20 +43,20 @@ public class Page
 		return header;
 	}
 	
-	public List<CsvLine> getData()
+	public List<CsvRecord> getRecords()
 	{
-		return data;
+		return records;
 	}
 	
 	public Page(CsvLine header, PageData pageData)
 	{
-		this(header, pageData.getData());
+		this(header, pageData.getRecords());
 	}
 	
-	public Page(CsvLine header, List<CsvLine> data)
+	public Page(CsvLine header, List<CsvRecord> data)
 	{
 		this.header = header;
-		this.data = data;
+		this.records = data;
 	}
 	
 	@Override
@@ -64,7 +64,7 @@ public class Page
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((data == null) ? 0 : data.hashCode());
+		result = prime * result + ((records == null) ? 0 : records.hashCode());
 		result = prime * result + ((header == null) ? 0 : header.hashCode());
 		return result;
 	}
@@ -76,11 +76,11 @@ public class Page
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		Page other = (Page) obj;
-		if (data == null)
+		if (records == null)
 		{
-			if (other.data != null) return false;
+			if (other.records != null) return false;
 		}
-		else if (!data.equals(other.data)) return false;
+		else if (!records.equals(other.records)) return false;
 		if (header == null)
 		{
 			if (other.header != null) return false;

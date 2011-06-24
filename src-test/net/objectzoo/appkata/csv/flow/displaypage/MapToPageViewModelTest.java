@@ -24,46 +24,42 @@
  */
 package net.objectzoo.appkata.csv.flow.displaypage;
 
-import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
-import net.objectzoo.ebc.ProcessAndResultBase;
+import static junit.framework.Assert.assertEquals;
+import static net.objectzoo.appkata.csv.Utils.list;
 
-public class DetermineColumnLengths extends ProcessAndResultBase<PageViewModel, int[]>
+import org.junit.Before;
+import org.junit.Test;
+
+import net.objectzoo.appkata.csv.data.CsvLine;
+import net.objectzoo.appkata.csv.data.CsvRecord;
+import net.objectzoo.appkata.csv.data.Page;
+import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
+import net.objectzoo.ebc.TestAction;
+
+public class MapToPageViewModelTest
 {
+	private TestAction<PageViewModel> resultAction;
 	
-	@Override
-	protected void process(PageViewModel pageVm)
+	private MapToPageViewModel sut;
+	
+	@Before
+	public void setup()
 	{
-		int[] maxColumnLengths = getColumnLengths(pageVm.getHeader());
+		resultAction = new TestAction<PageViewModel>();
 		
-		for (String[] row : pageVm.getRows())
-		{
-			updateMaxVaules(maxColumnLengths, getColumnLengths(row));
-		}
-		
-		sendResult(maxColumnLengths);
+		sut = new MapToPageViewModel();
+		sut.getResult().subscribe(resultAction);
 	}
 	
-	static void updateMaxVaules(int[] maxValues, int[] currentValues)
+	@Test
+	public void mapTwoRowsAndTwoColumns()
 	{
-		for (int i = 0; i < currentValues.length; i++)
-		{
-			if (currentValues[i] > maxValues[i])
-			{
-				maxValues[i] = currentValues[i];
-			}
-		}
-	}
-	
-	static int[] getColumnLengths(String[] values)
-	{
-		int[] lengths = new int[values.length];
+		sut.process(new Page(new CsvLine("Header1", "Header2"), list(new CsvRecord(1, new CsvLine(
+			"Value1", "Value2")), new CsvRecord(2, new CsvLine("Value3", "Value4")))));
 		
-		for (int i = 0; i < values.length; i++)
-		{
-			lengths[i] = values[i].length();
-		}
-		
-		return lengths;
+		assertEquals(new PageViewModel(new String[] { "No.", "Header1", "Header2" },
+			new String[][] { { "1", "Value1", "Value2" }, { "2", "Value3", "Value4" } }),
+			resultAction.getResult());
 	}
 	
 }

@@ -31,6 +31,7 @@ import net.objectzoo.appkata.csv.dependencies.TextFileAdapterContract;
 import net.objectzoo.appkata.csv.flow.DisplayCommands;
 import net.objectzoo.appkata.csv.flow.DivideIntoPageSize;
 import net.objectzoo.appkata.csv.flow.MainBoard;
+import net.objectzoo.appkata.csv.flow.PutInRecords;
 import net.objectzoo.appkata.csv.flow.ReadLines;
 import net.objectzoo.appkata.csv.flow.RepeatedWaitForCommand;
 import net.objectzoo.appkata.csv.flow.SelectPage;
@@ -38,8 +39,9 @@ import net.objectzoo.appkata.csv.flow.SeparateHeaderAndData;
 import net.objectzoo.appkata.csv.flow.SplitLines;
 import net.objectzoo.appkata.csv.flow.displaypage.DetermineColumnLengths;
 import net.objectzoo.appkata.csv.flow.displaypage.DisplayPageBoard;
-import net.objectzoo.appkata.csv.flow.displaypage.DisplayPageTable;
-import net.objectzoo.appkata.csv.flow.displaypage.RenderPageTable;
+import net.objectzoo.appkata.csv.flow.displaypage.DisplayPageViewModel;
+import net.objectzoo.appkata.csv.flow.displaypage.MapToPageViewModel;
+import net.objectzoo.appkata.csv.flow.displaypage.RenderPageViewModel;
 
 public class Program
 {
@@ -49,13 +51,13 @@ public class Program
 		ConsoleAdapterContract consoleAdapter = new ConsoleAdapter();
 		ReadLines readLines = new ReadLines();
 		DivideIntoPageSize divideIntoPageSize = new DivideIntoPageSize();
-		DisplayPageTable displayPageTable = new DisplayPageTable();
+		DisplayPageViewModel displayPageTable = new DisplayPageViewModel();
 		DisplayCommands displayCommands = new DisplayCommands();
 		RepeatedWaitForCommand repeatedWaitForCommand = new RepeatedWaitForCommand();
 		new MainBoard(repeatedWaitForCommand, readLines, new SplitLines(),
-			new SeparateHeaderAndData(), divideIntoPageSize, new SelectPage(),
-			new DisplayPageBoard(new DetermineColumnLengths(), new RenderPageTable(),
-				displayPageTable), displayCommands);
+			new SeparateHeaderAndData(), new PutInRecords(), divideIntoPageSize, new SelectPage(),
+			new DisplayPageBoard(new MapToPageViewModel(), new DetermineColumnLengths(),
+				new RenderPageViewModel(), displayPageTable), displayCommands);
 		
 		readLines.inject(textFileAdapter);
 		displayPageTable.inject(consoleAdapter);

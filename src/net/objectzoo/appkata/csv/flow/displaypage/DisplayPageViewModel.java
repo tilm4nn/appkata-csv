@@ -24,46 +24,27 @@
  */
 package net.objectzoo.appkata.csv.flow.displaypage;
 
-import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
-import net.objectzoo.ebc.ProcessAndResultBase;
+import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
+import net.objectzoo.ebc.DependsOn;
+import net.objectzoo.ebc.ProcessAndSignalBase;
 
-public class DetermineColumnLengths extends ProcessAndResultBase<PageViewModel, int[]>
+public class DisplayPageViewModel extends ProcessAndSignalBase<String> implements
+	DependsOn<ConsoleAdapterContract>
 {
+	private ConsoleAdapterContract consoleAdapter;
 	
 	@Override
-	protected void process(PageViewModel pageVm)
+	protected void process(String renderedPage)
 	{
-		int[] maxColumnLengths = getColumnLengths(pageVm.getHeader());
+		consoleAdapter.output(renderedPage);
 		
-		for (String[] row : pageVm.getRows())
-		{
-			updateMaxVaules(maxColumnLengths, getColumnLengths(row));
-		}
-		
-		sendResult(maxColumnLengths);
+		sendSignal();
 	}
 	
-	static void updateMaxVaules(int[] maxValues, int[] currentValues)
+	@Override
+	public void inject(ConsoleAdapterContract dependency)
 	{
-		for (int i = 0; i < currentValues.length; i++)
-		{
-			if (currentValues[i] > maxValues[i])
-			{
-				maxValues[i] = currentValues[i];
-			}
-		}
-	}
-	
-	static int[] getColumnLengths(String[] values)
-	{
-		int[] lengths = new int[values.length];
-		
-		for (int i = 0; i < values.length; i++)
-		{
-			lengths[i] = values[i].length();
-		}
-		
-		return lengths;
+		this.consoleAdapter = dependency;
 	}
 	
 }
