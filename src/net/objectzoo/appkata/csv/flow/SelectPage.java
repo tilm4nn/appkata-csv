@@ -3,10 +3,12 @@ package net.objectzoo.appkata.csv.flow;
 import java.util.List;
 
 import net.objectzoo.appkata.csv.data.Page;
+import net.objectzoo.appkata.csv.data.Position;
 import net.objectzoo.delegates.Action0;
+import net.objectzoo.ebc.Pair;
 import net.objectzoo.ebc.ProcessAndResultBase;
 
-public class SelectPage extends ProcessAndResultBase<List<Page>, Page>
+public class SelectPage extends ProcessAndResultBase<List<Page>, Pair<Page, Position>>
 {
 	
 	List<Page> pages;
@@ -70,7 +72,8 @@ public class SelectPage extends ProcessAndResultBase<List<Page>, Page>
 	
 	private void sendCurrentPage()
 	{
-		sendResult(pages.get(currentPage));
+		sendResult(new Pair<Page, Position>(pages.get(currentPage), new Position(currentPage + 1,
+			pages.size())));
 	}
 	
 	public Action0 getNextPage()

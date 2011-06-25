@@ -51,7 +51,7 @@ public class DetermineColumnLengthsTest
 	public void takesMaxLengthFromHeader()
 	{
 		sut.process(new PageViewModel(new String[] { "VeryLong", "EvenLonger" }, new String[][] { {
-				"Short", "Values" } }));
+				"Short", "Values" } }, 0, 0));
 		
 		assertArrayEquals(new int[] { 8, 10 }, resultAction.getResult());
 	}
@@ -60,7 +60,7 @@ public class DetermineColumnLengthsTest
 	public void takesMaxLengthFromData()
 	{
 		sut.process(new PageViewModel(new String[] { "Short", "Values" }, new String[][] {
-				{ "VeryLong", "Values" }, { "Short", "EvenLonger" } }));
+				{ "VeryLong", "Values" }, { "Short", "EvenLonger" } }, 0, 0));
 		
 		assertArrayEquals(new int[] { 8, 10 }, resultAction.getResult());
 		

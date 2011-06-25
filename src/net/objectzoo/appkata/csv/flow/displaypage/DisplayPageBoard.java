@@ -25,15 +25,17 @@
 package net.objectzoo.appkata.csv.flow.displaypage;
 
 import net.objectzoo.appkata.csv.data.Page;
+import net.objectzoo.appkata.csv.data.Position;
 import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
 import net.objectzoo.delegates.Action;
 import net.objectzoo.ebc.JoinToPair;
+import net.objectzoo.ebc.Pair;
 import net.objectzoo.events.Event0;
 import net.objectzoo.events.impl.EventDistributor;
 
 public class DisplayPageBoard
 {
-	private Action<Page> process;
+	private Action<Pair<Page, Position>> process;
 	
 	private Event0 signal;
 	
@@ -57,7 +59,7 @@ public class DisplayPageBoard
 		signal = displayPageViewModel.getSignal();
 	}
 	
-	public Action<Page> getProcess()
+	public Action<Pair<Page, Position>> getProcess()
 	{
 		return process;
 	}

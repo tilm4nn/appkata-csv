@@ -52,11 +52,22 @@ public class RenderPageTableTest
 	public void rendersTableWithTwoColumnsAndTwoDataRows()
 	{
 		final String expected = "666666    |88888888|\n" + "----------+--------+\n"
-			+ "88888888  |4444    |\n" + "1010101010|22      |\n";
+			+ "88888888  |4444    |\n" + "1010101010|22      |\nPage 0 of 0\n";
 		
 		sut.process(new Pair<PageViewModel, int[]>(new PageViewModel(new String[] { "666666",
-				"88888888" }, new String[][] { { "88888888", "4444" }, { "1010101010", "22" } }),
-			new int[] { 10, 8 }));
+				"88888888" }, new String[][] { { "88888888", "4444" }, { "1010101010", "22" } }, 0,
+			0), new int[] { 10, 8 }));
+		
+		Assert.assertEquals(expected, resultAction.getResult());
+	}
+	
+	@Test
+	public void rendersPosition()
+	{
+		final String expected = "\n\nPage 12 of 34\n";
+		
+		sut.process(new Pair<PageViewModel, int[]>(new PageViewModel(new String[] {},
+			new String[][] {}, 12, 34), new int[] {}));
 		
 		Assert.assertEquals(expected, resultAction.getResult());
 	}

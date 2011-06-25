@@ -46,7 +46,14 @@ public class RenderPageViewModel extends ProcessAndResultBase<Pair<PageViewModel
 			renderedPage += renderRow(row, columnLengths);
 		}
 		
+		renderedPage += renderPosition(pageVm.getCurrentPosition(), pageVm.getMaxPosition());
+		
 		sendResult(renderedPage);
+	}
+	
+	static String renderPosition(int currentPosition, int maxPosition)
+	{
+		return String.format("Page " + currentPosition + " of " + maxPosition + "\n");
 	}
 	
 	static String renderHorizontalLine(int[] columnLengths)

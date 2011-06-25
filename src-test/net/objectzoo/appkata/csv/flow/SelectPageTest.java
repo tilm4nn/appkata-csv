@@ -9,6 +9,8 @@ import org.junit.Test;
 import net.objectzoo.appkata.csv.data.CsvLine;
 import net.objectzoo.appkata.csv.data.CsvRecord;
 import net.objectzoo.appkata.csv.data.Page;
+import net.objectzoo.appkata.csv.data.Position;
+import net.objectzoo.ebc.Pair;
 import net.objectzoo.ebc.TestAction;
 
 public class SelectPageTest
@@ -17,14 +19,14 @@ public class SelectPageTest
 	private Page PAGE_2 = new Page(new CsvLine("bar"), list(new CsvRecord(2, new CsvLine("bar"))));
 	private Page PAGE_3 = new Page(new CsvLine("baz"), list(new CsvRecord(3, new CsvLine("baz"))));
 	
-	private TestAction<Page> resultAction;
+	private TestAction<Pair<Page, Position>> resultAction;
 	
 	private SelectPage sut;
 	
 	@Before
 	public void setup()
 	{
-		resultAction = new TestAction<Page>();
+		resultAction = new TestAction<Pair<Page, Position>>();
 		
 		sut = new SelectPage();
 		sut.getResult().subscribe(resultAction);
@@ -50,19 +52,35 @@ public class SelectPageTest
 	}
 	
 	@Test
-	public void processSelectsFirstPage()
+	public void processSendsFirstPage()
 	{
 		sut.process(list(PAGE_1, PAGE_2));
 		
-		assertEquals(PAGE_1, resultAction.getResult());
+		assertEquals(PAGE_1, resultAction.getResult().getItem1());
 	}
 	
 	@Test
-	public void nextSelectsNextPage()
+	public void processSendsFirstPosition()
+	{
+		sut.process(list(PAGE_1, PAGE_2));
+		
+		assertEquals(new Position(1, 2), resultAction.getResult().getItem2());
+	}
+	
+	@Test
+	public void nextSendsNextPage()
 	{
 		sut.getNextPage().invoke();
 		
-		assertEquals(PAGE_3, resultAction.getResult());
+		assertEquals(PAGE_3, resultAction.getResult().getItem1());
+	}
+	
+	@Test
+	public void nextSendsNextPosition()
+	{
+		sut.getNextPage().invoke();
+		
+		assertEquals(new Position(3, 3), resultAction.getResult().getItem2());
 	}
 	
 	@Test
@@ -72,15 +90,23 @@ public class SelectPageTest
 		
 		sut.getNextPage().invoke();
 		
-		assertEquals(PAGE_3, resultAction.getResult());
+		assertEquals(PAGE_3, resultAction.getResult().getItem1());
 	}
 	
 	@Test
-	public void previousSelectsPreviousPage()
+	public void previousSendsPreviousPage()
 	{
 		sut.getPreviousPage().invoke();
 		
-		assertEquals(PAGE_1, resultAction.getResult());
+		assertEquals(PAGE_1, resultAction.getResult().getItem1());
+	}
+	
+	@Test
+	public void previousSendsPreviousPosition()
+	{
+		sut.getPreviousPage().invoke();
+		
+		assertEquals(new Position(1, 3), resultAction.getResult().getItem2());
 	}
 	
 	@Test
@@ -90,22 +116,38 @@ public class SelectPageTest
 		
 		sut.getPreviousPage().invoke();
 		
-		assertEquals(PAGE_1, resultAction.getResult());
+		assertEquals(PAGE_1, resultAction.getResult().getItem1());
 	}
 	
 	@Test
-	public void lastReturnsLastPage()
+	public void lastSendsLastPage()
 	{
 		sut.getLastPage().invoke();
 		
-		assertEquals(PAGE_3, resultAction.getResult());
+		assertEquals(PAGE_3, resultAction.getResult().getItem1());
 	}
 	
 	@Test
-	public void firstReturnsFirstPage()
+	public void lastSendsLastPosition()
+	{
+		sut.getLastPage().invoke();
+		
+		assertEquals(new Position(3, 3), resultAction.getResult().getItem2());
+	}
+	
+	@Test
+	public void firstSendsFirstPage()
 	{
 		sut.getFirstPage().invoke();
 		
-		assertEquals(PAGE_1, resultAction.getResult());
+		assertEquals(PAGE_1, resultAction.getResult().getItem1());
+	}
+	
+	@Test
+	public void firstSendsFirstPosition()
+	{
+		sut.getFirstPage().invoke();
+		
+		assertEquals(new Position(1, 3), resultAction.getResult().getItem2());
 	}
 }

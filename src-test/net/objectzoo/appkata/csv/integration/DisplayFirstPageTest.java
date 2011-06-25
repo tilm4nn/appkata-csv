@@ -79,7 +79,7 @@ public class DisplayFirstPageTest
 		divideIntoPageSize.configure("", "5");
 		
 		final String expected = "No.|666666    |88888888|\n" + "---+----------+--------+\n"
-			+ "1  |88888888  |4444    |\n" + "2  |1010101010|22      |\n";
+			+ "1  |88888888  |4444    |\n" + "2  |1010101010|22      |\nPage 1 of 1\n";
 		
 		mockery.checking(new Expectations()
 		{

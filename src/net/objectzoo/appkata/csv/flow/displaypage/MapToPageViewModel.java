@@ -5,19 +5,25 @@ import java.util.List;
 import net.objectzoo.appkata.csv.data.CsvLine;
 import net.objectzoo.appkata.csv.data.CsvRecord;
 import net.objectzoo.appkata.csv.data.Page;
+import net.objectzoo.appkata.csv.data.Position;
 import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
+import net.objectzoo.ebc.Pair;
 import net.objectzoo.ebc.ProcessAndResultBase;
 
-public class MapToPageViewModel extends ProcessAndResultBase<Page, PageViewModel>
+public class MapToPageViewModel extends ProcessAndResultBase<Pair<Page, Position>, PageViewModel>
 {
 	
 	@Override
-	protected void process(Page page)
+	protected void process(Pair<Page, Position> pageAndPosition)
 	{
+		Page page = pageAndPosition.getItem1();
+		Position position = pageAndPosition.getItem2();
+		
 		String[] headers = mapCsvLine("No.", page.getHeader());
 		String[][] rows = mapRecords(page.getRecords());
 		
-		sendResult(new PageViewModel(headers, rows));
+		sendResult(new PageViewModel(headers, rows, position.getCurrentPosition(),
+			position.getMaxPosition()));
 	}
 	
 	static String[][] mapRecords(List<CsvRecord> records)

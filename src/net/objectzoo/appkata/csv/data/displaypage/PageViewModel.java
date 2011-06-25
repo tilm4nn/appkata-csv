@@ -8,10 +8,16 @@ public class PageViewModel
 	
 	private final String[][] rows;
 	
-	public PageViewModel(String[] header, String[][] rows)
+	private final int currentPosition;
+	
+	private final int maxPosition;
+	
+	public PageViewModel(String[] headers, String[][] rows, int currentPosition, int maxPosition)
 	{
-		this.header = header;
+		this.header = headers;
 		this.rows = rows;
+		this.currentPosition = currentPosition;
+		this.maxPosition = maxPosition;
 	}
 	
 	public String[] getHeader()
@@ -19,17 +25,14 @@ public class PageViewModel
 		return header;
 	}
 	
-	public String[][] getRows()
-	{
-		return rows;
-	}
-	
 	@Override
 	public int hashCode()
 	{
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + currentPosition;
 		result = prime * result + Arrays.hashCode(header);
+		result = prime * result + maxPosition;
 		result = prime * result + Arrays.hashCode(rows);
 		return result;
 	}
@@ -41,7 +44,9 @@ public class PageViewModel
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		PageViewModel other = (PageViewModel) obj;
+		if (currentPosition != other.currentPosition) return false;
 		if (!Arrays.equals(header, other.header)) return false;
+		if (maxPosition != other.maxPosition) return false;
 		if (rows.length != other.rows.length) return false;
 		for (int i = 0; i < rows.length; i++)
 		{
@@ -54,7 +59,23 @@ public class PageViewModel
 	public String toString()
 	{
 		return "PageViewModel [header=" + Arrays.toString(header) + ", rows="
-			+ Arrays.toString(rows) + "]";
+			+ Arrays.toString(rows) + ", currentPosition=" + currentPosition + ", maxPosition="
+			+ maxPosition + "]";
+	}
+	
+	public String[][] getRows()
+	{
+		return rows;
+	}
+	
+	public int getCurrentPosition()
+	{
+		return currentPosition;
+	}
+	
+	public int getMaxPosition()
+	{
+		return maxPosition;
 	}
 	
 }

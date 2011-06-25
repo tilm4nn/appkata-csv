@@ -33,7 +33,9 @@ import org.junit.Test;
 import net.objectzoo.appkata.csv.data.CsvLine;
 import net.objectzoo.appkata.csv.data.CsvRecord;
 import net.objectzoo.appkata.csv.data.Page;
+import net.objectzoo.appkata.csv.data.Position;
 import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
+import net.objectzoo.ebc.Pair;
 import net.objectzoo.ebc.TestAction;
 
 public class MapToPageViewModelTest
@@ -54,11 +56,12 @@ public class MapToPageViewModelTest
 	@Test
 	public void mapTwoRowsAndTwoColumns()
 	{
-		sut.process(new Page(new CsvLine("Header1", "Header2"), list(new CsvRecord(1, new CsvLine(
-			"Value1", "Value2")), new CsvRecord(2, new CsvLine("Value3", "Value4")))));
+		sut.process(new Pair<Page, Position>(new Page(new CsvLine("Header1", "Header2"), list(
+			new CsvRecord(1, new CsvLine("Value1", "Value2")), new CsvRecord(2, new CsvLine(
+				"Value3", "Value4")))), new Position(0, 0)));
 		
 		assertEquals(new PageViewModel(new String[] { "No.", "Header1", "Header2" },
-			new String[][] { { "1", "Value1", "Value2" }, { "2", "Value3", "Value4" } }),
+			new String[][] { { "1", "Value1", "Value2" }, { "2", "Value3", "Value4" } }, 0, 0),
 			resultAction.getResult());
 	}
 	
