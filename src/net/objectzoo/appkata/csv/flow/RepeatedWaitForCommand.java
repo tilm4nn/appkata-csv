@@ -26,13 +26,12 @@ package net.objectzoo.appkata.csv.flow;
 
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
 import net.objectzoo.ebc.DependsOn;
-import net.objectzoo.ebc.EntryPoint;
-import net.objectzoo.ebc.SignalBase;
+import net.objectzoo.ebc.StartAndSignalBase;
 import net.objectzoo.events.Event0;
 import net.objectzoo.events.impl.Event0Distributor;
 
-public class RepeatedWaitForCommand extends SignalBase implements
-	DependsOn<ConsoleAdapterContract>, EntryPoint
+public class RepeatedWaitForCommand extends StartAndSignalBase implements
+	DependsOn<ConsoleAdapterContract>
 {
 	private ConsoleAdapterContract consoleAdapter;
 	
@@ -49,7 +48,7 @@ public class RepeatedWaitForCommand extends SignalBase implements
 	}
 	
 	@Override
-	public void run(String... parameters)
+	protected void start()
 	{
 		sendSignal();
 		repeatedWaitForCommand();

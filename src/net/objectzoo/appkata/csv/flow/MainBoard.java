@@ -28,10 +28,14 @@ import net.objectzoo.appkata.csv.data.CsvLine;
 import net.objectzoo.appkata.csv.data.Page;
 import net.objectzoo.appkata.csv.data.PageData;
 import net.objectzoo.appkata.csv.flow.displaypage.DisplayPageBoard;
+import net.objectzoo.delegates.Action0;
+import net.objectzoo.ebc.EntryPoint;
 import net.objectzoo.ebc.JoinObjectAndCollection;
 
-public class MainBoard
+public class MainBoard implements EntryPoint
 {
+	private final Action0 start;
+	
 	public MainBoard(RepeatedWaitForCommand repeatedWaitForCommand, ReadLines readLines,
 					 SplitLines splitLines, SeparateHeaderAndData separateHeaderAndData,
 					 PutInRecords putInRecords, DivideIntoPageSize divideIntoPageSize,
@@ -42,6 +46,7 @@ public class MainBoard
 		{
 		};
 		
+		start = repeatedWaitForCommand.getStart();
 		repeatedWaitForCommand.getSignal().subscribe(readLines.getStart());
 		readLines.getResult().subscribe(splitLines.getProcess());
 		splitLines.getResult().subscribe(separateHeaderAndData.getProcess());
@@ -58,5 +63,11 @@ public class MainBoard
 		inputPageNumber.getResult().subscribe(selectPage.getJumpToPage());
 		selectPage.getResult().subscribe(displayPage.getProcess());
 		displayPage.getSingal().subscribe(displayCommands.getStart());
+	}
+	
+	@Override
+	public Action0 getStart()
+	{
+		return start;
 	}
 }

@@ -75,14 +75,14 @@ public class ConsoleAdapter implements ConsoleAdapterContract
 						return str;
 					}
 				}
-				try
-				{
-					Thread.sleep(250);
-				}
-				catch (InterruptedException e)
-				{
-					// Woops interrupted!
-				}
+					try
+					{
+						Thread.sleep(250);
+					}
+					catch (InterruptedException e)
+					{
+						// Woops interrupted!
+					}
 			}
 			catch (IOException e)
 			{

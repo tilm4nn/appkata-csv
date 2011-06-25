@@ -24,7 +24,9 @@
  */
 package net.objectzoo.ebc;
 
+import net.objectzoo.delegates.Action0;
+
 public interface EntryPoint
 {
-	void run(String... parameters);
+	Action0 getStart();
 }

@@ -56,7 +56,7 @@ public class Program
 		DisplayCommands displayCommands = new DisplayCommands();
 		RepeatedWaitForCommand repeatedWaitForCommand = new RepeatedWaitForCommand();
 		InputPageNumber inputPageNumber = new InputPageNumber();
-		new MainBoard(repeatedWaitForCommand, readLines, new SplitLines(),
+		MainBoard mainBoard = new MainBoard(repeatedWaitForCommand, readLines, new SplitLines(),
 			new SeparateHeaderAndData(), new PutInRecords(), divideIntoPageSize, new SelectPage(),
 			inputPageNumber, new DisplayPageBoard(new MapToPageViewModel(),
 				new DetermineColumnLengths(), new RenderPageViewModel(), displayPageTable),
@@ -71,6 +71,6 @@ public class Program
 		readLines.configure(args);
 		divideIntoPageSize.configure(args);
 		
-		repeatedWaitForCommand.run(args);
+		mainBoard.getStart().invoke();
 	}
 }
