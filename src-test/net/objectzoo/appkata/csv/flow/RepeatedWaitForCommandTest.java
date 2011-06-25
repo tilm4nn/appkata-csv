@@ -183,4 +183,30 @@ public class RepeatedWaitForCommandTest
 		mockery.assertIsSatisfied();
 	}
 	
+	@Test
+	public void signalsJumpToPageCommandForInputOfJ()
+	{
+		sut.getJumpToPageCommand().subscribe(resultAction);
+		
+		mockery.checking(new Expectations()
+		{
+			{
+				Sequence sequence = mockery.sequence("inputCommandSequence");
+				
+				oneOf(consoleAdapterMock).input();
+				inSequence(sequence);
+				will(returnValue('j'));
+				
+				oneOf(consoleAdapterMock).input();
+				inSequence(sequence);
+				will(returnValue('x'));
+			}
+		});
+		
+		sut.run();
+		
+		resultAction.assertInvoked();
+		mockery.assertIsSatisfied();
+	}
+	
 }

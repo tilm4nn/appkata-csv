@@ -150,4 +150,20 @@ public class SelectPageTest
 		
 		assertEquals(new Position(1, 3), resultAction.getResult().getItem2());
 	}
+	
+	@Test
+	public void jumpToPageSendsLastPage()
+	{
+		sut.getJumpToPage().invoke(3);
+		
+		assertEquals(PAGE_3, resultAction.getResult().getItem1());
+	}
+	
+	@Test
+	public void jumpToPageSendsLastPosition()
+	{
+		sut.getJumpToPage().invoke(3);
+		
+		assertEquals(new Position(3, 3), resultAction.getResult().getItem2());
+	}
 }

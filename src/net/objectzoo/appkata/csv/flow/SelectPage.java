@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.objectzoo.appkata.csv.data.Page;
 import net.objectzoo.appkata.csv.data.Position;
+import net.objectzoo.delegates.Action;
 import net.objectzoo.delegates.Action0;
 import net.objectzoo.ebc.Pair;
 import net.objectzoo.ebc.ProcessAndResultBase;
@@ -61,6 +62,19 @@ public class SelectPage extends ProcessAndResultBase<List<Page>, Pair<Page, Posi
 		}
 	};
 	
+	private final Action<Integer> jumpToPage = new Action<Integer>()
+	{
+		@Override
+		public void invoke(Integer pageNumber)
+		{
+			if (pageNumber >= 1 && pageNumber <= pages.size())
+			{
+				currentPage = pageNumber - 1;
+				sendCurrentPage();
+			}
+		}
+	};
+	
 	@Override
 	protected void process(List<Page> pages)
 	{
@@ -94,6 +108,11 @@ public class SelectPage extends ProcessAndResultBase<List<Page>, Pair<Page, Posi
 	public Action0 getLastPage()
 	{
 		return lastPage;
+	}
+	
+	public Action<Integer> getJumpToPage()
+	{
+		return jumpToPage;
 	}
 	
 }

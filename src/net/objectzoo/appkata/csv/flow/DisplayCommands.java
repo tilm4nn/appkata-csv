@@ -11,7 +11,7 @@ public class DisplayCommands extends StartBase implements DependsOn<ConsoleAdapt
 	@Override
 	protected void start()
 	{
-		consoleAdapter.output("\nN(ext page, P(revious page, F(irst page, L(ast page, eX(it\n");
+		consoleAdapter.output("\nN(ext page, P(revious page, F(irst page, L(ast page, J(ump to page, eX(it\n");
 	}
 	
 	@Override

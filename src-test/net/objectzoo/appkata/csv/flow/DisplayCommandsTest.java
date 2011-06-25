@@ -55,7 +55,7 @@ public class DisplayCommandsTest
 	
 	@DataPoints
 	public static final String[] candidates = { "N(ext page", "P(revious page", "F(irst page",
-			"L(ast page", "eX(it" };
+			"L(ast page", "eX(it", "J(ump to page" };
 	
 	@Theory
 	public void outputsCommandToTheConsole(final String command)

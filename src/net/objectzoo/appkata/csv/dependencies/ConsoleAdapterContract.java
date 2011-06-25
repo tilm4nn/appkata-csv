@@ -29,4 +29,6 @@ public interface ConsoleAdapterContract
 	void output(String output);
 	
 	char input();
+	
+	String inputStr();
 }

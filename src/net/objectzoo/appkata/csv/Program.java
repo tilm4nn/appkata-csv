@@ -30,6 +30,7 @@ import net.objectzoo.appkata.csv.dependencies.TextFileAdapter;
 import net.objectzoo.appkata.csv.dependencies.TextFileAdapterContract;
 import net.objectzoo.appkata.csv.flow.DisplayCommands;
 import net.objectzoo.appkata.csv.flow.DivideIntoPageSize;
+import net.objectzoo.appkata.csv.flow.InputPageNumber;
 import net.objectzoo.appkata.csv.flow.MainBoard;
 import net.objectzoo.appkata.csv.flow.PutInRecords;
 import net.objectzoo.appkata.csv.flow.ReadLines;
@@ -54,15 +55,18 @@ public class Program
 		DisplayPageViewModel displayPageTable = new DisplayPageViewModel();
 		DisplayCommands displayCommands = new DisplayCommands();
 		RepeatedWaitForCommand repeatedWaitForCommand = new RepeatedWaitForCommand();
+		InputPageNumber inputPageNumber = new InputPageNumber();
 		new MainBoard(repeatedWaitForCommand, readLines, new SplitLines(),
 			new SeparateHeaderAndData(), new PutInRecords(), divideIntoPageSize, new SelectPage(),
-			new DisplayPageBoard(new MapToPageViewModel(), new DetermineColumnLengths(),
-				new RenderPageViewModel(), displayPageTable), displayCommands);
+			inputPageNumber, new DisplayPageBoard(new MapToPageViewModel(),
+				new DetermineColumnLengths(), new RenderPageViewModel(), displayPageTable),
+			displayCommands);
 		
 		readLines.inject(textFileAdapter);
 		displayPageTable.inject(consoleAdapter);
 		displayCommands.inject(consoleAdapter);
 		repeatedWaitForCommand.inject(consoleAdapter);
+		inputPageNumber.inject(consoleAdapter);
 		
 		readLines.configure(args);
 		divideIntoPageSize.configure(args);

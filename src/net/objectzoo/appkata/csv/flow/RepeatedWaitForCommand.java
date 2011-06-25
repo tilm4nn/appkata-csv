@@ -40,6 +40,7 @@ public class RepeatedWaitForCommand extends SignalBase implements
 	private final Event0Distributor previousPageCommand = new Event0Distributor();
 	private final Event0Distributor lastPageCommand = new Event0Distributor();
 	private final Event0Distributor firstPageCommand = new Event0Distributor();
+	private final Event0Distributor jumpToPageCommand = new Event0Distributor();
 	
 	@Override
 	public void inject(ConsoleAdapterContract dependency)
@@ -80,6 +81,9 @@ public class RepeatedWaitForCommand extends SignalBase implements
 			case 'l':
 				lastPageCommand.invoke();
 				break;
+			case 'j':
+				jumpToPageCommand.invoke();
+				break;
 		}
 	}
 	
@@ -101,6 +105,11 @@ public class RepeatedWaitForCommand extends SignalBase implements
 	public Event0 getLastPageCommand()
 	{
 		return lastPageCommand;
+	}
+	
+	public Event0Distributor getJumpToPageCommand()
+	{
+		return jumpToPageCommand;
 	}
 	
 }

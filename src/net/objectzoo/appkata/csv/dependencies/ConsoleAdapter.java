@@ -24,9 +24,9 @@
  */
 package net.objectzoo.appkata.csv.dependencies;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,7 +36,7 @@ public class ConsoleAdapter implements ConsoleAdapterContract
 {
 	private static final Logger log = LoggerFactory.getLogger(ConsoleAdapter.class);
 	
-	private Reader consoleReader = new InputStreamReader(System.in);
+	private BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
 	
 	@Override
 	public void output(String output)
@@ -60,4 +60,34 @@ public class ConsoleAdapter implements ConsoleAdapterContract
 		}
 	}
 	
+	@Override
+	public String inputStr()
+	{
+		while (true)
+		{
+			try
+			{
+				if (consoleReader.ready())
+				{
+					String str = consoleReader.readLine();
+					if (str != null && !"".equals(str))
+					{
+						return str;
+					}
+				}
+				try
+				{
+					Thread.sleep(250);
+				}
+				catch (InterruptedException e)
+				{
+					// Woops interrupted!
+				}
+			}
+			catch (IOException e)
+			{
+				log.log(Level.SEVERE, "Error while reading input.", e);
+			}
+		}
+	}
 }
