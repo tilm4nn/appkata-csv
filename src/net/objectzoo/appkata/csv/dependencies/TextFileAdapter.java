@@ -24,28 +24,25 @@
  */
 package net.objectzoo.appkata.csv.dependencies;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.LinkedList;
 import java.util.List;
 
 public class TextFileAdapter implements TextFileAdapterContract
 {
-	/**
-	 * @see net.objectzoo.appkata.csv.dependencies.TextFileAdapterContract#readLines(java.lang.String,
-	 *      int)
-	 */
 	@Override
-	public List<String> readLines(String filename, int numberOfLines) throws IOException
+	public List<String> readLines(String filename, long offset, int numberOfLines)
+		throws IOException
 	{
-		BufferedReader reader = new BufferedReader(new FileReader(filename));
+		RandomAccessFile file = new RandomAccessFile(filename, "r");
 		try
 		{
+			file.seek(offset);
 			List<String> result = new LinkedList<String>();
 			for (int i = 0; i < numberOfLines; i++)
 			{
-				String line = reader.readLine();
+				String line = file.readLine();
 				if (line == null)
 				{
 					return result;
@@ -56,7 +53,7 @@ public class TextFileAdapter implements TextFileAdapterContract
 		}
 		finally
 		{
-			reader.close();
+			file.close();
 		}
 	}
 }

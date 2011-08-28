@@ -6,6 +6,6 @@ import java.util.List;
 public interface TextFileAdapterContract
 {
 	
-	List<String> readLines(String filename, int numberOfLines) throws IOException;
+	List<String> readLines(String filename, long offset, int numberOfLines) throws IOException;
 	
 }

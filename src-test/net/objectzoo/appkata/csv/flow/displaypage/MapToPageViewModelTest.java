@@ -58,11 +58,11 @@ public class MapToPageViewModelTest
 	{
 		sut.process(new Pair<Page, Position>(new Page(new CsvLine("Header1", "Header2"), list(
 			new CsvRecord(1, new CsvLine("Value1", "Value2")), new CsvRecord(2, new CsvLine(
-				"Value3", "Value4")))), new Position(0, 0)));
+				"Value3", "Value4")))), new Position(0, 0, false)));
 		
 		assertEquals(new PageViewModel(new String[] { "No.", "Header1", "Header2" },
-			new String[][] { { "1", "Value1", "Value2" }, { "2", "Value3", "Value4" } }, 0, 0),
-			resultAction.getResult());
+			new String[][] { { "1", "Value1", "Value2" }, { "2", "Value3", "Value4" } }, 0, 0,
+			false), resultAction.getLastResult());
 	}
 	
 }

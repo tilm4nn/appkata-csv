@@ -6,6 +6,8 @@ public class Position
 	
 	private final int maxPosition;
 	
+	private final boolean maxCertain;
+	
 	public int getCurrentPosition()
 	{
 		return currentPosition;
@@ -16,11 +18,17 @@ public class Position
 		return maxPosition;
 	}
 	
-	public Position(int currentPosition, int maxPosition)
+	public boolean isMaxCertain()
+	{
+		return maxCertain;
+	}
+	
+	public Position(int currentPosition, int maxPosition, boolean maxCertain)
 	{
 		super();
 		this.currentPosition = currentPosition;
 		this.maxPosition = maxPosition;
+		this.maxCertain = maxCertain;
 	}
 	
 	@Override
@@ -29,6 +37,7 @@ public class Position
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + currentPosition;
+		result = prime * result + (maxCertain ? 1231 : 1237);
 		result = prime * result + maxPosition;
 		return result;
 	}
@@ -41,6 +50,7 @@ public class Position
 		if (getClass() != obj.getClass()) return false;
 		Position other = (Position) obj;
 		if (currentPosition != other.currentPosition) return false;
+		if (maxCertain != other.maxCertain) return false;
 		if (maxPosition != other.maxPosition) return false;
 		return true;
 	}
@@ -49,6 +59,6 @@ public class Position
 	public String toString()
 	{
 		return "Position [currentPosition=" + currentPosition + ", maxPosition=" + maxPosition
-			+ "]";
+			+ ", maxCertain=" + maxCertain + "]";
 	}
 }

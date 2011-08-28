@@ -33,7 +33,7 @@ import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
 import net.objectzoo.ebc.Pair;
 import net.objectzoo.ebc.TestAction;
 
-public class RenderPageTableTest
+public class RenderPageViewModelTest
 {
 	private TestAction<String> resultAction;
 	
@@ -56,19 +56,30 @@ public class RenderPageTableTest
 		
 		sut.process(new Pair<PageViewModel, int[]>(new PageViewModel(new String[] { "666666",
 				"88888888" }, new String[][] { { "88888888", "4444" }, { "1010101010", "22" } }, 0,
-			0), new int[] { 10, 8 }));
+			0, true), new int[] { 10, 8 }));
 		
-		Assert.assertEquals(expected, resultAction.getResult());
+		Assert.assertEquals(expected, resultAction.getLastResult());
 	}
 	
 	@Test
-	public void rendersPosition()
+	public void rendersPositionWithCertainMax()
 	{
 		final String expected = "\n\nPage 12 of 34\n";
 		
 		sut.process(new Pair<PageViewModel, int[]>(new PageViewModel(new String[] {},
-			new String[][] {}, 12, 34), new int[] {}));
+			new String[][] {}, 12, 34, true), new int[] {}));
 		
-		Assert.assertEquals(expected, resultAction.getResult());
+		Assert.assertEquals(expected, resultAction.getLastResult());
+	}
+	
+	@Test
+	public void rendersPositionWithUncertainMax()
+	{
+		final String expected = "\n\nPage 12 of 34?\n";
+		
+		sut.process(new Pair<PageViewModel, int[]>(new PageViewModel(new String[] {},
+			new String[][] {}, 12, 34, false), new int[] {}));
+		
+		Assert.assertEquals(expected, resultAction.getLastResult());
 	}
 }

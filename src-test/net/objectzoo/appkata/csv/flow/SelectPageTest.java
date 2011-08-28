@@ -1,70 +1,90 @@
 package net.objectzoo.appkata.csv.flow;
 
 import static junit.framework.Assert.assertEquals;
-import static net.objectzoo.appkata.csv.Utils.list;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import net.objectzoo.appkata.csv.data.CsvLine;
-import net.objectzoo.appkata.csv.data.CsvRecord;
-import net.objectzoo.appkata.csv.data.Page;
 import net.objectzoo.appkata.csv.data.Position;
-import net.objectzoo.ebc.Pair;
+import net.objectzoo.appkata.csv.data.Progress;
 import net.objectzoo.ebc.TestAction;
 
 public class SelectPageTest
 {
-	private Page PAGE_1 = new Page(new CsvLine("foo"), list(new CsvRecord(1, new CsvLine("foo"))));
-	private Page PAGE_2 = new Page(new CsvLine("bar"), list(new CsvRecord(2, new CsvLine("bar"))));
-	private Page PAGE_3 = new Page(new CsvLine("baz"), list(new CsvRecord(3, new CsvLine("baz"))));
+	private TestAction<Position> resultAction;
 	
-	private TestAction<Pair<Page, Position>> resultAction;
+	private TestAction<Integer> selectedPageNumberAction;
 	
 	private SelectPage sut;
 	
 	@Before
 	public void setup()
 	{
-		resultAction = new TestAction<Pair<Page, Position>>();
+		resultAction = new TestAction<Position>();
+		selectedPageNumberAction = new TestAction<Integer>();
 		
 		sut = new SelectPage();
 		sut.getResult().subscribe(resultAction);
+		sut.getSelectedPageNumber().subscribe(selectedPageNumberAction);
 		
-		sut.pages = list(PAGE_1, PAGE_2, PAGE_3);
-		sut.currentPage = 1;
+		sut.lastPage = 3;
+		sut.currentPage = 2;
 	}
 	
 	@Test
-	public void processSetsPages()
+	public void processSetsLastPage()
 	{
-		sut.process(list(PAGE_1, PAGE_3));
+		sut.process(new Progress(5, false));
 		
-		assertEquals(list(PAGE_1, PAGE_3), sut.pages);
+		assertEquals(5, sut.lastPage);
 	}
 	
 	@Test
-	public void processResetsCurrentPage()
+	public void processSeteLastPageKnown()
 	{
-		sut.process(list(PAGE_1, PAGE_2));
+		sut.process(new Progress(5, true));
 		
-		assertEquals(0, sut.currentPage);
+		assertEquals(true, sut.lastPageKnown);
 	}
 	
 	@Test
-	public void processSendsFirstPage()
+	public void processSendsCurrentPosition()
 	{
-		sut.process(list(PAGE_1, PAGE_2));
+		sut.currentPage = 0;
 		
-		assertEquals(PAGE_1, resultAction.getResult().getItem1());
+		sut.process(new Progress(5, false));
+		
+		assertEquals(1, resultAction.getLastResult().getCurrentPosition());
 	}
 	
 	@Test
-	public void processSendsFirstPosition()
+	public void processSendsMaxPosition()
 	{
-		sut.process(list(PAGE_1, PAGE_2));
+		sut.currentPage = 0;
 		
-		assertEquals(new Position(1, 2), resultAction.getResult().getItem2());
+		sut.process(new Progress(5, false));
+		
+		assertEquals(5, resultAction.getLastResult().getMaxPosition());
+	}
+	
+	@Test
+	public void processSendsMaxCertain()
+	{
+		sut.currentPage = 0;
+		
+		sut.process(new Progress(5, true));
+		
+		assertEquals(true, resultAction.getLastResult().isMaxCertain());
+	}
+	
+	@Test
+	public void processSendsSelectedPageNumber()
+	{
+		sut.currentPage = 0;
+		
+		sut.process(new Progress(5, true));
+		
+		assertEquals((Integer) 1, selectedPageNumberAction.getLastResult());
 	}
 	
 	@Test
@@ -72,7 +92,7 @@ public class SelectPageTest
 	{
 		sut.getNextPage().invoke();
 		
-		assertEquals(PAGE_3, resultAction.getResult().getItem1());
+		assertEquals((Integer) 3, selectedPageNumberAction.getLastResult());
 	}
 	
 	@Test
@@ -80,17 +100,17 @@ public class SelectPageTest
 	{
 		sut.getNextPage().invoke();
 		
-		assertEquals(new Position(3, 3), resultAction.getResult().getItem2());
+		assertEquals(new Position(3, 3, false), resultAction.getLastResult());
 	}
 	
 	@Test
 	public void nextStopsOnLastPage()
 	{
-		sut.currentPage = 2;
+		sut.currentPage = 3;
 		
 		sut.getNextPage().invoke();
 		
-		assertEquals(PAGE_3, resultAction.getResult().getItem1());
+		assertEquals(new Position(3, 3, false), resultAction.getLastResult());
 	}
 	
 	@Test
@@ -98,7 +118,7 @@ public class SelectPageTest
 	{
 		sut.getPreviousPage().invoke();
 		
-		assertEquals(PAGE_1, resultAction.getResult().getItem1());
+		assertEquals((Integer) 1, selectedPageNumberAction.getLastResult());
 	}
 	
 	@Test
@@ -106,17 +126,17 @@ public class SelectPageTest
 	{
 		sut.getPreviousPage().invoke();
 		
-		assertEquals(new Position(1, 3), resultAction.getResult().getItem2());
+		assertEquals(new Position(1, 3, false), resultAction.getLastResult());
 	}
 	
 	@Test
 	public void previousStopsOnFirstPage()
 	{
-		sut.currentPage = 0;
+		sut.currentPage = 1;
 		
 		sut.getPreviousPage().invoke();
 		
-		assertEquals(PAGE_1, resultAction.getResult().getItem1());
+		assertEquals(new Position(1, 3, false), resultAction.getLastResult());
 	}
 	
 	@Test
@@ -124,7 +144,7 @@ public class SelectPageTest
 	{
 		sut.getLastPage().invoke();
 		
-		assertEquals(PAGE_3, resultAction.getResult().getItem1());
+		assertEquals((Integer) 3, selectedPageNumberAction.getLastResult());
 	}
 	
 	@Test
@@ -132,7 +152,7 @@ public class SelectPageTest
 	{
 		sut.getLastPage().invoke();
 		
-		assertEquals(new Position(3, 3), resultAction.getResult().getItem2());
+		assertEquals(new Position(3, 3, false), resultAction.getLastResult());
 	}
 	
 	@Test
@@ -140,7 +160,7 @@ public class SelectPageTest
 	{
 		sut.getFirstPage().invoke();
 		
-		assertEquals(PAGE_1, resultAction.getResult().getItem1());
+		assertEquals((Integer) 1, selectedPageNumberAction.getLastResult());
 	}
 	
 	@Test
@@ -148,7 +168,7 @@ public class SelectPageTest
 	{
 		sut.getFirstPage().invoke();
 		
-		assertEquals(new Position(1, 3), resultAction.getResult().getItem2());
+		assertEquals(new Position(1, 3, false), resultAction.getLastResult());
 	}
 	
 	@Test
@@ -156,7 +176,7 @@ public class SelectPageTest
 	{
 		sut.getJumpToPage().invoke(3);
 		
-		assertEquals(PAGE_3, resultAction.getResult().getItem1());
+		assertEquals((Integer) 3, selectedPageNumberAction.getLastResult());
 	}
 	
 	@Test
@@ -164,6 +184,6 @@ public class SelectPageTest
 	{
 		sut.getJumpToPage().invoke(3);
 		
-		assertEquals(new Position(3, 3), resultAction.getResult().getItem2());
+		assertEquals(new Position(3, 3, false), resultAction.getLastResult());
 	}
 }

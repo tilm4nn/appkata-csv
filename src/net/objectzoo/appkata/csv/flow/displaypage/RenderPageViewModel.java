@@ -37,47 +37,49 @@ public class RenderPageViewModel extends ProcessAndResultBase<Pair<PageViewModel
 		PageViewModel pageVm = pageViewModelAndColumnLengths.getItem1();
 		int[] columnLengths = pageViewModelAndColumnLengths.getItem2();
 		
-		String renderedPage = renderRow(pageVm.getHeader(), columnLengths);
+		StringBuilder renderedPage = new StringBuilder(renderRow(pageVm.getHeader(), columnLengths));
 		
-		renderedPage += renderHorizontalLine(columnLengths);
+		renderedPage.append(renderHorizontalLine(columnLengths));
 		
 		for (String[] row : pageVm.getRows())
 		{
-			renderedPage += renderRow(row, columnLengths);
+			renderedPage.append(renderRow(row, columnLengths));
 		}
 		
-		renderedPage += renderPosition(pageVm.getCurrentPosition(), pageVm.getMaxPosition());
+		renderedPage.append(renderPosition(pageVm.getCurrentPosition(), pageVm.getMaxPosition(),
+			pageVm.getMaxCertain()));
 		
-		sendResult(renderedPage);
+		sendResult(renderedPage.toString());
 	}
 	
-	static String renderPosition(int currentPosition, int maxPosition)
+	static String renderPosition(int currentPosition, int maxPosition, boolean maxCertain)
 	{
-		return String.format("Page " + currentPosition + " of " + maxPosition + "\n");
+		return "Page " + currentPosition + " of " + maxPosition + (maxCertain ? "\n" : "?\n");
 	}
 	
 	static String renderHorizontalLine(int[] columnLengths)
 	{
-		String lineFormat = "";
+		StringBuilder lineFormat = new StringBuilder();
 		for (int i = 0; i < columnLengths.length; i++)
 		{
-			lineFormat += "%1$" + columnLengths[i] + "s+";
+			lineFormat.append("%1$").append(columnLengths[i]).append("s+");
 		}
-		lineFormat += "\n";
+		lineFormat.append("\n");
 		
-		return String.format(lineFormat, " ").replace(' ', '-');
+		return String.format(lineFormat.toString(), " ").replace(' ', '-');
 	}
 	
 	static String renderRow(String[] row, int[] columnLengths)
 	{
-		String lineFormat = "";
+		StringBuilder lineFormat = new StringBuilder();
 		for (int i = 0; i < columnLengths.length; i++)
 		{
-			lineFormat += "%" + (i + 1) + "$-" + columnLengths[i] + "s|";
+			lineFormat.append("%").append((i + 1)).append("$-").append(columnLengths[i]).append(
+				"s|");
 		}
-		lineFormat += "\n";
+		lineFormat.append("\n");
 		
-		return String.format(lineFormat, (Object[]) row);
+		return String.format(lineFormat.toString(), (Object[]) row);
 	}
 	
 }

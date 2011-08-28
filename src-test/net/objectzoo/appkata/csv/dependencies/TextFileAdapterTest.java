@@ -40,38 +40,68 @@ public class TextFileAdapterTest
 	{
 		TextFileAdapterContract sut = new TextFileAdapter();
 		
-		List<String> actual = sut.readLines("files-test/ZeroLines.txt", 1);
+		List<String> actual = sut.readLines("files-test/ZeroLines.txt", 0, 1);
 		
 		assertEquals(list(), actual);
 	}
 	
 	@Test
-	public void readOneLine() throws IOException
+	public void readOneLineFromBeginning() throws IOException
 	{
 		TextFileAdapterContract sut = new TextFileAdapter();
 		
-		List<String> actual = sut.readLines("files-test/ThreeLines.txt", 1);
+		List<String> actual = sut.readLines("files-test/ThreeLines.txt", 0, 1);
 		
 		assertEquals(list("Line1"), actual);
 	}
 	
 	@Test
-	public void readThreeLines() throws IOException
+	public void readThreeLinesFromBeginning() throws IOException
 	{
 		TextFileAdapterContract sut = new TextFileAdapter();
 		
-		List<String> actual = sut.readLines("files-test/ThreeLines.txt", 3);
+		List<String> actual = sut.readLines("files-test/ThreeLines.txt", 0, 3);
 		
 		assertEquals(list("Line1", "Line2", "Line3"), actual);
 	}
 	
 	@Test
-	public void readFiveLines() throws IOException
+	public void readFiveLinesFromBeginning() throws IOException
 	{
 		TextFileAdapterContract sut = new TextFileAdapter();
 		
-		List<String> actual = sut.readLines("files-test/ThreeLines.txt", 5);
+		List<String> actual = sut.readLines("files-test/ThreeLines.txt", 0, 5);
 		
 		assertEquals(list("Line1", "Line2", "Line3"), actual);
+	}
+	
+	@Test
+	public void readOneLineFromMiddle() throws IOException
+	{
+		TextFileAdapterContract sut = new TextFileAdapter();
+		
+		List<String> actual = sut.readLines("files-test/ThreeLines.txt", 7, 1);
+		
+		assertEquals(list("Line2"), actual);
+	}
+	
+	@Test
+	public void readTwooLinesFromMiddle() throws IOException
+	{
+		TextFileAdapterContract sut = new TextFileAdapter();
+		
+		List<String> actual = sut.readLines("files-test/ThreeLines.txt", 7, 2);
+		
+		assertEquals(list("Line2", "Line3"), actual);
+	}
+	
+	@Test
+	public void readFiveLinesFromMiddle() throws IOException
+	{
+		TextFileAdapterContract sut = new TextFileAdapter();
+		
+		List<String> actual = sut.readLines("files-test/ThreeLines.txt", 7, 5);
+		
+		assertEquals(list("Line2", "Line3"), actual);
 	}
 }

@@ -2,24 +2,40 @@ package net.objectzoo.ebc;
 
 import static junit.framework.Assert.fail;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import net.objectzoo.delegates.Action;
 
 public class TestAction<ResultType> implements Action<ResultType>
 {
 	private boolean invoked;
 	
-	private ResultType result;
+	private boolean multipleInvokationAllowed;
+	
+	private List<ResultType> results = new LinkedList<ResultType>();
+	
+	public TestAction()
+	{
+		this(false);
+	}
+	
+	public TestAction(boolean multipleInvokationAllowed)
+	{
+		this.multipleInvokationAllowed = multipleInvokationAllowed;
+	}
 	
 	@Override
 	public synchronized void invoke(ResultType result)
 	{
-		if (invoked)
+		if (invoked && !multipleInvokationAllowed)
 		{
 			fail("Unexpected invocation with " + result
 				+ ". This result action has already been invoked with " + result + ".");
 		}
-		this.result = result;
-		this.invoked = true;
+		
+		invoked = true;
+		results.add(result);
 	}
 	
 	public boolean isInvoked()
@@ -27,10 +43,21 @@ public class TestAction<ResultType> implements Action<ResultType>
 		return invoked;
 	}
 	
-	public ResultType getResult()
+	public ResultType getLastResult()
 	{
 		assertInvoked();
-		return result;
+		return results.get(results.size() - 1);
+	}
+	
+	public ResultType getFirstResult()
+	{
+		assertInvoked();
+		return results.get(0);
+	}
+	
+	public List<ResultType> getResults()
+	{
+		return results;
 	}
 	
 	public void assertInvoked()

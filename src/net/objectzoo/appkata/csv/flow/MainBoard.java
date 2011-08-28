@@ -24,45 +24,51 @@
  */
 package net.objectzoo.appkata.csv.flow;
 
-import net.objectzoo.appkata.csv.data.CsvLine;
 import net.objectzoo.appkata.csv.data.Page;
-import net.objectzoo.appkata.csv.data.PageData;
+import net.objectzoo.appkata.csv.data.Position;
 import net.objectzoo.appkata.csv.flow.displaypage.DisplayPageBoard;
+import net.objectzoo.appkata.csv.flow.loadpage.LoadPageBoard;
 import net.objectzoo.delegates.Action0;
+import net.objectzoo.ebc.Action0ToAsyncAction0;
 import net.objectzoo.ebc.EntryPoint;
-import net.objectzoo.ebc.JoinObjectAndCollection;
+import net.objectzoo.ebc.JoinToPair;
 
 public class MainBoard implements EntryPoint
 {
 	private final Action0 start;
 	
-	public MainBoard(RepeatedWaitForCommand repeatedWaitForCommand, ReadLines readLines,
-					 SplitLines splitLines, SeparateHeaderAndData separateHeaderAndData,
-					 PutInRecords putInRecords, DivideIntoPageSize divideIntoPageSize,
-					 SelectPage selectPage, InputPageNumber inputPageNumber,
+	public MainBoard(RepeatedWaitForCommand repeatedWaitForCommand,
+					 DeterminePageSize determinePageSize, DetermineFilename determineFilename,
+					 DeterminePageOffsets determinePageOffsets,
+					 StoreOffsetInIndex storeOffsetInIndex, SelectPage selectPage,
+					 LoadPageBoard loadPage, InputPageNumber inputPageNumber,
 					 DisplayPageBoard displayPage, DisplayCommands displayCommands)
 	{
-		JoinObjectAndCollection<CsvLine, PageData, Page> join = new JoinObjectAndCollection<CsvLine, PageData, Page>()
+		JoinToPair<Page, Position> join = new JoinToPair<Page, Position>()
 		{
 		};
 		
 		start = repeatedWaitForCommand.getStart();
-		repeatedWaitForCommand.getSignal().subscribe(readLines.getStart());
-		readLines.getResult().subscribe(splitLines.getProcess());
-		splitLines.getResult().subscribe(separateHeaderAndData.getProcess());
-		separateHeaderAndData.getNewHeader().subscribe(join.getInput1());
-		separateHeaderAndData.getNewData().subscribe(putInRecords.getProcess());
-		putInRecords.getResult().subscribe(divideIntoPageSize.getProcess());
-		divideIntoPageSize.getResult().subscribe(join.getInput2());
-		join.getResult().subscribe(selectPage.getProcess());
+		repeatedWaitForCommand.getSignal().subscribe(
+			new Action0ToAsyncAction0(determinePageOffsets.getStart()));
+		determineFilename.getResult().subscribe(determinePageOffsets.getSetFilename());
+		determineFilename.getResult().subscribe(loadPage.getSetFilename());
+		determinePageSize.getResult().subscribe(determinePageOffsets.getSetPageSize());
+		determinePageSize.getResult().subscribe(loadPage.getSetPageSize());
+		determinePageOffsets.getNewPageOffset().subscribe(storeOffsetInIndex.getProcess());
+		determinePageOffsets.getResult().subscribe(selectPage.getProcess());
+		selectPage.getSelectedPageNumber().subscribe(loadPage.getProcess());
+		loadPage.getResult().subscribe(join.getInput1());
+		selectPage.getResult().subscribe(join.getInput2());
+		join.getResult().subscribe(displayPage.getProcess());
+		displayPage.getSingal().subscribe(displayCommands.getStart());
+		
 		repeatedWaitForCommand.getNextPageCommand().subscribe(selectPage.getNextPage());
 		repeatedWaitForCommand.getPreviousPageCommand().subscribe(selectPage.getPreviousPage());
 		repeatedWaitForCommand.getFirstPageCommand().subscribe(selectPage.getFirstPage());
 		repeatedWaitForCommand.getLastPageCommand().subscribe(selectPage.getLastPage());
 		repeatedWaitForCommand.getJumpToPageCommand().subscribe(inputPageNumber.getStart());
 		inputPageNumber.getResult().subscribe(selectPage.getJumpToPage());
-		selectPage.getResult().subscribe(displayPage.getProcess());
-		displayPage.getSingal().subscribe(displayCommands.getStart());
 	}
 	
 	@Override

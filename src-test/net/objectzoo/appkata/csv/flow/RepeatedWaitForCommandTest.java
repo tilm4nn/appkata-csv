@@ -74,7 +74,7 @@ public class RepeatedWaitForCommandTest
 			}
 		});
 		
-		sut.run();
+		sut.start();
 		
 		mockery.assertIsSatisfied();
 	}
@@ -99,7 +99,7 @@ public class RepeatedWaitForCommandTest
 			}
 		});
 		
-		sut.run();
+		sut.start();
 		
 		resultAction.assertInvoked();
 		mockery.assertIsSatisfied();
@@ -125,7 +125,7 @@ public class RepeatedWaitForCommandTest
 			}
 		});
 		
-		sut.run();
+		sut.start();
 		
 		resultAction.assertInvoked();
 		mockery.assertIsSatisfied();
@@ -151,7 +151,7 @@ public class RepeatedWaitForCommandTest
 			}
 		});
 		
-		sut.run();
+		sut.start();
 		
 		resultAction.assertInvoked();
 		mockery.assertIsSatisfied();
@@ -177,7 +177,7 @@ public class RepeatedWaitForCommandTest
 			}
 		});
 		
-		sut.run();
+		sut.start();
 		
 		resultAction.assertInvoked();
 		mockery.assertIsSatisfied();
@@ -203,7 +203,7 @@ public class RepeatedWaitForCommandTest
 			}
 		});
 		
-		sut.run();
+		sut.start();
 		
 		resultAction.assertInvoked();
 		mockery.assertIsSatisfied();

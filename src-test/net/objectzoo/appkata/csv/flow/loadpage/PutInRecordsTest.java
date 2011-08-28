@@ -22,86 +22,44 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package net.objectzoo.appkata.csv.flow;
+package net.objectzoo.appkata.csv.flow.loadpage;
 
 import static junit.framework.Assert.assertEquals;
 import static net.objectzoo.appkata.csv.Utils.list;
 
-import java.io.IOException;
 import java.util.List;
 
-import org.hamcrest.Matchers;
-import org.jmock.Expectations;
-import org.jmock.Mockery;
 import org.junit.Before;
 import org.junit.Test;
 
-import net.objectzoo.appkata.csv.dependencies.TextFileAdapterContract;
+import net.objectzoo.appkata.csv.data.CsvLine;
+import net.objectzoo.appkata.csv.data.CsvRecord;
+import net.objectzoo.ebc.Pair;
 import net.objectzoo.ebc.TestAction;
 
-public class ReadLinesTest
+public class PutInRecordsTest
 {
-	private Mockery mockery;
+	private TestAction<List<CsvRecord>> resultAction;
 	
-	private TextFileAdapterContract textFileAdapterMock;
-	
-	private TestAction<List<String>> resultAction;
-	
-	private ReadLines sut;
+	private PutInRecords sut;
 	
 	@Before
 	public void setup()
 	{
-		mockery = new Mockery();
-		textFileAdapterMock = mockery.mock(TextFileAdapterContract.class);
-		resultAction = new TestAction<List<String>>();
+		resultAction = new TestAction<List<CsvRecord>>();
 		
-		sut = new ReadLines();
+		sut = new PutInRecords();
 		sut.getResult().subscribe(resultAction);
-		sut.inject(textFileAdapterMock);
 	}
 	
 	@Test
-	public void determineFilenameReturnsFirstParameter()
+	public void createsTwoRecords()
 	{
-		String filename = ReadLines.determineFilename("foo", "bar", "baz");
+		sut.process(new Pair<Integer, List<CsvLine>>(7, list(new CsvLine("Value1", "Value2"),
+			new CsvLine("Value3", "Value4"))));
 		
-		assertEquals("foo", filename);
-	}
-	
-	@Test
-	public void readsCorrectNumberOfLines() throws IOException
-	{
-		mockery.checking(new Expectations()
-		{
-			{
-				oneOf(textFileAdapterMock).readLines("filename", Integer.MAX_VALUE);
-			}
-		});
-		
-		sut.configure("filename");
-		sut.start();
-		
-		mockery.assertIsSatisfied();
-	}
-	
-	@Test
-	public void sendsReadLines() throws IOException
-	{
-		mockery.checking(new Expectations()
-		{
-			{
-				allowing(textFileAdapterMock).readLines(with(Matchers.<String> anything()),
-					with(Matchers.<Integer> anything()));
-				will(returnValue(list("Line1", "Line2")));
-			}
-		});
-		
-		sut.configure("filename");
-		sut.start();
-		
-		assertEquals(list("Line1", "Line2"), resultAction.getResult());
-		
-		mockery.assertIsSatisfied();
+		assertEquals(
+			list(new CsvRecord(7, new CsvLine("Value1", "Value2")), new CsvRecord(8, new CsvLine(
+				"Value3", "Value4"))), resultAction.getLastResult());
 	}
 }

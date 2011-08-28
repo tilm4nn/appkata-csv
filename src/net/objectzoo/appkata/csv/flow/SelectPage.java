@@ -1,27 +1,33 @@
 package net.objectzoo.appkata.csv.flow;
 
-import java.util.List;
-
-import net.objectzoo.appkata.csv.data.Page;
 import net.objectzoo.appkata.csv.data.Position;
+import net.objectzoo.appkata.csv.data.Progress;
 import net.objectzoo.delegates.Action;
 import net.objectzoo.delegates.Action0;
-import net.objectzoo.ebc.Pair;
 import net.objectzoo.ebc.ProcessAndResultBase;
+import net.objectzoo.events.impl.EventDistributor;
 
-public class SelectPage extends ProcessAndResultBase<List<Page>, Pair<Page, Position>>
+public class SelectPage extends ProcessAndResultBase<Progress, Position>
 {
-	
-	List<Page> pages;
-	
 	int currentPage;
 	
-	private final Action0 nextPage = new Action0()
+	int lastPage;
+	
+	boolean lastPageKnown;
+	
+	private final EventDistributor<Integer> selectedPageNumber = new EventDistributor<Integer>();
+	
+	public EventDistributor<Integer> getSelectedPageNumber()
+	{
+		return selectedPageNumber;
+	}
+	
+	private final Action0 nextPageAction = new Action0()
 	{
 		@Override
 		public void invoke()
 		{
-			if (currentPage + 1 < pages.size())
+			if (currentPage + 1 <= lastPage)
 			{
 				currentPage++;
 			}
@@ -29,12 +35,12 @@ public class SelectPage extends ProcessAndResultBase<List<Page>, Pair<Page, Posi
 		}
 	};
 	
-	private final Action0 previousPage = new Action0()
+	private final Action0 previousPageAction = new Action0()
 	{
 		@Override
 		public void invoke()
 		{
-			if (currentPage > 0)
+			if (currentPage > 1)
 			{
 				currentPage--;
 			}
@@ -42,77 +48,82 @@ public class SelectPage extends ProcessAndResultBase<List<Page>, Pair<Page, Posi
 		}
 	};
 	
-	private final Action0 firstPage = new Action0()
+	private final Action0 firstPageAction = new Action0()
 	{
 		@Override
 		public void invoke()
 		{
-			currentPage = 0;
+			currentPage = 1;
 			sendCurrentPage();
 		}
 	};
 	
-	private final Action0 lastPage = new Action0()
+	private final Action0 lastPageAction = new Action0()
 	{
 		@Override
 		public void invoke()
 		{
-			currentPage = pages.size() - 1;
+			currentPage = lastPage;
 			sendCurrentPage();
 		}
 	};
 	
-	private final Action<Integer> jumpToPage = new Action<Integer>()
+	private final Action<Integer> jumpToPageAction = new Action<Integer>()
 	{
 		@Override
 		public void invoke(Integer pageNumber)
 		{
-			if (pageNumber >= 1 && pageNumber <= pages.size())
+			if (pageNumber >= 1 && pageNumber <= lastPage)
 			{
-				currentPage = pageNumber - 1;
+				currentPage = pageNumber;
 				sendCurrentPage();
 			}
 		}
 	};
 	
 	@Override
-	protected void process(List<Page> pages)
+	protected void process(Progress progress)
 	{
-		this.pages = pages;
-		this.currentPage = 0;
+		lastPage = progress.getFinishedPages();
+		lastPageKnown = progress.isComplete();
 		
-		sendCurrentPage();
+		if (currentPage == 0 && lastPage > 0)
+		{
+			currentPage = 1;
+			sendCurrentPage();
+		}
 	}
 	
 	private void sendCurrentPage()
 	{
-		sendResult(new Pair<Page, Position>(pages.get(currentPage), new Position(currentPage + 1,
-			pages.size())));
+		selectedPageNumber.invoke(currentPage);
+		
+		sendResult(new Position(currentPage, lastPage, lastPageKnown));
 	}
 	
 	public Action0 getNextPage()
 	{
-		return nextPage;
+		return nextPageAction;
 	}
 	
 	public Action0 getPreviousPage()
 	{
-		return previousPage;
+		return previousPageAction;
 	}
 	
 	public Action0 getFirstPage()
 	{
-		return firstPage;
+		return firstPageAction;
 	}
 	
 	public Action0 getLastPage()
 	{
-		return lastPage;
+		return lastPageAction;
 	}
 	
 	public Action<Integer> getJumpToPage()
 	{
-		return jumpToPage;
+		return jumpToPageAction;
 	}
 	
 }

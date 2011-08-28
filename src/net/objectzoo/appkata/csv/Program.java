@@ -26,50 +26,82 @@ package net.objectzoo.appkata.csv;
 
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapter;
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
+import net.objectzoo.appkata.csv.dependencies.Index;
 import net.objectzoo.appkata.csv.dependencies.TextFileAdapter;
 import net.objectzoo.appkata.csv.dependencies.TextFileAdapterContract;
+import net.objectzoo.appkata.csv.dependencies.TextFileScanner;
+import net.objectzoo.appkata.csv.dependencies.TextFileScannerContract;
+import net.objectzoo.appkata.csv.flow.DetermineFilename;
+import net.objectzoo.appkata.csv.flow.DeterminePageOffsets;
+import net.objectzoo.appkata.csv.flow.DeterminePageSize;
 import net.objectzoo.appkata.csv.flow.DisplayCommands;
-import net.objectzoo.appkata.csv.flow.DivideIntoPageSize;
 import net.objectzoo.appkata.csv.flow.InputPageNumber;
 import net.objectzoo.appkata.csv.flow.MainBoard;
-import net.objectzoo.appkata.csv.flow.PutInRecords;
-import net.objectzoo.appkata.csv.flow.ReadLines;
 import net.objectzoo.appkata.csv.flow.RepeatedWaitForCommand;
 import net.objectzoo.appkata.csv.flow.SelectPage;
 import net.objectzoo.appkata.csv.flow.SeparateHeaderAndData;
 import net.objectzoo.appkata.csv.flow.SplitLines;
+import net.objectzoo.appkata.csv.flow.StoreOffsetInIndex;
 import net.objectzoo.appkata.csv.flow.displaypage.DetermineColumnLengths;
 import net.objectzoo.appkata.csv.flow.displaypage.DisplayPageBoard;
 import net.objectzoo.appkata.csv.flow.displaypage.DisplayPageViewModel;
 import net.objectzoo.appkata.csv.flow.displaypage.MapToPageViewModel;
 import net.objectzoo.appkata.csv.flow.displaypage.RenderPageViewModel;
+import net.objectzoo.appkata.csv.flow.loadpage.ComputeRecordNumber;
+import net.objectzoo.appkata.csv.flow.loadpage.LoadPageBoard;
+import net.objectzoo.appkata.csv.flow.loadpage.LookUpPageOffset;
+import net.objectzoo.appkata.csv.flow.loadpage.PutInRecords;
+import net.objectzoo.appkata.csv.flow.loadpage.ReadPageLines;
 
 public class Program
 {
 	public static void main(String... args)
 	{
 		TextFileAdapterContract textFileAdapter = new TextFileAdapter();
+		TextFileScannerContract textFileScanner = new TextFileScanner();
 		ConsoleAdapterContract consoleAdapter = new ConsoleAdapter();
-		ReadLines readLines = new ReadLines();
-		DivideIntoPageSize divideIntoPageSize = new DivideIntoPageSize();
-		DisplayPageViewModel displayPageTable = new DisplayPageViewModel();
+		Index index = new Index();
+		
+		DeterminePageSize determinePageSize = new DeterminePageSize();
+		DetermineFilename determineFilename = new DetermineFilename();
+		DeterminePageOffsets determinePageOffsets = new DeterminePageOffsets();
+		LookUpPageOffset lookupPageOffset = new LookUpPageOffset();
+		ReadPageLines readPageLines = new ReadPageLines();
+		StoreOffsetInIndex storeOffsetInIndex = new StoreOffsetInIndex();
+		DisplayPageViewModel displayPageViewModel = new DisplayPageViewModel();
 		DisplayCommands displayCommands = new DisplayCommands();
 		RepeatedWaitForCommand repeatedWaitForCommand = new RepeatedWaitForCommand();
 		InputPageNumber inputPageNumber = new InputPageNumber();
-		MainBoard mainBoard = new MainBoard(repeatedWaitForCommand, readLines, new SplitLines(),
-			new SeparateHeaderAndData(), new PutInRecords(), divideIntoPageSize, new SelectPage(),
-			inputPageNumber, new DisplayPageBoard(new MapToPageViewModel(),
-				new DetermineColumnLengths(), new RenderPageViewModel(), displayPageTable),
-			displayCommands);
+		SplitLines splitLines = new SplitLines();
+		SeparateHeaderAndData separateHeaderAndData = new SeparateHeaderAndData();
+		PutInRecords putInRecords = new PutInRecords();
+		SelectPage selectPage = new SelectPage();
+		MapToPageViewModel mapToPageViewModel = new MapToPageViewModel();
+		DetermineColumnLengths determineColumnLengths = new DetermineColumnLengths();
+		RenderPageViewModel renderPageViewModel = new RenderPageViewModel();
+		ComputeRecordNumber computeRecordNumber = new ComputeRecordNumber();
 		
-		readLines.inject(textFileAdapter);
-		displayPageTable.inject(consoleAdapter);
+		DisplayPageBoard displayPage = new DisplayPageBoard(mapToPageViewModel,
+			determineColumnLengths, renderPageViewModel, displayPageViewModel);
+		
+		LoadPageBoard loadPage = new LoadPageBoard(computeRecordNumber, lookupPageOffset,
+			readPageLines, splitLines, separateHeaderAndData, putInRecords);
+		
+		MainBoard mainBoard = new MainBoard(repeatedWaitForCommand, determinePageSize,
+			determineFilename, determinePageOffsets, storeOffsetInIndex, selectPage, loadPage,
+			inputPageNumber, displayPage, displayCommands);
+		
+		readPageLines.inject(textFileAdapter);
+		determinePageOffsets.inject(textFileScanner);
+		storeOffsetInIndex.inject(index);
+		lookupPageOffset.inject(index);
+		displayPageViewModel.inject(consoleAdapter);
 		displayCommands.inject(consoleAdapter);
 		repeatedWaitForCommand.inject(consoleAdapter);
 		inputPageNumber.inject(consoleAdapter);
 		
-		readLines.configure(args);
-		divideIntoPageSize.configure(args);
+		determinePageSize.configure(args);
+		determineFilename.configure(args);
 		
 		mainBoard.getStart().invoke();
 	}

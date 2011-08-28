@@ -59,7 +59,7 @@ public class SeparateHeaderAndDataTest
 	{
 		sut.process(list(new CsvLine("Header"), new CsvLine("Data")));
 		
-		assertEquals(new CsvLine("Header"), newHeaderAction.getResult());
+		assertEquals(new CsvLine("Header"), newHeaderAction.getLastResult());
 	}
 	
 	@Test
@@ -67,6 +67,6 @@ public class SeparateHeaderAndDataTest
 	{
 		sut.process(list(new CsvLine("Header"), new CsvLine("Data1"), new CsvLine("Data2")));
 		
-		assertEquals(list(new CsvLine("Data1"), new CsvLine("Data2")), newDataAction.getResult());
+		assertEquals(list(new CsvLine("Data1"), new CsvLine("Data2")), newDataAction.getLastResult());
 	}
 }

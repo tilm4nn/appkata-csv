@@ -23,7 +23,7 @@ public class MapToPageViewModel extends ProcessAndResultBase<Pair<Page, Position
 		String[][] rows = mapRecords(page.getRecords());
 		
 		sendResult(new PageViewModel(headers, rows, position.getCurrentPosition(),
-			position.getMaxPosition()));
+			position.getMaxPosition(), position.isMaxCertain()));
 	}
 	
 	static String[][] mapRecords(List<CsvRecord> records)

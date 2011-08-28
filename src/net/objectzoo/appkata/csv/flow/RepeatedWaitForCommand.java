@@ -48,7 +48,7 @@ public class RepeatedWaitForCommand extends StartAndSignalBase implements
 	}
 	
 	@Override
-	protected void start()
+	public void start()
 	{
 		sendSignal();
 		repeatedWaitForCommand();
