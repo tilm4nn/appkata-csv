@@ -1,13 +1,43 @@
+/*
+ * The MIT License
+ * 
+ * Copyright (C) 2011 Tilmann Kuhn
+ * 
+ * http://www.object-zoo.net
+ * 
+ * mailto:info@object-zoo.net
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 package net.objectzoo.appkata.csv.flow;
 
+import com.google.inject.Inject;
+
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
-import net.objectzoo.ebc.DependsOn;
 import net.objectzoo.ebc.StartAndResultBase;
 
-public class InputPageNumber extends StartAndResultBase<Integer> implements
-	DependsOn<ConsoleAdapterContract>
+public class InputPageNumber extends StartAndResultBase<Integer>
 {
-	private ConsoleAdapterContract consoleAdapter;
+	private final ConsoleAdapterContract consoleAdapter;
+	
+	@Inject
+	public InputPageNumber(ConsoleAdapterContract consoleAdapter)
+	{
+		this.consoleAdapter = consoleAdapter;
+	}
 	
 	@Override
 	protected void start()
@@ -24,11 +54,4 @@ public class InputPageNumber extends StartAndResultBase<Integer> implements
 			consoleAdapter.output(numberStr + " is not a valid number.");
 		}
 	}
-	
-	@Override
-	public void inject(ConsoleAdapterContract dependency)
-	{
-		this.consoleAdapter = dependency;
-	}
-	
 }

@@ -28,14 +28,16 @@ import java.util.List;
 
 import net.objectzoo.appkata.csv.data.CsvLine;
 import net.objectzoo.ebc.ProcessBase;
+import net.objectzoo.events.Event;
+import net.objectzoo.events.impl.EventDelegate;
 import net.objectzoo.events.impl.EventDistributor;
 
 public class SeparateHeaderAndData extends ProcessBase<List<CsvLine>>
 {
 	
-	private final EventDistributor<CsvLine> newHeader = new EventDistributor<CsvLine>();
+	private final EventDelegate<CsvLine> newHeader = new EventDistributor<CsvLine>();
 	
-	private final EventDistributor<List<CsvLine>> newData = new EventDistributor<List<CsvLine>>();
+	private final EventDelegate<List<CsvLine>> newData = new EventDistributor<List<CsvLine>>();
 	
 	private void sendNewHeader(CsvLine header)
 	{
@@ -51,12 +53,12 @@ public class SeparateHeaderAndData extends ProcessBase<List<CsvLine>>
 		newData.invoke(data);
 	}
 	
-	public EventDistributor<CsvLine> getNewHeader()
+	public Event<CsvLine> getNewHeader()
 	{
 		return newHeader;
 	}
 	
-	public EventDistributor<List<CsvLine>> getNewData()
+	public Event<List<CsvLine>> getNewData()
 	{
 		return newData;
 	}

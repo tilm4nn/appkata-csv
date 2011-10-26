@@ -50,7 +50,7 @@ public class DisplayCommandsTest
 		mockery = new Mockery();
 		consoleAdapterMock = mockery.mock(ConsoleAdapterContract.class);
 		
-		sut = new DisplayCommands();
+		sut = new DisplayCommands(consoleAdapterMock);
 	}
 	
 	@DataPoints
@@ -60,8 +60,6 @@ public class DisplayCommandsTest
 	@Theory
 	public void outputsCommandToTheConsole(final String command)
 	{
-		sut.inject(consoleAdapterMock);
-		
 		mockery.checking(new Expectations()
 		{
 			{

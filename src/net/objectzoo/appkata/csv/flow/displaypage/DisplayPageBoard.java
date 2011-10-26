@@ -24,6 +24,8 @@
  */
 package net.objectzoo.appkata.csv.flow.displaypage;
 
+import com.google.inject.Inject;
+
 import net.objectzoo.appkata.csv.data.Page;
 import net.objectzoo.appkata.csv.data.Position;
 import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
@@ -39,6 +41,7 @@ public class DisplayPageBoard
 	
 	private Event0 signal;
 	
+	@Inject
 	public DisplayPageBoard(MapToPageViewModel mapToPageViewModel,
 							DetermineColumnLengths determineColumnLengths,
 							RenderPageViewModel renderPageViewModel,

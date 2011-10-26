@@ -24,14 +24,20 @@
  */
 package net.objectzoo.appkata.csv.flow.displaypage;
 
+import com.google.inject.Inject;
+
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
-import net.objectzoo.ebc.DependsOn;
 import net.objectzoo.ebc.ProcessAndSignalBase;
 
-public class DisplayPageViewModel extends ProcessAndSignalBase<String> implements
-	DependsOn<ConsoleAdapterContract>
+public class DisplayPageViewModel extends ProcessAndSignalBase<String>
 {
-	private ConsoleAdapterContract consoleAdapter;
+	private final ConsoleAdapterContract consoleAdapter;
+	
+	@Inject
+	public DisplayPageViewModel(ConsoleAdapterContract consoleAdapter)
+	{
+		this.consoleAdapter = consoleAdapter;
+	}
 	
 	@Override
 	protected void process(String renderedPage)
@@ -40,11 +46,4 @@ public class DisplayPageViewModel extends ProcessAndSignalBase<String> implement
 		
 		sendSignal();
 	}
-	
-	@Override
-	public void inject(ConsoleAdapterContract dependency)
-	{
-		this.consoleAdapter = dependency;
-	}
-	
 }

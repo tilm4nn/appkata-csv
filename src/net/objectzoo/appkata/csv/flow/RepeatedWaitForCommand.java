@@ -24,27 +24,28 @@
  */
 package net.objectzoo.appkata.csv.flow;
 
+import com.google.inject.Inject;
+
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
-import net.objectzoo.ebc.DependsOn;
 import net.objectzoo.ebc.StartAndSignalBase;
 import net.objectzoo.events.Event0;
+import net.objectzoo.events.impl.Event0Delegate;
 import net.objectzoo.events.impl.Event0Distributor;
 
-public class RepeatedWaitForCommand extends StartAndSignalBase implements
-	DependsOn<ConsoleAdapterContract>
+public class RepeatedWaitForCommand extends StartAndSignalBase
 {
-	private ConsoleAdapterContract consoleAdapter;
+	private final ConsoleAdapterContract consoleAdapter;
 	
-	private final Event0Distributor nextPageCommand = new Event0Distributor();
-	private final Event0Distributor previousPageCommand = new Event0Distributor();
-	private final Event0Distributor lastPageCommand = new Event0Distributor();
-	private final Event0Distributor firstPageCommand = new Event0Distributor();
-	private final Event0Distributor jumpToPageCommand = new Event0Distributor();
+	private final Event0Delegate nextPageCommand = new Event0Distributor();
+	private final Event0Delegate previousPageCommand = new Event0Distributor();
+	private final Event0Delegate lastPageCommand = new Event0Distributor();
+	private final Event0Delegate firstPageCommand = new Event0Distributor();
+	private final Event0Delegate jumpToPageCommand = new Event0Distributor();
 	
-	@Override
-	public void inject(ConsoleAdapterContract dependency)
+	@Inject
+	public RepeatedWaitForCommand(ConsoleAdapterContract consoleAdapter)
 	{
-		this.consoleAdapter = dependency;
+		this.consoleAdapter = consoleAdapter;
 	}
 	
 	@Override
@@ -106,7 +107,7 @@ public class RepeatedWaitForCommand extends StartAndSignalBase implements
 		return lastPageCommand;
 	}
 	
-	public Event0Distributor getJumpToPageCommand()
+	public Event0 getJumpToPageCommand()
 	{
 		return jumpToPageCommand;
 	}

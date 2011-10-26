@@ -24,6 +24,8 @@
  */
 package net.objectzoo.appkata.csv.flow;
 
+import com.google.inject.Inject;
+
 import net.objectzoo.appkata.csv.data.Page;
 import net.objectzoo.appkata.csv.data.Position;
 import net.objectzoo.appkata.csv.flow.displaypage.DisplayPageBoard;
@@ -37,6 +39,7 @@ public class MainBoard implements EntryPoint
 {
 	private final Action0 start;
 	
+	@Inject
 	public MainBoard(RepeatedWaitForCommand repeatedWaitForCommand,
 					 DeterminePageSize determinePageSize, DetermineFilename determineFilename,
 					 DeterminePageOffsets determinePageOffsets,

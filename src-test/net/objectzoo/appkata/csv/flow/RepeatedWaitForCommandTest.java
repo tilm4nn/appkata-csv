@@ -51,8 +51,7 @@ public class RepeatedWaitForCommandTest
 		
 		resultAction = new TestAction0();
 		
-		sut = new RepeatedWaitForCommand();
-		sut.inject(consoleAdapterMock);
+		sut = new RepeatedWaitForCommand(consoleAdapterMock);
 	}
 	
 	@Test
