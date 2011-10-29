@@ -30,21 +30,21 @@ import org.junit.Before;
 import org.junit.Test;
 
 import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
-import net.objectzoo.ebc.TestAction;
+import net.objectzoo.ebc.test.MockAction;
 
 public class DetermineColumnLengthsTest
 {
-	private TestAction<int[]> resultAction;
+	private MockAction<int[]> resultAction;
 	
 	private DetermineColumnLengths sut;
 	
 	@Before
 	public void setup()
 	{
-		resultAction = new TestAction<int[]>();
+		resultAction = new MockAction<int[]>();
 		
 		sut = new DetermineColumnLengths();
-		sut.getResult().subscribe(resultAction);
+		sut.resultEvent().subscribe(resultAction);
 	}
 	
 	@Test

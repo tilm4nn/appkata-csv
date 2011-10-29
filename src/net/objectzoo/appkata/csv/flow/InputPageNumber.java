@@ -27,7 +27,7 @@ package net.objectzoo.appkata.csv.flow;
 import com.google.inject.Inject;
 
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
-import net.objectzoo.ebc.StartAndResultBase;
+import net.objectzoo.ebc.impl.StartAndResultBase;
 
 public class InputPageNumber extends StartAndResultBase<Integer>
 {

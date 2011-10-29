@@ -32,7 +32,7 @@ import com.google.inject.Inject;
 
 import net.objectzoo.appkata.csv.dependencies.TextFileAdapterContract;
 import net.objectzoo.delegates.Action;
-import net.objectzoo.ebc.ProcessAndResultBase;
+import net.objectzoo.ebc.impl.ProcessAndResultBase;
 
 public class ReadPageLines extends ProcessAndResultBase<Long, List<String>>
 {
@@ -48,7 +48,7 @@ public class ReadPageLines extends ProcessAndResultBase<Long, List<String>>
 		this.textFileAdapter = textFileAdapter;
 	}
 	
-	private final Action<Integer> setPageSize = new Action<Integer>()
+	private final Action<Integer> initPageSizeAction = new Action<Integer>()
 	{
 		@Override
 		public void invoke(Integer input)
@@ -57,7 +57,7 @@ public class ReadPageLines extends ProcessAndResultBase<Long, List<String>>
 		}
 	};
 	
-	private final Action<String> setFilename = new Action<String>()
+	private final Action<String> initFilenameAction = new Action<String>()
 	{
 		@Override
 		public void invoke(String input)
@@ -66,14 +66,14 @@ public class ReadPageLines extends ProcessAndResultBase<Long, List<String>>
 		}
 	};
 	
-	public Action<Integer> getSetPageSize()
+	public Action<Integer> initPageSizeAction()
 	{
-		return setPageSize;
+		return initPageSizeAction;
 	}
 	
-	public Action<String> getSetFilename()
+	public Action<String> initFilenameAction()
 	{
-		return setFilename;
+		return initFilenameAction;
 	}
 	
 	@Override
@@ -88,7 +88,7 @@ public class ReadPageLines extends ProcessAndResultBase<Long, List<String>>
 		}
 		catch (IOException e)
 		{
-			log.log(Level.WARNING, "Error reading from file " + filename, e);
+			logger.log(Level.WARNING, "Error reading from file " + filename, e);
 		}
 	}
 }

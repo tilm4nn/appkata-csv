@@ -25,10 +25,14 @@
 package net.objectzoo.appkata.csv.flow;
 
 import net.objectzoo.ebc.Configurable;
-import net.objectzoo.ebc.ResultBase;
+import net.objectzoo.ebc.impl.ResultBase;
 
 public class DetermineFilename extends ResultBase<String> implements Configurable
 {
+	public DetermineFilename()
+	{
+		super(true);
+	}
 	
 	@Override
 	public void configure(String... configuration)

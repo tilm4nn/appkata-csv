@@ -5,7 +5,7 @@
  * 
  * http://www.object-zoo.net
  * 
- * mailto:ebc4j@object-zoo.net
+ * mailto:info@object-zoo.net
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -22,38 +22,38 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package net.objectzoo.ebc;
+package net.objectzoo.appkata.csv;
 
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import net.objectzoo.delegates.Action0;
-import net.objectzoo.logging.LoggerFactory;
-
-public abstract class StartBase
+public class Logging
 {
-	protected final Logger log = LoggerFactory.getLogger(getClass());
-	
-	public Action0 getStart()
+	private Logging()
 	{
-		return start;
-	}
-	
-	private final Action0 start = new Action0()
-	{
-		@Override
-		public void invoke()
-		{
-			receiveStart();
-		}
-	};
-	
-	private void receiveStart()
-	{
-		log.finer("receiving start");
 		
-		start();
 	}
 	
-	protected abstract void start();
-	
+	public static void init()
+	{
+		Handler handler = new ConsoleHandler();
+		handler.setLevel(Level.ALL);
+		handler.setFormatter(new Formatter()
+		{
+			@Override
+			public String format(LogRecord record)
+			{
+				return record.getLevel() + ": " + record.getLoggerName() + " "
+					+ formatMessage(record) + "\n";
+			}
+		});
+		
+		Logger rootLogger = Logger.getLogger("");
+		rootLogger.addHandler(handler);
+		rootLogger.setLevel(Level.ALL);
+	}
 }

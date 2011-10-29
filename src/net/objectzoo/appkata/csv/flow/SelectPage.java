@@ -28,7 +28,7 @@ import net.objectzoo.appkata.csv.data.Position;
 import net.objectzoo.appkata.csv.data.Progress;
 import net.objectzoo.delegates.Action;
 import net.objectzoo.delegates.Action0;
-import net.objectzoo.ebc.ProcessAndResultBase;
+import net.objectzoo.ebc.impl.ProcessAndResultBase;
 import net.objectzoo.events.Event;
 import net.objectzoo.events.impl.EventDelegate;
 import net.objectzoo.events.impl.EventDistributor;
@@ -127,27 +127,27 @@ public class SelectPage extends ProcessAndResultBase<Progress, Position>
 		sendResult(new Position(currentPage, lastPage, lastPageKnown));
 	}
 	
-	public Action0 getNextPage()
+	public Action0 nextPageAction()
 	{
 		return nextPageAction;
 	}
 	
-	public Action0 getPreviousPage()
+	public Action0 previousPageAction()
 	{
 		return previousPageAction;
 	}
 	
-	public Action0 getFirstPage()
+	public Action0 firstPageAction()
 	{
 		return firstPageAction;
 	}
 	
-	public Action0 getLastPage()
+	public Action0 lastPageAction()
 	{
 		return lastPageAction;
 	}
 	
-	public Action<Integer> getJumpToPage()
+	public Action<Integer> jumpToPageAction()
 	{
 		return jumpToPageAction;
 	}

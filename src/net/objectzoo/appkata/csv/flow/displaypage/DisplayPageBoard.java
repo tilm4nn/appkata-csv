@@ -30,16 +30,19 @@ import net.objectzoo.appkata.csv.data.Page;
 import net.objectzoo.appkata.csv.data.Position;
 import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
 import net.objectzoo.delegates.Action;
-import net.objectzoo.ebc.JoinToPair;
-import net.objectzoo.ebc.Pair;
+import net.objectzoo.ebc.CanProcess;
+import net.objectzoo.ebc.SendsSignal;
+import net.objectzoo.ebc.join.JoinToPair;
+import net.objectzoo.ebc.util.Pair;
 import net.objectzoo.events.Event0;
+import net.objectzoo.events.impl.EventDelegate;
 import net.objectzoo.events.impl.EventDistributor;
 
-public class DisplayPageBoard
+public class DisplayPageBoard implements CanProcess<Pair<Page, Position>>, SendsSignal
 {
-	private Action<Pair<Page, Position>> process;
+	private final Action<Pair<Page, Position>> processAction;
 	
-	private Event0 signal;
+	private final Event0 signalEvent;
 	
 	@Inject
 	public DisplayPageBoard(MapToPageViewModel mapToPageViewModel,
@@ -47,28 +50,29 @@ public class DisplayPageBoard
 							RenderPageViewModel renderPageViewModel,
 							DisplayPageViewModel displayPageViewModel)
 	{
-		EventDistributor<PageViewModel> split = new EventDistributor<PageViewModel>();
-		JoinToPair<PageViewModel, int[]> join = new JoinToPair<PageViewModel, int[]>()
-		{
-		};
+		EventDelegate<PageViewModel> split = new EventDistributor<PageViewModel>();
+		JoinToPair<PageViewModel, int[]> join = new JoinToPair<PageViewModel, int[]>();
+		processAction = mapToPageViewModel.processAction();
 		
-		process = mapToPageViewModel.getProcess();
-		mapToPageViewModel.getResult().subscribe(split);
-		split.subscribe(determineColumnLengths.getProcess());
-		split.subscribe(join.getInput1());
-		determineColumnLengths.getResult().subscribe(join.getInput2());
-		join.getResult().subscribe(renderPageViewModel.getProcess());
-		renderPageViewModel.getResult().subscribe(displayPageViewModel.getProcess());
-		signal = displayPageViewModel.getSignal();
+		mapToPageViewModel.resultEvent().subscribe(split);
+		split.subscribe(determineColumnLengths.processAction());
+		split.subscribe(join.input1Action());
+		determineColumnLengths.resultEvent().subscribe(join.input2Action());
+		join.resultEvent().subscribe(renderPageViewModel.processAction());
+		renderPageViewModel.resultEvent().subscribe(displayPageViewModel.processAction());
+		
+		signalEvent = displayPageViewModel.signalEvent();
 	}
 	
-	public Action<Pair<Page, Position>> getProcess()
+	@Override
+	public Action<Pair<Page, Position>> processAction()
 	{
-		return process;
+		return processAction;
 	}
 	
-	public Event0 getSingal()
+	@Override
+	public Event0 signalEvent()
 	{
-		return signal;
+		return signalEvent;
 	}
 }

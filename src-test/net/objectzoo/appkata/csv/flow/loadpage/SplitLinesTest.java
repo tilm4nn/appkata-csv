@@ -22,7 +22,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package net.objectzoo.appkata.csv.flow;
+package net.objectzoo.appkata.csv.flow.loadpage;
 
 import static junit.framework.Assert.assertEquals;
 import static net.objectzoo.appkata.csv.Utils.list;
@@ -32,41 +32,63 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.objectzoo.appkata.csv.Utils;
 import net.objectzoo.appkata.csv.data.CsvLine;
-import net.objectzoo.ebc.TestAction;
+import net.objectzoo.ebc.test.MockAction;
 
-public class SeparateHeaderAndDataTest
+public class SplitLinesTest
 {
-	private TestAction<CsvLine> newHeaderAction;
+	private MockAction<List<CsvLine>> resultAction;
 	
-	private TestAction<List<CsvLine>> newDataAction;
-	
-	private SeparateHeaderAndData sut;
+	private SplitLines sut;
 	
 	@Before
 	public void setup()
 	{
-		newDataAction = new TestAction<List<CsvLine>>();
-		newHeaderAction = new TestAction<CsvLine>();
+		resultAction = new MockAction<List<CsvLine>>();
 		
-		sut = new SeparateHeaderAndData();
-		sut.getNewHeader().subscribe(newHeaderAction);
-		sut.getNewData().subscribe(newDataAction);
+		sut = new SplitLines();
+		sut.resultEvent().subscribe(resultAction);
 	}
 	
 	@Test
-	public void sendNewHeader()
+	public void splitsTwoValues()
 	{
-		sut.process(list(new CsvLine("Header"), new CsvLine("Data")));
+		sut.process(list("Value1;Value2"));
 		
-		assertEquals(new CsvLine("Header"), newHeaderAction.getLastResult());
+		assertEquals(list(new CsvLine("Value1", "Value2")), resultAction.getLastResult());
 	}
 	
 	@Test
-	public void sendNewData()
+	public void splitsOneValue()
 	{
-		sut.process(list(new CsvLine("Header"), new CsvLine("Data1"), new CsvLine("Data2")));
+		sut.process(list("Value1"));
 		
-		assertEquals(list(new CsvLine("Data1"), new CsvLine("Data2")), newDataAction.getLastResult());
+		assertEquals(list(new CsvLine("Value1")), resultAction.getLastResult());
+	}
+	
+	@Test
+	public void splitsNoValue()
+	{
+		sut.process(list(""));
+		
+		assertEquals(list(new CsvLine("")), resultAction.getLastResult());
+	}
+	
+	@Test
+	public void splitsTwoLines()
+	{
+		sut.process(list("Value1;Value2", "Value3;Value4"));
+		
+		assertEquals(list(new CsvLine("Value1", "Value2"), new CsvLine("Value3", "Value4")),
+			resultAction.getLastResult());
+	}
+	
+	@Test
+	public void splitsNoLine()
+	{
+		sut.process(Utils.<String> list());
+		
+		assertEquals(Utils.<CsvLine> list(), resultAction.getLastResult());
 	}
 }

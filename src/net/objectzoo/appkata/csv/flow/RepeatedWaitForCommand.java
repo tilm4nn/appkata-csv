@@ -27,7 +27,7 @@ package net.objectzoo.appkata.csv.flow;
 import com.google.inject.Inject;
 
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
-import net.objectzoo.ebc.StartAndSignalBase;
+import net.objectzoo.ebc.impl.StartAndSignalBase;
 import net.objectzoo.events.Event0;
 import net.objectzoo.events.impl.Event0Delegate;
 import net.objectzoo.events.impl.Event0Distributor;
@@ -36,11 +36,11 @@ public class RepeatedWaitForCommand extends StartAndSignalBase
 {
 	private final ConsoleAdapterContract consoleAdapter;
 	
-	private final Event0Delegate nextPageCommand = new Event0Distributor();
-	private final Event0Delegate previousPageCommand = new Event0Distributor();
-	private final Event0Delegate lastPageCommand = new Event0Distributor();
-	private final Event0Delegate firstPageCommand = new Event0Distributor();
-	private final Event0Delegate jumpToPageCommand = new Event0Distributor();
+	private final Event0Delegate nextPageCommandEvent = new Event0Distributor();
+	private final Event0Delegate previousPageCommandEvent = new Event0Distributor();
+	private final Event0Delegate lastPageCommandEvent = new Event0Distributor();
+	private final Event0Delegate firstPageCommandEvent = new Event0Distributor();
+	private final Event0Delegate jumpToPageCommandEvent = new Event0Distributor();
 	
 	@Inject
 	public RepeatedWaitForCommand(ConsoleAdapterContract consoleAdapter)
@@ -70,46 +70,46 @@ public class RepeatedWaitForCommand extends StartAndSignalBase
 		switch (input)
 		{
 			case 'n':
-				nextPageCommand.invoke();
+				nextPageCommandEvent.invoke();
 				break;
 			case 'p':
-				previousPageCommand.invoke();
+				previousPageCommandEvent.invoke();
 				break;
 			case 'f':
-				firstPageCommand.invoke();
+				firstPageCommandEvent.invoke();
 				break;
 			case 'l':
-				lastPageCommand.invoke();
+				lastPageCommandEvent.invoke();
 				break;
 			case 'j':
-				jumpToPageCommand.invoke();
+				jumpToPageCommandEvent.invoke();
 				break;
 		}
 	}
 	
-	public Event0 getNextPageCommand()
+	public Event0 nextPageCommandEvent()
 	{
-		return nextPageCommand;
+		return nextPageCommandEvent;
 	}
 	
-	public Event0 getPreviousPageCommand()
+	public Event0 previousPageCommandEvent()
 	{
-		return previousPageCommand;
+		return previousPageCommandEvent;
 	}
 	
-	public Event0 getFirstPageCommand()
+	public Event0 firstPageCommandEvent()
 	{
-		return firstPageCommand;
+		return firstPageCommandEvent;
 	}
 	
-	public Event0 getLastPageCommand()
+	public Event0 lastPageCommandEvent()
 	{
-		return lastPageCommand;
+		return lastPageCommandEvent;
 	}
 	
-	public Event0 getJumpToPageCommand()
+	public Event0 jumpToPageCommandEvent()
 	{
-		return jumpToPageCommand;
+		return jumpToPageCommandEvent;
 	}
 	
 }

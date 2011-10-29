@@ -5,7 +5,7 @@
  * 
  * http://www.object-zoo.net
  * 
- * mailto:ebc4j@object-zoo.net
+ * mailto:info@object-zoo.net
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -22,25 +22,32 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package net.objectzoo.ebc;
+package net.objectzoo.appkata.csv.flow.loadpage;
 
-import net.objectzoo.events.Event;
-import net.objectzoo.events.impl.EventDistributor;
+import java.util.ArrayList;
+import java.util.List;
 
-public abstract class ProcessAndResultBase<ProcessParameter, ResultParameter> extends
-	ProcessBase<ProcessParameter>
+import net.objectzoo.appkata.csv.data.CsvLine;
+import net.objectzoo.ebc.impl.ProcessAndResultBase;
+
+public class SplitLines extends ProcessAndResultBase<List<String>, List<CsvLine>>
 {
-	private final EventDistributor<ResultParameter> result = new EventDistributor<ResultParameter>();
-	
-	public Event<ResultParameter> getResult()
+	@Override
+	protected void process(List<String> textLines)
 	{
-		return result;
+		List<CsvLine> csvLines = new ArrayList<CsvLine>(textLines.size());
+		
+		for (String textLine : textLines)
+		{
+			csvLines.add(splitLine(textLine));
+		}
+		
+		sendResult(csvLines);
 	}
 	
-	protected void sendResult(ResultParameter parameter)
+	static CsvLine splitLine(String textLine)
 	{
-		log.finer("sending result");
-		
-		result.invoke(parameter);
+		String[] values = textLine.split(";");
+		return new CsvLine(values);
 	}
 }

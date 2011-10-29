@@ -31,8 +31,8 @@ import net.objectzoo.appkata.csv.data.CsvRecord;
 import net.objectzoo.appkata.csv.data.Page;
 import net.objectzoo.appkata.csv.data.Position;
 import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
-import net.objectzoo.ebc.Pair;
-import net.objectzoo.ebc.ProcessAndResultBase;
+import net.objectzoo.ebc.impl.ProcessAndResultBase;
+import net.objectzoo.ebc.util.Pair;
 
 public class MapToPageViewModel extends ProcessAndResultBase<Pair<Page, Position>, PageViewModel>
 {

@@ -38,14 +38,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 import net.objectzoo.appkata.csv.dependencies.TextFileAdapterContract;
-import net.objectzoo.ebc.TestAction;
+import net.objectzoo.ebc.test.MockAction;
 
 public class ReadPageLinesTest
 {
 	
 	private ReadPageLines sut;
 	
-	private TestAction<List<String>> resultAction;
+	private MockAction<List<String>> resultAction;
 	
 	private TextFileAdapterContract textFileAdapterMock;
 	
@@ -56,10 +56,10 @@ public class ReadPageLinesTest
 	{
 		context = new Mockery();
 		textFileAdapterMock = context.mock(TextFileAdapterContract.class);
-		resultAction = new TestAction<List<String>>();
+		resultAction = new MockAction<List<String>>();
 		
 		sut = new ReadPageLines(textFileAdapterMock);
-		sut.getResult().subscribe(resultAction);
+		sut.resultEvent().subscribe(resultAction);
 	}
 	
 	@Test
@@ -75,7 +75,7 @@ public class ReadPageLinesTest
 			}
 		});
 		
-		sut.getProcess().invoke(1234567890L);
+		sut.processAction().invoke(1234567890L);
 		
 		context.assertIsSatisfied();
 	}
@@ -95,7 +95,7 @@ public class ReadPageLinesTest
 			}
 		});
 		
-		sut.getProcess().invoke(1234567890L);
+		sut.processAction().invoke(1234567890L);
 		
 		context.assertIsSatisfied();
 	}
@@ -115,7 +115,7 @@ public class ReadPageLinesTest
 			}
 		});
 		
-		sut.getProcess().invoke(1234567890L);
+		sut.processAction().invoke(1234567890L);
 		
 		assertThat(resultAction.getLastResult(), is(list("1", "2", "3")));
 		

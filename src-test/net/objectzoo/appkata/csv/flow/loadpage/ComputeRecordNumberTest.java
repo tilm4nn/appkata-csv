@@ -30,20 +30,20 @@ import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 
-import net.objectzoo.ebc.TestAction;
+import net.objectzoo.ebc.test.MockAction;
 
 public class ComputeRecordNumberTest
 {
 	ComputeRecordNumber sut;
 	
-	TestAction<Integer> resultAction;
+	MockAction<Integer> resultAction;
 	
 	@Before
 	public void setup()
 	{
-		resultAction = new TestAction<Integer>();
+		resultAction = new MockAction<Integer>();
 		sut = new ComputeRecordNumber();
-		sut.getResult().subscribe(resultAction);
+		sut.resultEvent().subscribe(resultAction);
 	}
 	
 	@Test
@@ -51,7 +51,7 @@ public class ComputeRecordNumberTest
 	{
 		sut.pageSize = 25;
 		
-		sut.getProcess().invoke(1);
+		sut.processAction().invoke(1);
 		
 		assertThat(resultAction.getLastResult(), is(1));
 	}
@@ -61,7 +61,7 @@ public class ComputeRecordNumberTest
 	{
 		sut.pageSize = 25;
 		
-		sut.getProcess().invoke(3);
+		sut.processAction().invoke(3);
 		
 		assertThat(resultAction.getLastResult(), is(51));
 	}

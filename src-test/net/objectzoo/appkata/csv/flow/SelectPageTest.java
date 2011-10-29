@@ -31,24 +31,24 @@ import org.junit.Test;
 
 import net.objectzoo.appkata.csv.data.Position;
 import net.objectzoo.appkata.csv.data.Progress;
-import net.objectzoo.ebc.TestAction;
+import net.objectzoo.ebc.test.MockAction;
 
 public class SelectPageTest
 {
-	private TestAction<Position> resultAction;
+	private MockAction<Position> resultAction;
 	
-	private TestAction<Integer> selectedPageNumberAction;
+	private MockAction<Integer> selectedPageNumberAction;
 	
 	private SelectPage sut;
 	
 	@Before
 	public void setup()
 	{
-		resultAction = new TestAction<Position>();
-		selectedPageNumberAction = new TestAction<Integer>();
+		resultAction = new MockAction<Position>();
+		selectedPageNumberAction = new MockAction<Integer>();
 		
 		sut = new SelectPage();
-		sut.getResult().subscribe(resultAction);
+		sut.resultEvent().subscribe(resultAction);
 		sut.getSelectedPageNumber().subscribe(selectedPageNumberAction);
 		
 		sut.lastPage = 3;
@@ -114,7 +114,7 @@ public class SelectPageTest
 	@Test
 	public void nextSendsNextPage()
 	{
-		sut.getNextPage().invoke();
+		sut.nextPageAction().invoke();
 		
 		assertEquals((Integer) 3, selectedPageNumberAction.getLastResult());
 	}
@@ -122,7 +122,7 @@ public class SelectPageTest
 	@Test
 	public void nextSendsNextPosition()
 	{
-		sut.getNextPage().invoke();
+		sut.nextPageAction().invoke();
 		
 		assertEquals(new Position(3, 3, false), resultAction.getLastResult());
 	}
@@ -132,7 +132,7 @@ public class SelectPageTest
 	{
 		sut.currentPage = 3;
 		
-		sut.getNextPage().invoke();
+		sut.nextPageAction().invoke();
 		
 		assertEquals(new Position(3, 3, false), resultAction.getLastResult());
 	}
@@ -140,7 +140,7 @@ public class SelectPageTest
 	@Test
 	public void previousSendsPreviousPage()
 	{
-		sut.getPreviousPage().invoke();
+		sut.previousPageAction().invoke();
 		
 		assertEquals((Integer) 1, selectedPageNumberAction.getLastResult());
 	}
@@ -148,7 +148,7 @@ public class SelectPageTest
 	@Test
 	public void previousSendsPreviousPosition()
 	{
-		sut.getPreviousPage().invoke();
+		sut.previousPageAction().invoke();
 		
 		assertEquals(new Position(1, 3, false), resultAction.getLastResult());
 	}
@@ -158,7 +158,7 @@ public class SelectPageTest
 	{
 		sut.currentPage = 1;
 		
-		sut.getPreviousPage().invoke();
+		sut.previousPageAction().invoke();
 		
 		assertEquals(new Position(1, 3, false), resultAction.getLastResult());
 	}
@@ -166,7 +166,7 @@ public class SelectPageTest
 	@Test
 	public void lastSendsLastPage()
 	{
-		sut.getLastPage().invoke();
+		sut.lastPageAction().invoke();
 		
 		assertEquals((Integer) 3, selectedPageNumberAction.getLastResult());
 	}
@@ -174,7 +174,7 @@ public class SelectPageTest
 	@Test
 	public void lastSendsLastPosition()
 	{
-		sut.getLastPage().invoke();
+		sut.lastPageAction().invoke();
 		
 		assertEquals(new Position(3, 3, false), resultAction.getLastResult());
 	}
@@ -182,7 +182,7 @@ public class SelectPageTest
 	@Test
 	public void firstSendsFirstPage()
 	{
-		sut.getFirstPage().invoke();
+		sut.firstPageAction().invoke();
 		
 		assertEquals((Integer) 1, selectedPageNumberAction.getLastResult());
 	}
@@ -190,7 +190,7 @@ public class SelectPageTest
 	@Test
 	public void firstSendsFirstPosition()
 	{
-		sut.getFirstPage().invoke();
+		sut.firstPageAction().invoke();
 		
 		assertEquals(new Position(1, 3, false), resultAction.getLastResult());
 	}
@@ -198,7 +198,7 @@ public class SelectPageTest
 	@Test
 	public void jumpToPageSendsLastPage()
 	{
-		sut.getJumpToPage().invoke(3);
+		sut.jumpToPageAction().invoke(3);
 		
 		assertEquals((Integer) 3, selectedPageNumberAction.getLastResult());
 	}
@@ -206,7 +206,7 @@ public class SelectPageTest
 	@Test
 	public void jumpToPageSendsLastPosition()
 	{
-		sut.getJumpToPage().invoke(3);
+		sut.jumpToPageAction().invoke(3);
 		
 		assertEquals(new Position(3, 3, false), resultAction.getLastResult());
 	}

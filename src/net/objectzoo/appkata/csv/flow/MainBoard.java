@@ -31,13 +31,13 @@ import net.objectzoo.appkata.csv.data.Position;
 import net.objectzoo.appkata.csv.flow.displaypage.DisplayPageBoard;
 import net.objectzoo.appkata.csv.flow.loadpage.LoadPageBoard;
 import net.objectzoo.delegates.Action0;
-import net.objectzoo.ebc.Action0ToAsyncAction0;
+import net.objectzoo.delegates.adapters.Action0ToAsyncAction0;
 import net.objectzoo.ebc.EntryPoint;
-import net.objectzoo.ebc.JoinToPair;
+import net.objectzoo.ebc.join.JoinToPair;
 
 public class MainBoard implements EntryPoint
 {
-	private final Action0 start;
+	private final Action0 startAction;
 	
 	@Inject
 	public MainBoard(RepeatedWaitForCommand repeatedWaitForCommand,
@@ -47,36 +47,33 @@ public class MainBoard implements EntryPoint
 					 LoadPageBoard loadPage, InputPageNumber inputPageNumber,
 					 DisplayPageBoard displayPage, DisplayCommands displayCommands)
 	{
-		JoinToPair<Page, Position> join = new JoinToPair<Page, Position>()
-		{
-		};
+		JoinToPair<Page, Position> join = new JoinToPair<Page, Position>();
+		startAction = repeatedWaitForCommand.startAction();
 		
-		start = repeatedWaitForCommand.getStart();
-		repeatedWaitForCommand.getSignal().subscribe(
-			new Action0ToAsyncAction0(determinePageOffsets.getStart()));
-		determineFilename.getResult().subscribe(determinePageOffsets.getSetFilename());
-		determineFilename.getResult().subscribe(loadPage.getSetFilename());
-		determinePageSize.getResult().subscribe(determinePageOffsets.getSetPageSize());
-		determinePageSize.getResult().subscribe(loadPage.getSetPageSize());
-		determinePageOffsets.getNewPageOffset().subscribe(storeOffsetInIndex.getProcess());
-		determinePageOffsets.getResult().subscribe(selectPage.getProcess());
-		selectPage.getSelectedPageNumber().subscribe(loadPage.getProcess());
-		loadPage.getResult().subscribe(join.getInput1());
-		selectPage.getResult().subscribe(join.getInput2());
-		join.getResult().subscribe(displayPage.getProcess());
-		displayPage.getSingal().subscribe(displayCommands.getStart());
-		
-		repeatedWaitForCommand.getNextPageCommand().subscribe(selectPage.getNextPage());
-		repeatedWaitForCommand.getPreviousPageCommand().subscribe(selectPage.getPreviousPage());
-		repeatedWaitForCommand.getFirstPageCommand().subscribe(selectPage.getFirstPage());
-		repeatedWaitForCommand.getLastPageCommand().subscribe(selectPage.getLastPage());
-		repeatedWaitForCommand.getJumpToPageCommand().subscribe(inputPageNumber.getStart());
-		inputPageNumber.getResult().subscribe(selectPage.getJumpToPage());
+		repeatedWaitForCommand.signalEvent().subscribe(
+			new Action0ToAsyncAction0(determinePageOffsets.startAction()));
+		determineFilename.resultEvent().subscribe(determinePageOffsets.initFilenameAction());
+		determineFilename.resultEvent().subscribe(loadPage.initFilenameAction());
+		determinePageSize.resultEvent().subscribe(determinePageOffsets.initPageSizeAction());
+		determinePageSize.resultEvent().subscribe(loadPage.initPageSizeAction());
+		determinePageOffsets.newPageOffsetEvent().subscribe(storeOffsetInIndex.processAction());
+		determinePageOffsets.resultEvent().subscribe(selectPage.processAction());
+		selectPage.getSelectedPageNumber().subscribe(loadPage.processAction());
+		loadPage.resultEvent().subscribe(join.input1Action());
+		selectPage.resultEvent().subscribe(join.input2Action());
+		join.resultEvent().subscribe(displayPage.processAction());
+		displayPage.signalEvent().subscribe(displayCommands.startAction());
+		repeatedWaitForCommand.nextPageCommandEvent().subscribe(selectPage.nextPageAction());
+		repeatedWaitForCommand.previousPageCommandEvent().subscribe(selectPage.previousPageAction());
+		repeatedWaitForCommand.firstPageCommandEvent().subscribe(selectPage.firstPageAction());
+		repeatedWaitForCommand.lastPageCommandEvent().subscribe(selectPage.lastPageAction());
+		repeatedWaitForCommand.jumpToPageCommandEvent().subscribe(inputPageNumber.startAction());
+		inputPageNumber.resultEvent().subscribe(selectPage.jumpToPageAction());
 	}
 	
 	@Override
-	public Action0 getStart()
+	public Action0 startAction()
 	{
-		return start;
+		return startAction;
 	}
 }

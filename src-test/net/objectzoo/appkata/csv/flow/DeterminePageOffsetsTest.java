@@ -37,16 +37,16 @@ import org.junit.Test;
 
 import net.objectzoo.appkata.csv.data.Progress;
 import net.objectzoo.appkata.csv.dependencies.TextFileScannerContract;
-import net.objectzoo.ebc.Pair;
-import net.objectzoo.ebc.TestAction;
+import net.objectzoo.ebc.test.MockAction;
+import net.objectzoo.ebc.util.Pair;
 
 public class DeterminePageOffsetsTest
 {
 	private DeterminePageOffsets sut;
 	
-	private TestAction<Pair<Integer, Long>> newPageOffsetAction;
+	private MockAction<Pair<Integer, Long>> newPageOffsetAction;
 	
-	private TestAction<Progress> resultAction;
+	private MockAction<Progress> resultAction;
 	
 	private TextFileScannerContract textFileScannerMock;
 	
@@ -57,13 +57,13 @@ public class DeterminePageOffsetsTest
 	{
 		context = new Mockery();
 		
-		newPageOffsetAction = new TestAction<Pair<Integer, Long>>(true);
-		resultAction = new TestAction<Progress>(true);
+		newPageOffsetAction = new MockAction<Pair<Integer, Long>>(Integer.MAX_VALUE);
+		resultAction = new MockAction<Progress>(Integer.MAX_VALUE);
 		textFileScannerMock = context.mock(TextFileScannerContract.class);
 		
 		sut = new DeterminePageOffsets(textFileScannerMock);
-		sut.getNewPageOffset().subscribe(newPageOffsetAction);
-		sut.getResult().subscribe(resultAction);
+		sut.newPageOffsetEvent().subscribe(newPageOffsetAction);
+		sut.resultEvent().subscribe(resultAction);
 	}
 	
 	@Test
@@ -83,7 +83,7 @@ public class DeterminePageOffsetsTest
 			}
 		});
 		
-		sut.getStart().invoke();
+		sut.startAction().invoke();
 		
 		context.assertIsSatisfied();
 	}
@@ -103,7 +103,7 @@ public class DeterminePageOffsetsTest
 			}
 		});
 		
-		sut.getStart().invoke();
+		sut.startAction().invoke();
 		
 		context.assertIsSatisfied();
 	}
@@ -123,7 +123,7 @@ public class DeterminePageOffsetsTest
 			}
 		});
 		
-		sut.getStart().invoke();
+		sut.startAction().invoke();
 		
 		context.assertIsSatisfied();
 	}
@@ -151,7 +151,7 @@ public class DeterminePageOffsetsTest
 			}
 		});
 		
-		sut.getStart().invoke();
+		sut.startAction().invoke();
 		
 		assertThat(
 			newPageOffsetAction.getResults(),
@@ -177,7 +177,7 @@ public class DeterminePageOffsetsTest
 			}
 		});
 		
-		sut.getStart().invoke();
+		sut.startAction().invoke();
 		
 		assertThat(resultAction.getFirstResult(), is(new Progress(1, false)));
 		
@@ -208,7 +208,7 @@ public class DeterminePageOffsetsTest
 			}
 		});
 		
-		sut.getStart().invoke();
+		sut.startAction().invoke();
 		
 		assertThat(resultAction.getLastResult(), is(new Progress(5, true)));
 		

@@ -22,32 +22,52 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package net.objectzoo.appkata.csv.flow;
+package net.objectzoo.appkata.csv.flow.loadpage;
 
-import java.util.ArrayList;
+import static junit.framework.Assert.assertEquals;
+import static net.objectzoo.appkata.csv.Utils.list;
+
 import java.util.List;
 
-import net.objectzoo.appkata.csv.data.CsvLine;
-import net.objectzoo.ebc.ProcessAndResultBase;
+import org.junit.Before;
+import org.junit.Test;
 
-public class SplitLines extends ProcessAndResultBase<List<String>, List<CsvLine>>
+import net.objectzoo.appkata.csv.data.CsvLine;
+import net.objectzoo.ebc.test.MockAction;
+
+public class SeparateHeaderAndDataTest
 {
-	@Override
-	protected void process(List<String> textLines)
+	private MockAction<CsvLine> newHeaderAction;
+	
+	private MockAction<List<CsvLine>> newDataAction;
+	
+	private SeparateHeaderAndData sut;
+	
+	@Before
+	public void setup()
 	{
-		List<CsvLine> csvLines = new ArrayList<CsvLine>(textLines.size());
+		newDataAction = new MockAction<List<CsvLine>>();
+		newHeaderAction = new MockAction<CsvLine>();
 		
-		for (String textLine : textLines)
-		{
-			csvLines.add(splitLine(textLine));
-		}
-		
-		sendResult(csvLines);
+		sut = new SeparateHeaderAndData();
+		sut.newHeaderEvent().subscribe(newHeaderAction);
+		sut.newDataEvent().subscribe(newDataAction);
 	}
 	
-	static CsvLine splitLine(String textLine)
+	@Test
+	public void sendNewHeader()
 	{
-		String[] values = textLine.split(";");
-		return new CsvLine(values);
+		sut.process(list(new CsvLine("Header"), new CsvLine("Data")));
+		
+		assertEquals(new CsvLine("Header"), newHeaderAction.getLastResult());
+	}
+	
+	@Test
+	public void sendNewData()
+	{
+		sut.process(list(new CsvLine("Header"), new CsvLine("Data1"), new CsvLine("Data2")));
+		
+		assertEquals(list(new CsvLine("Data1"), new CsvLine("Data2")),
+			newDataAction.getLastResult());
 	}
 }

@@ -25,14 +25,14 @@
 package net.objectzoo.appkata.csv.flow.loadpage;
 
 import net.objectzoo.delegates.Action;
-import net.objectzoo.ebc.ProcessAndResultBase;
+import net.objectzoo.ebc.impl.ProcessAndResultBase;
 
 public class ComputeRecordNumber extends ProcessAndResultBase<Integer, Integer>
 {
 	
 	int pageSize;
 	
-	private final Action<Integer> setPageSize = new Action<Integer>()
+	private final Action<Integer> initPageSizeAction = new Action<Integer>()
 	{
 		@Override
 		public void invoke(Integer input)
@@ -41,9 +41,9 @@ public class ComputeRecordNumber extends ProcessAndResultBase<Integer, Integer>
 		}
 	};
 	
-	public Action<Integer> getSetPageSize()
+	public Action<Integer> initPageSizeAction()
 	{
-		return setPageSize;
+		return initPageSizeAction;
 	}
 	
 	@Override

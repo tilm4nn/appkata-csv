@@ -11,12 +11,12 @@
 	<classpathentry kind="lib" path="lib-test/jmock-junit4-2.5.1.jar"/>
 	<classpathentry kind="lib" path="lib-test/jmock-legacy-2.5.1.jar"/>
 	<classpathentry kind="lib" path="lib-test/junit-4.8.2.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Events4J"/>
 	<classpathentry kind="lib" path="lib/aopalliance.jar"/>
 	<classpathentry kind="lib" path="lib/guice-3.0.jar"/>
 	<classpathentry kind="lib" path="lib/guice-assistedinject-3.0.jar"/>
 	<classpathentry kind="lib" path="lib/javax.inject.jar"/>
-	<classpathentry kind="lib" path="lib/events4j-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/events4j-async-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/ebc4j-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/events4j-1.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/events4j-async-1.2.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

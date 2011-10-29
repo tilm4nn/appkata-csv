@@ -25,12 +25,11 @@
 package net.objectzoo.appkata.csv.flow.displaypage;
 
 import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
-import net.objectzoo.ebc.Pair;
-import net.objectzoo.ebc.ProcessAndResultBase;
+import net.objectzoo.ebc.impl.ProcessAndResultBase;
+import net.objectzoo.ebc.util.Pair;
 
 public class RenderPageViewModel extends ProcessAndResultBase<Pair<PageViewModel, int[]>, String>
 {
-	
 	@Override
 	protected void process(Pair<PageViewModel, int[]> pageViewModelAndColumnLengths)
 	{

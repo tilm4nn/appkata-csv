@@ -34,22 +34,22 @@ import org.junit.Test;
 
 import net.objectzoo.appkata.csv.data.CsvLine;
 import net.objectzoo.appkata.csv.data.CsvRecord;
-import net.objectzoo.ebc.Pair;
-import net.objectzoo.ebc.TestAction;
+import net.objectzoo.ebc.test.MockAction;
+import net.objectzoo.ebc.util.Pair;
 
 public class PutInRecordsTest
 {
-	private TestAction<List<CsvRecord>> resultAction;
+	private MockAction<List<CsvRecord>> resultAction;
 	
 	private PutInRecords sut;
 	
 	@Before
 	public void setup()
 	{
-		resultAction = new TestAction<List<CsvRecord>>();
+		resultAction = new MockAction<List<CsvRecord>>();
 		
 		sut = new PutInRecords();
-		sut.getResult().subscribe(resultAction);
+		sut.resultEvent().subscribe(resultAction);
 	}
 	
 	@Test

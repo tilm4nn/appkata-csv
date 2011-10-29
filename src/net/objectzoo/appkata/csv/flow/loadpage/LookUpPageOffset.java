@@ -27,7 +27,7 @@ package net.objectzoo.appkata.csv.flow.loadpage;
 import com.google.inject.Inject;
 
 import net.objectzoo.appkata.csv.dependencies.IndexContract;
-import net.objectzoo.ebc.ProcessAndResultBase;
+import net.objectzoo.ebc.impl.ProcessAndResultBase;
 
 public class LookUpPageOffset extends ProcessAndResultBase<Integer, Long>
 {

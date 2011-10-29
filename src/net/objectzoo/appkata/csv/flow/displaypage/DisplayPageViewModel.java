@@ -27,7 +27,7 @@ package net.objectzoo.appkata.csv.flow.displaypage;
 import com.google.inject.Inject;
 
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
-import net.objectzoo.ebc.ProcessAndSignalBase;
+import net.objectzoo.ebc.impl.ProcessAndSignalBase;
 
 public class DisplayPageViewModel extends ProcessAndSignalBase<String>
 {

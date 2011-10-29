@@ -33,8 +33,8 @@ import com.google.inject.Inject;
 import net.objectzoo.appkata.csv.data.Progress;
 import net.objectzoo.appkata.csv.dependencies.TextFileScannerContract;
 import net.objectzoo.delegates.Action;
-import net.objectzoo.ebc.Pair;
-import net.objectzoo.ebc.StartAndResultBase;
+import net.objectzoo.ebc.impl.StartAndResultBase;
+import net.objectzoo.ebc.util.Pair;
 import net.objectzoo.events.Event;
 import net.objectzoo.events.impl.EventDelegate;
 import net.objectzoo.events.impl.EventDistributor;
@@ -47,7 +47,7 @@ public class DeterminePageOffsets extends StartAndResultBase<Progress>
 	
 	private final TextFileScannerContract textFileScanner;
 	
-	private final EventDelegate<Pair<Integer, Long>> newPageOffset = new EventDistributor<Pair<Integer, Long>>();
+	private final EventDelegate<Pair<Integer, Long>> newPageOffsetEvent = new EventDistributor<Pair<Integer, Long>>();
 	
 	@Inject
 	public DeterminePageOffsets(TextFileScannerContract textFileScanner)
@@ -55,19 +55,19 @@ public class DeterminePageOffsets extends StartAndResultBase<Progress>
 		this.textFileScanner = textFileScanner;
 	}
 	
-	public Event<Pair<Integer, Long>> getNewPageOffset()
+	public Event<Pair<Integer, Long>> newPageOffsetEvent()
 	{
-		return newPageOffset;
+		return newPageOffsetEvent;
 	}
 	
-	public Action<Integer> getSetPageSize()
+	public Action<Integer> initPageSizeAction()
 	{
-		return setPageSize;
+		return initPageSizeAction;
 	}
 	
-	public Action<String> getSetFilename()
+	public Action<String> initFilenameAction()
 	{
-		return setFilename;
+		return initFilenameAction;
 	}
 	
 	@Override
@@ -83,7 +83,7 @@ public class DeterminePageOffsets extends StartAndResultBase<Progress>
 				while (pageOffset != null)
 				{
 					pageNr += 1;
-					newPageOffset.invoke(new Pair<Integer, Long>(pageNr, pageOffset));
+					newPageOffsetEvent.invoke(new Pair<Integer, Long>(pageNr, pageOffset));
 					sendResult(new Progress(pageNr, false));
 					pageOffset = textFileScanner.getNextPosition(pageSize);
 				}
@@ -96,11 +96,11 @@ public class DeterminePageOffsets extends StartAndResultBase<Progress>
 		}
 		catch (IOException e)
 		{
-			log.log(WARNING, "Problem while accessing file " + filename, e);
+			logger.log(WARNING, "Problem while accessing file " + filename, e);
 		}
 	}
 	
-	private final Action<Integer> setPageSize = new Action<Integer>()
+	private final Action<Integer> initPageSizeAction = new Action<Integer>()
 	{
 		@Override
 		public void invoke(Integer input)
@@ -109,7 +109,7 @@ public class DeterminePageOffsets extends StartAndResultBase<Progress>
 		}
 	};
 	
-	private final Action<String> setFilename = new Action<String>()
+	private final Action<String> initFilenameAction = new Action<String>()
 	{
 		@Override
 		public void invoke(String input)

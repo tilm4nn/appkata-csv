@@ -60,6 +60,8 @@ public class Program
 	
 	public static void main(String... args)
 	{
+		Logging.init();
+		
 		Injector injector = Guice.createInjector(new GuiceModule());
 		
 		MainBoard mainBoard = injector.getInstance(MainBoard.class);
@@ -69,6 +71,6 @@ public class Program
 		determinePageSize.configure(args);
 		determineFilename.configure(args);
 		
-		mainBoard.getStart().invoke();
+		mainBoard.startAction().invoke();
 	}
 }

@@ -31,13 +31,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
-import net.objectzoo.ebc.TestAction0;
+import net.objectzoo.ebc.test.MockAction0;
 
 public class DisplayPageTableTest
 {
 	private Mockery mockery;
 	
-	private TestAction0 signalAction;
+	private MockAction0 signalAction;
 	
 	private ConsoleAdapterContract consoleAdapterMock;
 	
@@ -48,10 +48,10 @@ public class DisplayPageTableTest
 	{
 		mockery = new Mockery();
 		consoleAdapterMock = mockery.mock(ConsoleAdapterContract.class);
-		signalAction = new TestAction0();
+		signalAction = new MockAction0();
 		
 		sut = new DisplayPageViewModel(consoleAdapterMock);
-		sut.getSignal().subscribe(signalAction);
+		sut.signalEvent().subscribe(signalAction);
 	}
 	
 	@Test

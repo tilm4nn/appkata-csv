@@ -31,23 +31,25 @@ import com.google.inject.Inject;
 import net.objectzoo.appkata.csv.data.CsvLine;
 import net.objectzoo.appkata.csv.data.CsvRecord;
 import net.objectzoo.appkata.csv.data.Page;
-import net.objectzoo.appkata.csv.flow.SeparateHeaderAndData;
-import net.objectzoo.appkata.csv.flow.SplitLines;
 import net.objectzoo.delegates.Action;
-import net.objectzoo.ebc.Join;
-import net.objectzoo.ebc.JoinToPair;
+import net.objectzoo.ebc.CanProcess;
+import net.objectzoo.ebc.SendsResult;
+import net.objectzoo.ebc.join.GenericJoin;
+import net.objectzoo.ebc.join.Join;
+import net.objectzoo.ebc.join.JoinToPair;
 import net.objectzoo.events.Event;
+import net.objectzoo.events.impl.EventDelegate;
 import net.objectzoo.events.impl.EventDistributor;
 
-public class LoadPageBoard
+public class LoadPageBoard implements CanProcess<Integer>, SendsResult<Page>
 {
-	private final Action<Integer> process;
+	private final EventDelegate<Integer> processDelegate;
 	
-	private final Event<Page> result;
+	private final Event<Page> resultEvent;
 	
-	private final Action<Integer> setPageSize;
+	private final EventDelegate<Integer> initPageSizeDelegate;
 	
-	private final Action<String> setFilename;
+	private final Action<String> initFilenameAction;
 	
 	@Inject
 	public LoadPageBoard(ComputeRecordNumber computeRecordNumber,
@@ -55,51 +57,49 @@ public class LoadPageBoard
 						 SplitLines splitLines, SeparateHeaderAndData separateHeaderAndData,
 						 PutInRecords putInRecords)
 	{
-		EventDistributor<Integer> splitPageNumber = new EventDistributor<Integer>();
-		EventDistributor<Integer> splitPageSize = new EventDistributor<Integer>();
-		JoinToPair<Integer, List<CsvLine>> joinPageNumAndLines = new JoinToPair<Integer, List<CsvLine>>()
+		JoinToPair<Integer, List<CsvLine>> joinPageNumAndLines = new JoinToPair<Integer, List<CsvLine>>();
+		Join<CsvLine, List<CsvRecord>, Page> joinToPage = new GenericJoin<CsvLine, List<CsvRecord>, Page>()
 		{
 		};
-		Join<CsvLine, List<CsvRecord>, Page> joinToPage = new Join<CsvLine, List<CsvRecord>, Page>()
-		{
-		};
+		processDelegate = new EventDistributor<Integer>();
+		initPageSizeDelegate = new EventDistributor<Integer>();
+		initFilenameAction = readPageLines.initFilenameAction();
 		
-		process = splitPageNumber;
-		setPageSize = splitPageSize;
-		setFilename = readPageLines.getSetFilename();
-		splitPageNumber.subscribe(computeRecordNumber.getProcess());
-		splitPageNumber.subscribe(lookupPageOffset.getProcess());
-		splitPageSize.subscribe(readPageLines.getSetPageSize());
-		splitPageSize.subscribe(computeRecordNumber.getSetPageSize());
-		lookupPageOffset.getResult().subscribe(readPageLines.getProcess());
-		readPageLines.getResult().subscribe(splitLines.getProcess());
-		splitLines.getResult().subscribe(separateHeaderAndData.getProcess());
-		computeRecordNumber.getResult().subscribe(joinPageNumAndLines.getInput1());
-		separateHeaderAndData.getNewData().subscribe(joinPageNumAndLines.getInput2());
-		joinPageNumAndLines.getResult().subscribe(putInRecords.getProcess());
-		separateHeaderAndData.getNewHeader().subscribe(joinToPage.getInput1());
-		putInRecords.getResult().subscribe(joinToPage.getInput2());
-		result = joinToPage.getResult();
+		processDelegate.subscribe(computeRecordNumber.processAction());
+		processDelegate.subscribe(lookupPageOffset.processAction());
+		initPageSizeDelegate.subscribe(readPageLines.initPageSizeAction());
+		initPageSizeDelegate.subscribe(computeRecordNumber.initPageSizeAction());
+		lookupPageOffset.resultEvent().subscribe(readPageLines.processAction());
+		readPageLines.resultEvent().subscribe(splitLines.processAction());
+		splitLines.resultEvent().subscribe(separateHeaderAndData.processAction());
+		computeRecordNumber.resultEvent().subscribe(joinPageNumAndLines.input1Action());
+		separateHeaderAndData.newDataEvent().subscribe(joinPageNumAndLines.input2Action());
+		joinPageNumAndLines.resultEvent().subscribe(putInRecords.processAction());
+		separateHeaderAndData.newHeaderEvent().subscribe(joinToPage.input1Action());
+		putInRecords.resultEvent().subscribe(joinToPage.input2Action());
 		
+		resultEvent = joinToPage.resultEvent();
 	}
 	
-	public Action<Integer> getProcess()
+	@Override
+	public Action<Integer> processAction()
 	{
-		return process;
+		return processDelegate;
 	}
 	
-	public Event<Page> getResult()
+	@Override
+	public Event<Page> resultEvent()
 	{
-		return result;
+		return resultEvent;
 	}
 	
-	public Action<Integer> getSetPageSize()
+	public Action<Integer> initPageSizeAction()
 	{
-		return setPageSize;
+		return initPageSizeDelegate;
 	}
 	
-	public Action<String> getSetFilename()
+	public Action<String> initFilenameAction()
 	{
-		return setFilename;
+		return initFilenameAction;
 	}
 }

@@ -25,11 +25,16 @@
 package net.objectzoo.appkata.csv.flow;
 
 import net.objectzoo.ebc.Configurable;
-import net.objectzoo.ebc.ResultBase;
+import net.objectzoo.ebc.impl.ResultBase;
 
 public class DeterminePageSize extends ResultBase<Integer> implements Configurable
 {
 	private static final int DEFAULT_NUMBER_OF_DATA_LINES = 20;
+	
+	public DeterminePageSize()
+	{
+		super(true);
+	}
 	
 	@Override
 	public void configure(String... configuration)

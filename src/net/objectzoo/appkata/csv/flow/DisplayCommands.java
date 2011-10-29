@@ -27,7 +27,7 @@ package net.objectzoo.appkata.csv.flow;
 import com.google.inject.Inject;
 
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
-import net.objectzoo.ebc.StartBase;
+import net.objectzoo.ebc.impl.StartBase;
 
 public class DisplayCommands extends StartBase
 {

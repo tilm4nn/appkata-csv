@@ -35,22 +35,22 @@ import net.objectzoo.appkata.csv.data.CsvRecord;
 import net.objectzoo.appkata.csv.data.Page;
 import net.objectzoo.appkata.csv.data.Position;
 import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
-import net.objectzoo.ebc.Pair;
-import net.objectzoo.ebc.TestAction;
+import net.objectzoo.ebc.test.MockAction;
+import net.objectzoo.ebc.util.Pair;
 
 public class MapToPageViewModelTest
 {
-	private TestAction<PageViewModel> resultAction;
+	private MockAction<PageViewModel> resultAction;
 	
 	private MapToPageViewModel sut;
 	
 	@Before
 	public void setup()
 	{
-		resultAction = new TestAction<PageViewModel>();
+		resultAction = new MockAction<PageViewModel>();
 		
 		sut = new MapToPageViewModel();
-		sut.getResult().subscribe(resultAction);
+		sut.resultEvent().subscribe(resultAction);
 	}
 	
 	@Test

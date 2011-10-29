@@ -22,34 +22,52 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package net.objectzoo.ebc;
+package net.objectzoo.appkata.csv.flow.loadpage;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 
-public abstract class JoinObjectAndCollection<Input1, Input2Element, OutputElement> extends
-	JoinBase<Input1, Collection<Input2Element>, List<OutputElement>, OutputElement>
+import net.objectzoo.appkata.csv.data.CsvLine;
+import net.objectzoo.ebc.impl.ProcessBase;
+import net.objectzoo.events.Event;
+import net.objectzoo.events.impl.EventDelegate;
+import net.objectzoo.events.impl.EventDistributor;
+
+public class SeparateHeaderAndData extends ProcessBase<List<CsvLine>>
 {
-	public JoinObjectAndCollection()
+	private final EventDelegate<CsvLine> newHeaderEvent = new EventDistributor<CsvLine>();
+	
+	private final EventDelegate<List<CsvLine>> newDataEvent = new EventDistributor<List<CsvLine>>();
+	
+	private void sendNewHeader(CsvLine header)
 	{
-		super(null);
+		logger.log(Level.FINEST, "sending newHeader: {0}", header);
+		
+		newHeaderEvent.invoke(header);
 	}
 	
-	public JoinObjectAndCollection(Class<? extends OutputElement> outputType)
+	private void sendNewData(List<CsvLine> data)
 	{
-		super(outputType);
+		logger.log(Level.FINEST, "sending newData: {0}", data);
+		
+		newDataEvent.invoke(data);
+	}
+	
+	public Event<CsvLine> newHeaderEvent()
+	{
+		return newHeaderEvent;
+	}
+	
+	public Event<List<CsvLine>> newDataEvent()
+	{
+		return newDataEvent;
 	}
 	
 	@Override
-	protected List<OutputElement> createOutput(Input1 lastInput1,
-											   Collection<Input2Element> lastInput2)
+	protected void process(List<CsvLine> csvLines)
 	{
-		List<OutputElement> output = new ArrayList<OutputElement>(lastInput2.size());
-		for (Input2Element input2Element : lastInput2)
-		{
-			output.add(createOutputElement(lastInput1, input2Element));
-		}
-		return output;
+		sendNewHeader(csvLines.get(0));
+		sendNewData(csvLines.subList(1, csvLines.size()));
 	}
+	
 }

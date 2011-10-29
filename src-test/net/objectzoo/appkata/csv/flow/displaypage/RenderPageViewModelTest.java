@@ -30,22 +30,22 @@ import org.junit.Before;
 import org.junit.Test;
 
 import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
-import net.objectzoo.ebc.Pair;
-import net.objectzoo.ebc.TestAction;
+import net.objectzoo.ebc.test.MockAction;
+import net.objectzoo.ebc.util.Pair;
 
 public class RenderPageViewModelTest
 {
-	private TestAction<String> resultAction;
+	private MockAction<String> resultAction;
 	
 	private RenderPageViewModel sut;
 	
 	@Before
 	public void setup()
 	{
-		resultAction = new TestAction<String>();
+		resultAction = new MockAction<String>();
 		
 		sut = new RenderPageViewModel();
-		sut.getResult().subscribe(resultAction);
+		sut.resultEvent().subscribe(resultAction);
 	}
 	
 	@Test

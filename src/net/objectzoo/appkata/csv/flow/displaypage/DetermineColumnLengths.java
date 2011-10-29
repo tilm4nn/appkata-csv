@@ -25,7 +25,7 @@
 package net.objectzoo.appkata.csv.flow.displaypage;
 
 import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
-import net.objectzoo.ebc.ProcessAndResultBase;
+import net.objectzoo.ebc.impl.ProcessAndResultBase;
 
 public class DetermineColumnLengths extends ProcessAndResultBase<PageViewModel, int[]>
 {
