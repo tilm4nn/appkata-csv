@@ -24,8 +24,6 @@
  */
 package net.objectzoo.appkata.csv.flow;
 
-import com.google.inject.Inject;
-
 import net.objectzoo.appkata.csv.data.Page;
 import net.objectzoo.appkata.csv.data.Position;
 import net.objectzoo.appkata.csv.flow.displaypage.DisplayPageBoard;
@@ -35,19 +33,19 @@ import net.objectzoo.delegates.adapters.Action0ToAsyncAction0;
 import net.objectzoo.ebc.EntryPoint;
 import net.objectzoo.ebc.join.JoinToPair;
 
+import com.google.inject.Inject;
+
 public class MainBoard implements EntryPoint
 {
 	private final Action0 startAction;
 	
 	@Inject
-	public MainBoard(RepeatedWaitForCommand repeatedWaitForCommand,
-					 DeterminePageSize determinePageSize, DetermineFilename determineFilename,
-					 DeterminePageOffsets determinePageOffsets,
-					 StoreOffsetInIndex storeOffsetInIndex, SelectPage selectPage,
-					 LoadPageBoard loadPage, InputPageNumber inputPageNumber,
-					 DisplayPageBoard displayPage, DisplayCommands displayCommands)
+	public MainBoard(RepeatedWaitForCommand repeatedWaitForCommand, DeterminePageSize determinePageSize,
+					 DetermineFilename determineFilename, DeterminePageOffsets determinePageOffsets,
+					 StoreOffsetInIndex storeOffsetInIndex, SelectPage selectPage, LoadPageBoard loadPage,
+					 InputPageNumber inputPageNumber, DisplayPageBoard displayPage, DisplayCommands displayCommands)
 	{
-		JoinToPair<Page, Position> join = new JoinToPair<Page, Position>();
+		JoinToPair<Page, Position> join = new JoinToPair<Page, Position>(true);
 		startAction = repeatedWaitForCommand.startAction();
 		
 		repeatedWaitForCommand.signalEvent().subscribe(
