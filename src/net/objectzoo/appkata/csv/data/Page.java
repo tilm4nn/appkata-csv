@@ -48,11 +48,6 @@ public class Page
 		return records;
 	}
 	
-	public Page(CsvLine header, PageData pageData)
-	{
-		this(header, pageData.getRecords());
-	}
-	
 	public Page(CsvLine header, List<CsvRecord> data)
 	{
 		this.header = header;
