@@ -105,7 +105,7 @@ public class DisplayFirstPageTest
 			}
 		});
 		
-		repeatedWaitForCommand.getStart().invoke();
+		repeatedWaitForCommand.startAction().invoke();
 		
 		mockery.assertIsSatisfied();
 	}

@@ -48,19 +48,22 @@ public class Program
 {
 	public static void main(String... args)
 	{
+		Logging.init();
+		
 		TextFileAdapterContract textFileAdapter = new TextFileAdapter();
 		ConsoleAdapterContract consoleAdapter = new ConsoleAdapter();
+		
 		ReadLines readLines = new ReadLines();
 		DivideIntoPageSize divideIntoPageSize = new DivideIntoPageSize();
 		DisplayPageViewModel displayPageTable = new DisplayPageViewModel();
 		DisplayCommands displayCommands = new DisplayCommands();
 		RepeatedWaitForCommand repeatedWaitForCommand = new RepeatedWaitForCommand();
 		InputPageNumber inputPageNumber = new InputPageNumber();
+		
 		MainBoard mainBoard = new MainBoard(repeatedWaitForCommand, readLines, new SplitLines(),
 			new SeparateHeaderAndData(), new PutInRecords(), divideIntoPageSize, new SelectPage(),
-			inputPageNumber, new DisplayPageBoard(new MapToPageViewModel(),
-				new DetermineColumnLengths(), new RenderPageViewModel(), displayPageTable),
-			displayCommands);
+			inputPageNumber, new DisplayPageBoard(new MapToPageViewModel(), new DetermineColumnLengths(),
+				new RenderPageViewModel(), displayPageTable), displayCommands);
 		
 		readLines.inject(textFileAdapter);
 		displayPageTable.inject(consoleAdapter);
@@ -71,6 +74,6 @@ public class Program
 		readLines.configure(args);
 		divideIntoPageSize.configure(args);
 		
-		mainBoard.getStart().invoke();
+		mainBoard.startAction().invoke();
 	}
 }

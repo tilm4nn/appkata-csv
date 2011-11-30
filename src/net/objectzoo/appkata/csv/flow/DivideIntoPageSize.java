@@ -6,10 +6,10 @@ import java.util.List;
 import net.objectzoo.appkata.csv.data.CsvRecord;
 import net.objectzoo.appkata.csv.data.PageData;
 import net.objectzoo.ebc.Configurable;
-import net.objectzoo.ebc.ProcessAndResultBase;
+import net.objectzoo.ebc.impl.ProcessAndResultBase;
 
-public class DivideIntoPageSize extends ProcessAndResultBase<List<CsvRecord>, List<PageData>>
-	implements Configurable
+public class DivideIntoPageSize extends ProcessAndResultBase<List<CsvRecord>, List<PageData>> implements
+	Configurable
 {
 	private static final int DEFAULT_NUMBER_OF_DATA_LINES = 20;
 	

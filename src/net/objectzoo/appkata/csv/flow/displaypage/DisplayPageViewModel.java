@@ -26,7 +26,7 @@ package net.objectzoo.appkata.csv.flow.displaypage;
 
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
 import net.objectzoo.ebc.DependsOn;
-import net.objectzoo.ebc.ProcessAndSignalBase;
+import net.objectzoo.ebc.impl.ProcessAndSignalBase;
 
 public class DisplayPageViewModel extends ProcessAndSignalBase<String> implements
 	DependsOn<ConsoleAdapterContract>

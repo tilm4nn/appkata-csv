@@ -7,8 +7,8 @@ import net.objectzoo.appkata.csv.data.CsvRecord;
 import net.objectzoo.appkata.csv.data.Page;
 import net.objectzoo.appkata.csv.data.Position;
 import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
-import net.objectzoo.ebc.Pair;
-import net.objectzoo.ebc.ProcessAndResultBase;
+import net.objectzoo.ebc.impl.ProcessAndResultBase;
+import net.objectzoo.ebc.util.Pair;
 
 public class MapToPageViewModel extends ProcessAndResultBase<Pair<Page, Position>, PageViewModel>
 {
@@ -22,8 +22,7 @@ public class MapToPageViewModel extends ProcessAndResultBase<Pair<Page, Position
 		String[] headers = mapCsvLine("No.", page.getHeader());
 		String[][] rows = mapRecords(page.getRecords());
 		
-		sendResult(new PageViewModel(headers, rows, position.getCurrentPosition(),
-			position.getMaxPosition()));
+		sendResult(new PageViewModel(headers, rows, position.getCurrentPosition(), position.getMaxPosition()));
 	}
 	
 	static String[][] mapRecords(List<CsvRecord> records)

@@ -25,35 +25,34 @@
 package net.objectzoo.appkata.csv.flow.displaypage;
 
 import static org.junit.Assert.assertArrayEquals;
+import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
+import net.objectzoo.ebc.test.MockAction;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
-import net.objectzoo.ebc.TestAction;
-
 public class DetermineColumnLengthsTest
 {
-	private TestAction<int[]> resultAction;
+	private MockAction<int[]> resultAction;
 	
 	private DetermineColumnLengths sut;
 	
 	@Before
 	public void setup()
 	{
-		resultAction = new TestAction<int[]>();
+		resultAction = new MockAction<int[]>();
 		
 		sut = new DetermineColumnLengths();
-		sut.getResult().subscribe(resultAction);
+		sut.resultEvent().subscribe(resultAction);
 	}
 	
 	@Test
 	public void takesMaxLengthFromHeader()
 	{
-		sut.process(new PageViewModel(new String[] { "VeryLong", "EvenLonger" }, new String[][] { {
-				"Short", "Values" } }, 0, 0));
+		sut.process(new PageViewModel(new String[] { "VeryLong", "EvenLonger" }, new String[][] { { "Short",
+				"Values" } }, 0, 0));
 		
-		assertArrayEquals(new int[] { 8, 10 }, resultAction.getResult());
+		assertArrayEquals(new int[] { 8, 10 }, resultAction.getLastResult());
 	}
 	
 	@Test
@@ -62,7 +61,7 @@ public class DetermineColumnLengthsTest
 		sut.process(new PageViewModel(new String[] { "Short", "Values" }, new String[][] {
 				{ "VeryLong", "Values" }, { "Short", "EvenLonger" } }, 0, 0));
 		
-		assertArrayEquals(new int[] { 8, 10 }, resultAction.getResult());
+		assertArrayEquals(new int[] { 8, 10 }, resultAction.getLastResult());
 		
 	}
 }

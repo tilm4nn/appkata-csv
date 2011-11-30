@@ -30,10 +30,10 @@ import java.util.List;
 import net.objectzoo.appkata.csv.dependencies.TextFileAdapterContract;
 import net.objectzoo.ebc.Configurable;
 import net.objectzoo.ebc.DependsOn;
-import net.objectzoo.ebc.StartAndResultBase;
+import net.objectzoo.ebc.impl.StartAndResultBase;
 
-public class ReadLines extends StartAndResultBase<List<String>> implements
-	DependsOn<TextFileAdapterContract>, Configurable
+public class ReadLines extends StartAndResultBase<List<String>> implements DependsOn<TextFileAdapterContract>,
+	Configurable
 {
 	
 	private TextFileAdapterContract textFileAdapter;
@@ -49,7 +49,7 @@ public class ReadLines extends StartAndResultBase<List<String>> implements
 	@Override
 	public void inject(TextFileAdapterContract dependency)
 	{
-		log.finer("inject");
+		logger.finer("inject");
 		
 		this.textFileAdapter = dependency;
 	}
@@ -77,8 +77,7 @@ public class ReadLines extends StartAndResultBase<List<String>> implements
 		}
 		else
 		{
-			throw new IllegalArgumentException(
-				"The CSV file name must be given as first command line parameter.");
+			throw new IllegalArgumentException("The CSV file name must be given as first command line parameter.");
 		}
 	}
 	

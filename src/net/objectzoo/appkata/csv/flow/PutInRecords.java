@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.objectzoo.appkata.csv.data.CsvLine;
 import net.objectzoo.appkata.csv.data.CsvRecord;
-import net.objectzoo.ebc.ProcessAndResultBase;
+import net.objectzoo.ebc.impl.ProcessAndResultBase;
 
 public class PutInRecords extends ProcessAndResultBase<List<CsvLine>, List<CsvRecord>>
 {

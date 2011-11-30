@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.objectzoo.appkata.csv.data.CsvLine;
-import net.objectzoo.ebc.ProcessAndResultBase;
+import net.objectzoo.ebc.impl.ProcessAndResultBase;
 
 public class SplitLines extends ProcessAndResultBase<List<String>, List<CsvLine>>
 {

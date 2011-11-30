@@ -30,14 +30,14 @@ import static net.objectzoo.appkata.csv.Utils.list;
 import java.io.IOException;
 import java.util.List;
 
+import net.objectzoo.appkata.csv.dependencies.TextFileAdapterContract;
+import net.objectzoo.ebc.test.MockAction;
+
 import org.hamcrest.Matchers;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.junit.Before;
 import org.junit.Test;
-
-import net.objectzoo.appkata.csv.dependencies.TextFileAdapterContract;
-import net.objectzoo.ebc.TestAction;
 
 public class ReadLinesTest
 {
@@ -45,7 +45,7 @@ public class ReadLinesTest
 	
 	private TextFileAdapterContract textFileAdapterMock;
 	
-	private TestAction<List<String>> resultAction;
+	private MockAction<List<String>> resultAction;
 	
 	private ReadLines sut;
 	
@@ -54,10 +54,10 @@ public class ReadLinesTest
 	{
 		mockery = new Mockery();
 		textFileAdapterMock = mockery.mock(TextFileAdapterContract.class);
-		resultAction = new TestAction<List<String>>();
+		resultAction = new MockAction<List<String>>();
 		
 		sut = new ReadLines();
-		sut.getResult().subscribe(resultAction);
+		sut.resultEvent().subscribe(resultAction);
 		sut.inject(textFileAdapterMock);
 	}
 	
@@ -100,7 +100,7 @@ public class ReadLinesTest
 		sut.configure("filename");
 		sut.start();
 		
-		assertEquals(list("Line1", "Line2"), resultAction.getResult());
+		assertEquals(list("Line1", "Line2"), resultAction.getLastResult());
 		
 		mockery.assertIsSatisfied();
 	}

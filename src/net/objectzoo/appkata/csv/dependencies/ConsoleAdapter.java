@@ -30,11 +30,11 @@ import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.objectzoo.logging.LoggerFactory;
+import net.objectzoo.ebc.util.LoggingUtils;
 
 public class ConsoleAdapter implements ConsoleAdapterContract
 {
-	private static final Logger log = LoggerFactory.getLogger(ConsoleAdapter.class);
+	private static final Logger log = LoggingUtils.getLogger(ConsoleAdapter.class);
 	
 	private BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
 	
@@ -75,14 +75,14 @@ public class ConsoleAdapter implements ConsoleAdapterContract
 						return str;
 					}
 				}
-					try
-					{
-						Thread.sleep(250);
-					}
-					catch (InterruptedException e)
-					{
-						// Woops interrupted!
-					}
+				try
+				{
+					Thread.sleep(250);
+				}
+				catch (InterruptedException e)
+				{
+					// Woops interrupted!
+				}
 			}
 			catch (IOException e)
 			{

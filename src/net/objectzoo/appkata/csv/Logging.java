@@ -5,7 +5,7 @@
  * 
  * http://www.object-zoo.net
  * 
- * mailto:ebc4j@object-zoo.net
+ * mailto:info@object-zoo.net
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -22,25 +22,38 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package net.objectzoo.ebc;
+package net.objectzoo.appkata.csv;
 
-import net.objectzoo.events.Event;
-import net.objectzoo.events.impl.EventDistributor;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
-public abstract class ProcessAndResultBase<ProcessParameter, ResultParameter> extends
-	ProcessBase<ProcessParameter>
+public class Logging
 {
-	private final EventDistributor<ResultParameter> result = new EventDistributor<ResultParameter>();
-	
-	public Event<ResultParameter> getResult()
+	private Logging()
 	{
-		return result;
+		
 	}
 	
-	protected void sendResult(ResultParameter parameter)
+	public static void init()
 	{
-		log.finer("sending result");
+		Handler handler = new ConsoleHandler();
+		handler.setLevel(Level.ALL);
+		handler.setFormatter(new Formatter()
+		{
+			@Override
+			public String format(LogRecord record)
+			{
+				return record.getLevel() + ": " + record.getLoggerName() + " "
+					+ formatMessage(record) + "\n";
+			}
+		});
 		
-		result.invoke(parameter);
+		Logger rootLogger = Logger.getLogger("");
+		rootLogger.addHandler(handler);
+		rootLogger.setLevel(Level.ALL);
 	}
 }

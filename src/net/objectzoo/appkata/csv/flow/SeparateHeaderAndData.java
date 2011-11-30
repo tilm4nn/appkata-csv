@@ -27,7 +27,7 @@ package net.objectzoo.appkata.csv.flow;
 import java.util.List;
 
 import net.objectzoo.appkata.csv.data.CsvLine;
-import net.objectzoo.ebc.ProcessBase;
+import net.objectzoo.ebc.impl.ProcessBase;
 import net.objectzoo.events.impl.EventDistributor;
 
 public class SeparateHeaderAndData extends ProcessBase<List<CsvLine>>
@@ -39,14 +39,14 @@ public class SeparateHeaderAndData extends ProcessBase<List<CsvLine>>
 	
 	private void sendNewHeader(CsvLine header)
 	{
-		log.finer("sending newHeader");
+		logger.finer("sending newHeader");
 		
 		newHeader.invoke(header);
 	}
 	
 	private void sendNewData(List<CsvLine> data)
 	{
-		log.finer("sending newData");
+		logger.finer("sending newData");
 		
 		newData.invoke(data);
 	}

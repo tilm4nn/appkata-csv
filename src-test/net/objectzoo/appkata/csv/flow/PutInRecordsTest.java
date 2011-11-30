@@ -29,26 +29,26 @@ import static net.objectzoo.appkata.csv.Utils.list;
 
 import java.util.List;
 
+import net.objectzoo.appkata.csv.data.CsvLine;
+import net.objectzoo.appkata.csv.data.CsvRecord;
+import net.objectzoo.ebc.test.MockAction;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import net.objectzoo.appkata.csv.data.CsvLine;
-import net.objectzoo.appkata.csv.data.CsvRecord;
-import net.objectzoo.ebc.TestAction;
-
 public class PutInRecordsTest
 {
-	private TestAction<List<CsvRecord>> resultAction;
+	private MockAction<List<CsvRecord>> resultAction;
 	
 	private PutInRecords sut;
 	
 	@Before
 	public void setup()
 	{
-		resultAction = new TestAction<List<CsvRecord>>();
+		resultAction = new MockAction<List<CsvRecord>>();
 		
 		sut = new PutInRecords();
-		sut.getResult().subscribe(resultAction);
+		sut.resultEvent().subscribe(resultAction);
 	}
 	
 	@Test
@@ -57,7 +57,7 @@ public class PutInRecordsTest
 		sut.process(list(new CsvLine("Value1", "Value2"), new CsvLine("Value3", "Value4")));
 		
 		assertEquals(
-			list(new CsvRecord(1, new CsvLine("Value1", "Value2")), new CsvRecord(2, new CsvLine(
-				"Value3", "Value4"))), resultAction.getResult());
+			list(new CsvRecord(1, new CsvLine("Value1", "Value2")), new CsvRecord(2, new CsvLine("Value3",
+				"Value4"))), resultAction.getLastResult());
 	}
 }

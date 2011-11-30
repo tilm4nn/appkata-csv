@@ -25,40 +25,38 @@
 package net.objectzoo.appkata.csv.flow.displaypage;
 
 import junit.framework.Assert;
+import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
+import net.objectzoo.ebc.test.MockAction;
+import net.objectzoo.ebc.util.Pair;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
-import net.objectzoo.ebc.Pair;
-import net.objectzoo.ebc.TestAction;
-
 public class RenderPageTableTest
 {
-	private TestAction<String> resultAction;
+	private MockAction<String> resultAction;
 	
 	private RenderPageViewModel sut;
 	
 	@Before
 	public void setup()
 	{
-		resultAction = new TestAction<String>();
+		resultAction = new MockAction<String>();
 		
 		sut = new RenderPageViewModel();
-		sut.getResult().subscribe(resultAction);
+		sut.resultEvent().subscribe(resultAction);
 	}
 	
 	@Test
 	public void rendersTableWithTwoColumnsAndTwoDataRows()
 	{
-		final String expected = "666666    |88888888|\n" + "----------+--------+\n"
-			+ "88888888  |4444    |\n" + "1010101010|22      |\nPage 0 of 0\n";
+		final String expected = "666666    |88888888|\n" + "----------+--------+\n" + "88888888  |4444    |\n"
+			+ "1010101010|22      |\nPage 0 of 0\n";
 		
-		sut.process(new Pair<PageViewModel, int[]>(new PageViewModel(new String[] { "666666",
-				"88888888" }, new String[][] { { "88888888", "4444" }, { "1010101010", "22" } }, 0,
-			0), new int[] { 10, 8 }));
+		sut.process(new Pair<PageViewModel, int[]>(new PageViewModel(new String[] { "666666", "88888888" },
+			new String[][] { { "88888888", "4444" }, { "1010101010", "22" } }, 0, 0), new int[] { 10, 8 }));
 		
-		Assert.assertEquals(expected, resultAction.getResult());
+		Assert.assertEquals(expected, resultAction.getLastResult());
 	}
 	
 	@Test
@@ -66,9 +64,9 @@ public class RenderPageTableTest
 	{
 		final String expected = "\n\nPage 12 of 34\n";
 		
-		sut.process(new Pair<PageViewModel, int[]>(new PageViewModel(new String[] {},
-			new String[][] {}, 12, 34), new int[] {}));
+		sut.process(new Pair<PageViewModel, int[]>(new PageViewModel(new String[] {}, new String[][] {}, 12, 34),
+			new int[] {}));
 		
-		Assert.assertEquals(expected, resultAction.getResult());
+		Assert.assertEquals(expected, resultAction.getLastResult());
 	}
 }

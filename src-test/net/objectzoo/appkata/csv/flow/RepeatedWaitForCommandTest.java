@@ -25,7 +25,7 @@
 package net.objectzoo.appkata.csv.flow;
 
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
-import net.objectzoo.ebc.TestAction0;
+import net.objectzoo.ebc.test.MockAction0;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -41,7 +41,7 @@ public class RepeatedWaitForCommandTest
 	
 	private RepeatedWaitForCommand sut;
 	
-	private TestAction0 resultAction;
+	private MockAction0 resultAction;
 	
 	@Before
 	public void setup()
@@ -49,7 +49,7 @@ public class RepeatedWaitForCommandTest
 		mockery = new Mockery();
 		consoleAdapterMock = mockery.mock(ConsoleAdapterContract.class);
 		
-		resultAction = new TestAction0();
+		resultAction = new MockAction0();
 		
 		sut = new RepeatedWaitForCommand();
 		sut.inject(consoleAdapterMock);
@@ -74,7 +74,7 @@ public class RepeatedWaitForCommandTest
 			}
 		});
 		
-		sut.getStart().invoke();
+		sut.startAction().invoke();
 		
 		mockery.assertIsSatisfied();
 	}
@@ -82,7 +82,7 @@ public class RepeatedWaitForCommandTest
 	@Test
 	public void signalsNextPageCommandForInputOfX()
 	{
-		sut.getNextPageCommand().subscribe(resultAction);
+		sut.nextPageCommandEvent().subscribe(resultAction);
 		
 		mockery.checking(new Expectations()
 		{
@@ -99,7 +99,7 @@ public class RepeatedWaitForCommandTest
 			}
 		});
 		
-		sut.getStart().invoke();
+		sut.startAction().invoke();
 		
 		resultAction.assertInvoked();
 		mockery.assertIsSatisfied();
@@ -108,7 +108,7 @@ public class RepeatedWaitForCommandTest
 	@Test
 	public void signalsPreviousPageCommandForInputOfX()
 	{
-		sut.getPreviousPageCommand().subscribe(resultAction);
+		sut.previousPageCommandEvent().subscribe(resultAction);
 		
 		mockery.checking(new Expectations()
 		{
@@ -125,7 +125,7 @@ public class RepeatedWaitForCommandTest
 			}
 		});
 		
-		sut.getStart().invoke();
+		sut.startAction().invoke();
 		
 		resultAction.assertInvoked();
 		mockery.assertIsSatisfied();
@@ -134,7 +134,7 @@ public class RepeatedWaitForCommandTest
 	@Test
 	public void signalsFirstPageCommandForInputOfX()
 	{
-		sut.getFirstPageCommand().subscribe(resultAction);
+		sut.firstPageCommandEvent().subscribe(resultAction);
 		
 		mockery.checking(new Expectations()
 		{
@@ -151,7 +151,7 @@ public class RepeatedWaitForCommandTest
 			}
 		});
 		
-		sut.getStart().invoke();
+		sut.startAction().invoke();
 		
 		resultAction.assertInvoked();
 		mockery.assertIsSatisfied();
@@ -160,7 +160,7 @@ public class RepeatedWaitForCommandTest
 	@Test
 	public void signalsLastPageCommandForInputOfX()
 	{
-		sut.getLastPageCommand().subscribe(resultAction);
+		sut.lastPageCommandEvent().subscribe(resultAction);
 		
 		mockery.checking(new Expectations()
 		{
@@ -177,7 +177,7 @@ public class RepeatedWaitForCommandTest
 			}
 		});
 		
-		sut.getStart().invoke();
+		sut.startAction().invoke();
 		
 		resultAction.assertInvoked();
 		mockery.assertIsSatisfied();
@@ -186,7 +186,7 @@ public class RepeatedWaitForCommandTest
 	@Test
 	public void signalsJumpToPageCommandForInputOfJ()
 	{
-		sut.getJumpToPageCommand().subscribe(resultAction);
+		sut.jumpToPageCommandEvent().subscribe(resultAction);
 		
 		mockery.checking(new Expectations()
 		{
@@ -203,7 +203,7 @@ public class RepeatedWaitForCommandTest
 			}
 		});
 		
-		sut.getStart().invoke();
+		sut.startAction().invoke();
 		
 		resultAction.assertInvoked();
 		mockery.assertIsSatisfied();

@@ -24,20 +24,20 @@
  */
 package net.objectzoo.appkata.csv.flow.displaypage;
 
+import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
+import net.objectzoo.ebc.test.MockAction0;
+
 import org.hamcrest.Matchers;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.junit.Before;
 import org.junit.Test;
 
-import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
-import net.objectzoo.ebc.TestAction0;
-
 public class DisplayPageTableTest
 {
 	private Mockery mockery;
 	
-	private TestAction0 signalAction;
+	private MockAction0 signalAction;
 	
 	private ConsoleAdapterContract consoleAdapterMock;
 	
@@ -48,10 +48,10 @@ public class DisplayPageTableTest
 	{
 		mockery = new Mockery();
 		consoleAdapterMock = mockery.mock(ConsoleAdapterContract.class);
-		signalAction = new TestAction0();
+		signalAction = new MockAction0();
 		
 		sut = new DisplayPageViewModel();
-		sut.getSignal().subscribe(signalAction);
+		sut.signalEvent().subscribe(signalAction);
 		sut.inject(consoleAdapterMock);
 	}
 	

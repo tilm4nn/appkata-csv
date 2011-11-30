@@ -26,20 +26,20 @@ package net.objectzoo.appkata.csv.flow;
 
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
 import net.objectzoo.ebc.DependsOn;
-import net.objectzoo.ebc.StartAndSignalBase;
+import net.objectzoo.ebc.impl.StartAndSignalBase;
 import net.objectzoo.events.Event0;
-import net.objectzoo.events.impl.Event0Distributor;
+import net.objectzoo.events.impl.Event0Caller;
+import net.objectzoo.events.impl.Event0Delegate;
 
-public class RepeatedWaitForCommand extends StartAndSignalBase implements
-	DependsOn<ConsoleAdapterContract>
+public class RepeatedWaitForCommand extends StartAndSignalBase implements DependsOn<ConsoleAdapterContract>
 {
 	private ConsoleAdapterContract consoleAdapter;
 	
-	private final Event0Distributor nextPageCommand = new Event0Distributor();
-	private final Event0Distributor previousPageCommand = new Event0Distributor();
-	private final Event0Distributor lastPageCommand = new Event0Distributor();
-	private final Event0Distributor firstPageCommand = new Event0Distributor();
-	private final Event0Distributor jumpToPageCommand = new Event0Distributor();
+	private final Event0Delegate nextPageCommandEvent = new Event0Caller();
+	private final Event0Delegate previousPageCommandEvent = new Event0Caller();
+	private final Event0Delegate lastPageCommandEvent = new Event0Caller();
+	private final Event0Delegate firstPageCommandEvent = new Event0Caller();
+	private final Event0Delegate jumpToPageCommandEvent = new Event0Caller();
 	
 	@Override
 	public void inject(ConsoleAdapterContract dependency)
@@ -69,46 +69,46 @@ public class RepeatedWaitForCommand extends StartAndSignalBase implements
 		switch (input)
 		{
 			case 'n':
-				nextPageCommand.invoke();
+				nextPageCommandEvent.invoke();
 				break;
 			case 'p':
-				previousPageCommand.invoke();
+				previousPageCommandEvent.invoke();
 				break;
 			case 'f':
-				firstPageCommand.invoke();
+				firstPageCommandEvent.invoke();
 				break;
 			case 'l':
-				lastPageCommand.invoke();
+				lastPageCommandEvent.invoke();
 				break;
 			case 'j':
-				jumpToPageCommand.invoke();
+				jumpToPageCommandEvent.invoke();
 				break;
 		}
 	}
 	
-	public Event0 getNextPageCommand()
+	public Event0 nextPageCommandEvent()
 	{
-		return nextPageCommand;
+		return nextPageCommandEvent;
 	}
 	
-	public Event0 getPreviousPageCommand()
+	public Event0 previousPageCommandEvent()
 	{
-		return previousPageCommand;
+		return previousPageCommandEvent;
 	}
 	
-	public Event0 getFirstPageCommand()
+	public Event0 firstPageCommandEvent()
 	{
-		return firstPageCommand;
+		return firstPageCommandEvent;
 	}
 	
-	public Event0 getLastPageCommand()
+	public Event0 lastPageCommandEvent()
 	{
-		return lastPageCommand;
+		return lastPageCommandEvent;
 	}
 	
-	public Event0Distributor getJumpToPageCommand()
+	public Event0 jumpToPageCommandEvent()
 	{
-		return jumpToPageCommand;
+		return jumpToPageCommandEvent;
 	}
 	
 }

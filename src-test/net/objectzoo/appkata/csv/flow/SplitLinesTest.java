@@ -29,26 +29,26 @@ import static net.objectzoo.appkata.csv.Utils.list;
 
 import java.util.List;
 
+import net.objectzoo.appkata.csv.Utils;
+import net.objectzoo.appkata.csv.data.CsvLine;
+import net.objectzoo.ebc.test.MockAction;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import net.objectzoo.appkata.csv.Utils;
-import net.objectzoo.appkata.csv.data.CsvLine;
-import net.objectzoo.ebc.TestAction;
-
 public class SplitLinesTest
 {
-	private TestAction<List<CsvLine>> resultAction;
+	private MockAction<List<CsvLine>> resultAction;
 	
 	private SplitLines sut;
 	
 	@Before
 	public void setup()
 	{
-		resultAction = new TestAction<List<CsvLine>>();
+		resultAction = new MockAction<List<CsvLine>>();
 		
 		sut = new SplitLines();
-		sut.getResult().subscribe(resultAction);
+		sut.resultEvent().subscribe(resultAction);
 	}
 	
 	@Test
@@ -56,7 +56,7 @@ public class SplitLinesTest
 	{
 		sut.process(list("Value1;Value2"));
 		
-		assertEquals(list(new CsvLine("Value1", "Value2")), resultAction.getResult());
+		assertEquals(list(new CsvLine("Value1", "Value2")), resultAction.getLastResult());
 	}
 	
 	@Test
@@ -64,7 +64,7 @@ public class SplitLinesTest
 	{
 		sut.process(list("Value1"));
 		
-		assertEquals(list(new CsvLine("Value1")), resultAction.getResult());
+		assertEquals(list(new CsvLine("Value1")), resultAction.getLastResult());
 	}
 	
 	@Test
@@ -72,7 +72,7 @@ public class SplitLinesTest
 	{
 		sut.process(list(""));
 		
-		assertEquals(list(new CsvLine("")), resultAction.getResult());
+		assertEquals(list(new CsvLine("")), resultAction.getLastResult());
 	}
 	
 	@Test
@@ -81,7 +81,7 @@ public class SplitLinesTest
 		sut.process(list("Value1;Value2", "Value3;Value4"));
 		
 		assertEquals(list(new CsvLine("Value1", "Value2"), new CsvLine("Value3", "Value4")),
-			resultAction.getResult());
+			resultAction.getLastResult());
 	}
 	
 	@Test
@@ -89,6 +89,6 @@ public class SplitLinesTest
 	{
 		sut.process(Utils.<String> list());
 		
-		assertEquals(Utils.<CsvLine> list(), resultAction.getResult());
+		assertEquals(Utils.<CsvLine> list(), resultAction.getLastResult());
 	}
 }

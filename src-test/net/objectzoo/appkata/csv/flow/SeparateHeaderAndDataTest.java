@@ -29,25 +29,25 @@ import static net.objectzoo.appkata.csv.Utils.list;
 
 import java.util.List;
 
+import net.objectzoo.appkata.csv.data.CsvLine;
+import net.objectzoo.ebc.test.MockAction;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import net.objectzoo.appkata.csv.data.CsvLine;
-import net.objectzoo.ebc.TestAction;
-
 public class SeparateHeaderAndDataTest
 {
-	private TestAction<CsvLine> newHeaderAction;
+	private MockAction<CsvLine> newHeaderAction;
 	
-	private TestAction<List<CsvLine>> newDataAction;
+	private MockAction<List<CsvLine>> newDataAction;
 	
 	private SeparateHeaderAndData sut;
 	
 	@Before
 	public void setup()
 	{
-		newDataAction = new TestAction<List<CsvLine>>();
-		newHeaderAction = new TestAction<CsvLine>();
+		newDataAction = new MockAction<List<CsvLine>>();
+		newHeaderAction = new MockAction<CsvLine>();
 		
 		sut = new SeparateHeaderAndData();
 		sut.getNewHeader().subscribe(newHeaderAction);
@@ -59,7 +59,7 @@ public class SeparateHeaderAndDataTest
 	{
 		sut.process(list(new CsvLine("Header"), new CsvLine("Data")));
 		
-		assertEquals(new CsvLine("Header"), newHeaderAction.getResult());
+		assertEquals(new CsvLine("Header"), newHeaderAction.getLastResult());
 	}
 	
 	@Test
@@ -67,6 +67,6 @@ public class SeparateHeaderAndDataTest
 	{
 		sut.process(list(new CsvLine("Header"), new CsvLine("Data1"), new CsvLine("Data2")));
 		
-		assertEquals(list(new CsvLine("Data1"), new CsvLine("Data2")), newDataAction.getResult());
+		assertEquals(list(new CsvLine("Data1"), new CsvLine("Data2")), newDataAction.getLastResult());
 	}
 }

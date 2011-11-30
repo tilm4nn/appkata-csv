@@ -26,43 +26,41 @@ package net.objectzoo.appkata.csv.flow.displaypage;
 
 import static junit.framework.Assert.assertEquals;
 import static net.objectzoo.appkata.csv.Utils.list;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import net.objectzoo.appkata.csv.data.CsvLine;
 import net.objectzoo.appkata.csv.data.CsvRecord;
 import net.objectzoo.appkata.csv.data.Page;
 import net.objectzoo.appkata.csv.data.Position;
 import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
-import net.objectzoo.ebc.Pair;
-import net.objectzoo.ebc.TestAction;
+import net.objectzoo.ebc.test.MockAction;
+import net.objectzoo.ebc.util.Pair;
+
+import org.junit.Before;
+import org.junit.Test;
 
 public class MapToPageViewModelTest
 {
-	private TestAction<PageViewModel> resultAction;
+	private MockAction<PageViewModel> resultAction;
 	
 	private MapToPageViewModel sut;
 	
 	@Before
 	public void setup()
 	{
-		resultAction = new TestAction<PageViewModel>();
+		resultAction = new MockAction<PageViewModel>();
 		
 		sut = new MapToPageViewModel();
-		sut.getResult().subscribe(resultAction);
+		sut.resultEvent().subscribe(resultAction);
 	}
 	
 	@Test
 	public void mapTwoRowsAndTwoColumns()
 	{
-		sut.process(new Pair<Page, Position>(new Page(new CsvLine("Header1", "Header2"), list(
-			new CsvRecord(1, new CsvLine("Value1", "Value2")), new CsvRecord(2, new CsvLine(
-				"Value3", "Value4")))), new Position(0, 0)));
+		sut.process(new Pair<Page, Position>(new Page(new CsvLine("Header1", "Header2"), list(new CsvRecord(1,
+			new CsvLine("Value1", "Value2")), new CsvRecord(2, new CsvLine("Value3", "Value4")))), new Position(0,
+			0)));
 		
-		assertEquals(new PageViewModel(new String[] { "No.", "Header1", "Header2" },
-			new String[][] { { "1", "Value1", "Value2" }, { "2", "Value3", "Value4" } }, 0, 0),
-			resultAction.getResult());
+		assertEquals(new PageViewModel(new String[] { "No.", "Header1", "Header2" }, new String[][] {
+				{ "1", "Value1", "Value2" }, { "2", "Value3", "Value4" } }, 0, 0), resultAction.getLastResult());
 	}
 	
 }

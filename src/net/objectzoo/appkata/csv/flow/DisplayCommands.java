@@ -2,7 +2,7 @@ package net.objectzoo.appkata.csv.flow;
 
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
 import net.objectzoo.ebc.DependsOn;
-import net.objectzoo.ebc.StartBase;
+import net.objectzoo.ebc.impl.StartBase;
 
 public class DisplayCommands extends StartBase implements DependsOn<ConsoleAdapterContract>
 {

@@ -6,17 +6,16 @@ import net.objectzoo.appkata.csv.data.Page;
 import net.objectzoo.appkata.csv.data.Position;
 import net.objectzoo.delegates.Action;
 import net.objectzoo.delegates.Action0;
-import net.objectzoo.ebc.Pair;
-import net.objectzoo.ebc.ProcessAndResultBase;
+import net.objectzoo.ebc.impl.ProcessAndResultBase;
+import net.objectzoo.ebc.util.Pair;
 
 public class SelectPage extends ProcessAndResultBase<List<Page>, Pair<Page, Position>>
 {
-	
 	List<Page> pages;
 	
 	int currentPage;
 	
-	private final Action0 nextPage = new Action0()
+	private final Action0 nextPageAction = new Action0()
 	{
 		@Override
 		public void invoke()
@@ -29,7 +28,7 @@ public class SelectPage extends ProcessAndResultBase<List<Page>, Pair<Page, Posi
 		}
 	};
 	
-	private final Action0 previousPage = new Action0()
+	private final Action0 previousPageAction = new Action0()
 	{
 		@Override
 		public void invoke()
@@ -42,7 +41,7 @@ public class SelectPage extends ProcessAndResultBase<List<Page>, Pair<Page, Posi
 		}
 	};
 	
-	private final Action0 firstPage = new Action0()
+	private final Action0 firstPageAction = new Action0()
 	{
 		@Override
 		public void invoke()
@@ -52,7 +51,7 @@ public class SelectPage extends ProcessAndResultBase<List<Page>, Pair<Page, Posi
 		}
 	};
 	
-	private final Action0 lastPage = new Action0()
+	private final Action0 lastPageAction = new Action0()
 	{
 		@Override
 		public void invoke()
@@ -62,7 +61,7 @@ public class SelectPage extends ProcessAndResultBase<List<Page>, Pair<Page, Posi
 		}
 	};
 	
-	private final Action<Integer> jumpToPage = new Action<Integer>()
+	private final Action<Integer> jumpToPageAction = new Action<Integer>()
 	{
 		@Override
 		public void invoke(Integer pageNumber)
@@ -86,33 +85,32 @@ public class SelectPage extends ProcessAndResultBase<List<Page>, Pair<Page, Posi
 	
 	private void sendCurrentPage()
 	{
-		sendResult(new Pair<Page, Position>(pages.get(currentPage), new Position(currentPage + 1,
-			pages.size())));
+		sendResult(new Pair<Page, Position>(pages.get(currentPage), new Position(currentPage + 1, pages.size())));
 	}
 	
-	public Action0 getNextPage()
+	public Action0 nextPageAction()
 	{
-		return nextPage;
+		return nextPageAction;
 	}
 	
-	public Action0 getPreviousPage()
+	public Action0 previousPageAction()
 	{
-		return previousPage;
+		return previousPageAction;
 	}
 	
-	public Action0 getFirstPage()
+	public Action0 firstPageAction()
 	{
-		return firstPage;
+		return firstPageAction;
 	}
 	
-	public Action0 getLastPage()
+	public Action0 lastPageAction()
 	{
-		return lastPage;
+		return lastPageAction;
 	}
 	
-	public Action<Integer> getJumpToPage()
+	public Action<Integer> jumpToPageAction()
 	{
-		return jumpToPage;
+		return jumpToPageAction;
 	}
 	
 }

@@ -28,9 +28,10 @@ import net.objectzoo.appkata.csv.data.Page;
 import net.objectzoo.appkata.csv.data.Position;
 import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
 import net.objectzoo.delegates.Action;
-import net.objectzoo.ebc.JoinToPair;
-import net.objectzoo.ebc.Pair;
+import net.objectzoo.ebc.join.JoinToPair;
+import net.objectzoo.ebc.util.Pair;
 import net.objectzoo.events.Event0;
+import net.objectzoo.events.impl.EventDelegate;
 import net.objectzoo.events.impl.EventDistributor;
 
 public class DisplayPageBoard
@@ -39,24 +40,22 @@ public class DisplayPageBoard
 	
 	private Event0 signal;
 	
-	public DisplayPageBoard(MapToPageViewModel mapToPageViewModel,
-							DetermineColumnLengths determineColumnLengths,
-							RenderPageViewModel renderPageViewModel,
-							DisplayPageViewModel displayPageViewModel)
+	public DisplayPageBoard(MapToPageViewModel mapToPageViewModel, DetermineColumnLengths determineColumnLengths,
+							RenderPageViewModel renderPageViewModel, DisplayPageViewModel displayPageViewModel)
 	{
-		EventDistributor<PageViewModel> split = new EventDistributor<PageViewModel>();
+		EventDelegate<PageViewModel> split = new EventDistributor<PageViewModel>();
 		JoinToPair<PageViewModel, int[]> join = new JoinToPair<PageViewModel, int[]>()
 		{
 		};
 		
-		process = mapToPageViewModel.getProcess();
-		mapToPageViewModel.getResult().subscribe(split);
-		split.subscribe(determineColumnLengths.getProcess());
-		split.subscribe(join.getInput1());
-		determineColumnLengths.getResult().subscribe(join.getInput2());
-		join.getResult().subscribe(renderPageViewModel.getProcess());
-		renderPageViewModel.getResult().subscribe(displayPageViewModel.getProcess());
-		signal = displayPageViewModel.getSignal();
+		process = mapToPageViewModel.processAction();
+		mapToPageViewModel.resultEvent().subscribe(split);
+		split.subscribe(determineColumnLengths.processAction());
+		split.subscribe(join.input1Action());
+		determineColumnLengths.resultEvent().subscribe(join.input2Action());
+		join.resultEvent().subscribe(renderPageViewModel.processAction());
+		renderPageViewModel.resultEvent().subscribe(displayPageViewModel.processAction());
+		signal = displayPageViewModel.signalEvent();
 	}
 	
 	public Action<Pair<Page, Position>> getProcess()
