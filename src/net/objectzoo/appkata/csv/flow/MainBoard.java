@@ -42,7 +42,8 @@ public class MainBoard implements EntryPoint
 					 DivideIntoPageSize divideIntoPageSize, SelectPage selectPage,
 					 InputPageNumber inputPageNumber, DisplayPageBoard displayPage, DisplayCommands displayCommands)
 	{
-		JoinObjectAndCollection<CsvLine, PageData, Page> join = new GenericJoinObjectAndCollection<CsvLine, PageData, Page>()
+		JoinObjectAndCollection<CsvLine, PageData, Page> join = new GenericJoinObjectAndCollection<CsvLine, PageData, Page>(
+			false)
 		{
 		};
 		

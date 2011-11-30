@@ -44,9 +44,7 @@ public class DisplayPageBoard
 							RenderPageViewModel renderPageViewModel, DisplayPageViewModel displayPageViewModel)
 	{
 		EventDelegate<PageViewModel> split = new EventDistributor<PageViewModel>();
-		JoinToPair<PageViewModel, int[]> join = new JoinToPair<PageViewModel, int[]>()
-		{
-		};
+		JoinToPair<PageViewModel, int[]> join = new JoinToPair<PageViewModel, int[]>(true);
 		
 		process = mapToPageViewModel.processAction();
 		mapToPageViewModel.resultEvent().subscribe(split);
