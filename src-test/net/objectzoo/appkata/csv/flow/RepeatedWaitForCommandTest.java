@@ -24,14 +24,14 @@
  */
 package net.objectzoo.appkata.csv.flow;
 
+import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
+import net.objectzoo.ebc.TestAction0;
+
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.Sequence;
 import org.junit.Before;
 import org.junit.Test;
-
-import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
-import net.objectzoo.ebc.TestAction0;
 
 public class RepeatedWaitForCommandTest
 {
@@ -74,7 +74,7 @@ public class RepeatedWaitForCommandTest
 			}
 		});
 		
-		sut.run();
+		sut.getStart().invoke();
 		
 		mockery.assertIsSatisfied();
 	}
@@ -99,7 +99,7 @@ public class RepeatedWaitForCommandTest
 			}
 		});
 		
-		sut.run();
+		sut.getStart().invoke();
 		
 		resultAction.assertInvoked();
 		mockery.assertIsSatisfied();
@@ -125,7 +125,7 @@ public class RepeatedWaitForCommandTest
 			}
 		});
 		
-		sut.run();
+		sut.getStart().invoke();
 		
 		resultAction.assertInvoked();
 		mockery.assertIsSatisfied();
@@ -151,7 +151,7 @@ public class RepeatedWaitForCommandTest
 			}
 		});
 		
-		sut.run();
+		sut.getStart().invoke();
 		
 		resultAction.assertInvoked();
 		mockery.assertIsSatisfied();
@@ -177,7 +177,7 @@ public class RepeatedWaitForCommandTest
 			}
 		});
 		
-		sut.run();
+		sut.getStart().invoke();
 		
 		resultAction.assertInvoked();
 		mockery.assertIsSatisfied();
@@ -203,7 +203,7 @@ public class RepeatedWaitForCommandTest
 			}
 		});
 		
-		sut.run();
+		sut.getStart().invoke();
 		
 		resultAction.assertInvoked();
 		mockery.assertIsSatisfied();

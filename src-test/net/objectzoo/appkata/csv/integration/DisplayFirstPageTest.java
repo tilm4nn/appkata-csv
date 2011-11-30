@@ -28,11 +28,6 @@ import static net.objectzoo.appkata.csv.Utils.list;
 
 import java.io.IOException;
 
-import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.Sequence;
-import org.junit.Test;
-
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
 import net.objectzoo.appkata.csv.dependencies.TextFileAdapterContract;
 import net.objectzoo.appkata.csv.flow.DisplayCommands;
@@ -51,6 +46,11 @@ import net.objectzoo.appkata.csv.flow.displaypage.DisplayPageViewModel;
 import net.objectzoo.appkata.csv.flow.displaypage.MapToPageViewModel;
 import net.objectzoo.appkata.csv.flow.displaypage.RenderPageViewModel;
 
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.Sequence;
+import org.junit.Test;
+
 public class DisplayFirstPageTest
 {
 	
@@ -67,11 +67,10 @@ public class DisplayFirstPageTest
 		DisplayCommands displayCommands = new DisplayCommands();
 		InputPageNumber inputPageNumber = new InputPageNumber();
 		RepeatedWaitForCommand repeatedWaitForCommand = new RepeatedWaitForCommand();
-		new MainBoard(repeatedWaitForCommand, readLines, new SplitLines(),
-			new SeparateHeaderAndData(), new PutInRecords(), divideIntoPageSize, new SelectPage(),
-			inputPageNumber, new DisplayPageBoard(new MapToPageViewModel(),
-				new DetermineColumnLengths(), new RenderPageViewModel(), displayPageTable),
-			displayCommands);
+		new MainBoard(repeatedWaitForCommand, readLines, new SplitLines(), new SeparateHeaderAndData(),
+			new PutInRecords(), divideIntoPageSize, new SelectPage(), inputPageNumber, new DisplayPageBoard(
+				new MapToPageViewModel(), new DetermineColumnLengths(), new RenderPageViewModel(),
+				displayPageTable), displayCommands);
 		
 		readLines.inject(textFileAdapterMock);
 		displayPageTable.inject(consoleAdapterMock);
@@ -106,7 +105,7 @@ public class DisplayFirstPageTest
 			}
 		});
 		
-		repeatedWaitForCommand.run();
+		repeatedWaitForCommand.getStart().invoke();
 		
 		mockery.assertIsSatisfied();
 	}
