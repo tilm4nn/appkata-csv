@@ -26,8 +26,6 @@ package net.objectzoo.appkata.csv.flow.loadpage;
 
 import java.util.List;
 
-import com.google.inject.Inject;
-
 import net.objectzoo.appkata.csv.data.CsvLine;
 import net.objectzoo.appkata.csv.data.CsvRecord;
 import net.objectzoo.appkata.csv.data.Page;
@@ -41,6 +39,8 @@ import net.objectzoo.events.Event;
 import net.objectzoo.events.impl.EventDelegate;
 import net.objectzoo.events.impl.EventDistributor;
 
+import com.google.inject.Inject;
+
 public class LoadPageBoard implements CanProcess<Integer>, SendsResult<Page>
 {
 	private final EventDelegate<Integer> processDelegate;
@@ -52,13 +52,12 @@ public class LoadPageBoard implements CanProcess<Integer>, SendsResult<Page>
 	private final Action<String> initFilenameAction;
 	
 	@Inject
-	public LoadPageBoard(ComputeRecordNumber computeRecordNumber,
-						 LookUpPageOffset lookupPageOffset, ReadPageLines readPageLines,
-						 SplitLines splitLines, SeparateHeaderAndData separateHeaderAndData,
-						 PutInRecords putInRecords)
+	public LoadPageBoard(ComputeRecordNumber computeRecordNumber, LookUpPageOffset lookupPageOffset,
+						 ReadPageLines readPageLines, SplitLines splitLines,
+						 SeparateHeaderAndData separateHeaderAndData, PutInRecords putInRecords)
 	{
-		JoinToPair<Integer, List<CsvLine>> joinPageNumAndLines = new JoinToPair<Integer, List<CsvLine>>();
-		Join<CsvLine, List<CsvRecord>, Page> joinToPage = new GenericJoin<CsvLine, List<CsvRecord>, Page>()
+		JoinToPair<Integer, List<CsvLine>> joinPageNumAndLines = new JoinToPair<Integer, List<CsvLine>>(true);
+		Join<CsvLine, List<CsvRecord>, Page> joinToPage = new GenericJoin<CsvLine, List<CsvRecord>, Page>(true)
 		{
 		};
 		processDelegate = new EventDistributor<Integer>();
