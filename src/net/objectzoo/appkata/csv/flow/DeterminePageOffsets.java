@@ -39,7 +39,7 @@ import net.objectzoo.events.Event;
 import net.objectzoo.events.impl.EventDelegate;
 import net.objectzoo.events.impl.EventDistributor;
 
-public class DeterminePageOffsets extends StartAndResultBase<Progress>
+class DeterminePageOffsets extends StartAndResultBase<Progress>
 {
 	int pageSize;
 	

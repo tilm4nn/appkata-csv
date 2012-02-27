@@ -53,5 +53,4 @@ public class DetermineFilename extends ResultBase<String> implements Configurabl
 				"The CSV file name must be given as first command line parameter.");
 		}
 	}
-	
 }

@@ -34,9 +34,8 @@ import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
 import net.objectzoo.ebc.impl.ProcessAndResultBase;
 import net.objectzoo.ebc.util.Pair;
 
-public class MapToPageViewModel extends ProcessAndResultBase<Pair<Page, Position>, PageViewModel>
+class MapToPageViewModel extends ProcessAndResultBase<Pair<Page, Position>, PageViewModel>
 {
-	
 	@Override
 	protected void process(Pair<Page, Position> pageAndPosition)
 	{
@@ -73,5 +72,4 @@ public class MapToPageViewModel extends ProcessAndResultBase<Pair<Page, Position
 		}
 		return row;
 	}
-	
 }

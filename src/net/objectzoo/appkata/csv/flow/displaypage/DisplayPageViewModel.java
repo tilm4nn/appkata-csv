@@ -29,7 +29,7 @@ import com.google.inject.Inject;
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
 import net.objectzoo.ebc.impl.ProcessAndSignalBase;
 
-public class DisplayPageViewModel extends ProcessAndSignalBase<String>
+class DisplayPageViewModel extends ProcessAndSignalBase<String>
 {
 	private final ConsoleAdapterContract consoleAdapter;
 	

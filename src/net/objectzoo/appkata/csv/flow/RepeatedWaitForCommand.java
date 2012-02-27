@@ -32,7 +32,7 @@ import net.objectzoo.events.Event0;
 import net.objectzoo.events.impl.Event0Delegate;
 import net.objectzoo.events.impl.Event0Distributor;
 
-public class RepeatedWaitForCommand extends StartAndSignalBase
+class RepeatedWaitForCommand extends StartAndSignalBase
 {
 	private final ConsoleAdapterContract consoleAdapter;
 	
@@ -111,5 +111,4 @@ public class RepeatedWaitForCommand extends StartAndSignalBase
 	{
 		return jumpToPageCommandEvent;
 	}
-	
 }

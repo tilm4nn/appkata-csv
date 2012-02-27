@@ -33,7 +33,7 @@ import net.objectzoo.events.Event;
 import net.objectzoo.events.impl.EventDelegate;
 import net.objectzoo.events.impl.EventDistributor;
 
-public class SelectPage extends ProcessAndResultBase<Progress, Position>
+class SelectPage extends ProcessAndResultBase<Progress, Position>
 {
 	int currentPage;
 	
@@ -151,5 +151,4 @@ public class SelectPage extends ProcessAndResultBase<Progress, Position>
 	{
 		return jumpToPageAction;
 	}
-	
 }

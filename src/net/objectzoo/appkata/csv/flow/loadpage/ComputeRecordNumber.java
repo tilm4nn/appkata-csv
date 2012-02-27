@@ -27,9 +27,8 @@ package net.objectzoo.appkata.csv.flow.loadpage;
 import net.objectzoo.delegates.Action;
 import net.objectzoo.ebc.impl.ProcessAndResultBase;
 
-public class ComputeRecordNumber extends ProcessAndResultBase<Integer, Integer>
+class ComputeRecordNumber extends ProcessAndResultBase<Integer, Integer>
 {
-	
 	int pageSize;
 	
 	private final Action<Integer> initPageSizeAction = new Action<Integer>()
@@ -51,5 +50,4 @@ public class ComputeRecordNumber extends ProcessAndResultBase<Integer, Integer>
 	{
 		sendResult(pageSize * (pageNr - 1) + 1);
 	}
-	
 }

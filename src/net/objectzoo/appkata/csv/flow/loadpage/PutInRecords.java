@@ -32,10 +32,8 @@ import net.objectzoo.appkata.csv.data.CsvRecord;
 import net.objectzoo.ebc.impl.ProcessAndResultBase;
 import net.objectzoo.ebc.util.Pair;
 
-public class PutInRecords extends
-	ProcessAndResultBase<Pair<Integer, List<CsvLine>>, List<CsvRecord>>
+class PutInRecords extends ProcessAndResultBase<Pair<Integer, List<CsvLine>>, List<CsvRecord>>
 {
-	
 	@Override
 	protected void process(Pair<Integer, List<CsvLine>> firstRecordNrAndLines)
 	{
@@ -49,5 +47,4 @@ public class PutInRecords extends
 		}
 		sendResult(records);
 	}
-	
 }

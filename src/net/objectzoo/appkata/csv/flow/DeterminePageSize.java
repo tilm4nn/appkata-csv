@@ -54,5 +54,4 @@ public class DeterminePageSize extends ResultBase<Integer> implements Configurab
 		
 		return numberOfLines;
 	}
-	
 }

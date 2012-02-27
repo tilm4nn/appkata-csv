@@ -34,7 +34,7 @@ import net.objectzoo.appkata.csv.dependencies.TextFileAdapterContract;
 import net.objectzoo.delegates.Action;
 import net.objectzoo.ebc.impl.ProcessAndResultBase;
 
-public class ReadPageLines extends ProcessAndResultBase<Long, List<String>>
+class ReadPageLines extends ProcessAndResultBase<Long, List<String>>
 {
 	int pageSize;
 	

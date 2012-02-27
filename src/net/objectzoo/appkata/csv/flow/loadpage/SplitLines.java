@@ -30,7 +30,7 @@ import java.util.List;
 import net.objectzoo.appkata.csv.data.CsvLine;
 import net.objectzoo.ebc.impl.ProcessAndResultBase;
 
-public class SplitLines extends ProcessAndResultBase<List<String>, List<CsvLine>>
+class SplitLines extends ProcessAndResultBase<List<String>, List<CsvLine>>
 {
 	@Override
 	protected void process(List<String> textLines)

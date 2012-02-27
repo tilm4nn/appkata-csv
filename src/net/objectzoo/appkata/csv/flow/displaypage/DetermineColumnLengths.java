@@ -27,9 +27,8 @@ package net.objectzoo.appkata.csv.flow.displaypage;
 import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
 import net.objectzoo.ebc.impl.ProcessAndResultBase;
 
-public class DetermineColumnLengths extends ProcessAndResultBase<PageViewModel, int[]>
+class DetermineColumnLengths extends ProcessAndResultBase<PageViewModel, int[]>
 {
-	
 	@Override
 	protected void process(PageViewModel pageVm)
 	{
@@ -65,5 +64,4 @@ public class DetermineColumnLengths extends ProcessAndResultBase<PageViewModel, 
 		
 		return lengths;
 	}
-	
 }

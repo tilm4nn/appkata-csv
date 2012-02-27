@@ -33,7 +33,7 @@ import net.objectzoo.events.Event;
 import net.objectzoo.events.impl.EventDelegate;
 import net.objectzoo.events.impl.EventDistributor;
 
-public class SeparateHeaderAndData extends ProcessBase<List<CsvLine>>
+class SeparateHeaderAndData extends ProcessBase<List<CsvLine>>
 {
 	private final EventDelegate<CsvLine> newHeaderEvent = new EventDistributor<CsvLine>();
 	
@@ -69,5 +69,4 @@ public class SeparateHeaderAndData extends ProcessBase<List<CsvLine>>
 		sendNewHeader(csvLines.get(0));
 		sendNewData(csvLines.subList(1, csvLines.size()));
 	}
-	
 }

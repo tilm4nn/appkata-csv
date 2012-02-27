@@ -29,7 +29,7 @@ import com.google.inject.Inject;
 import net.objectzoo.appkata.csv.dependencies.ConsoleAdapterContract;
 import net.objectzoo.ebc.impl.StartBase;
 
-public class DisplayCommands extends StartBase
+class DisplayCommands extends StartBase
 {
 	private final ConsoleAdapterContract consoleAdapter;
 	
@@ -44,5 +44,4 @@ public class DisplayCommands extends StartBase
 	{
 		consoleAdapter.output("\nN(ext page, P(revious page, F(irst page, L(ast page, J(ump to page, eX(it\n");
 	}
-	
 }

@@ -30,7 +30,7 @@ import net.objectzoo.appkata.csv.dependencies.IndexContract;
 import net.objectzoo.ebc.impl.ProcessBase;
 import net.objectzoo.ebc.util.Pair;
 
-public class StoreOffsetInIndex extends ProcessBase<Pair<Integer, Long>>
+class StoreOffsetInIndex extends ProcessBase<Pair<Integer, Long>>
 {
 	private final IndexContract index;
 	
