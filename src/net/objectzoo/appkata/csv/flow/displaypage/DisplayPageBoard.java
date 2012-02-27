@@ -24,6 +24,8 @@
  */
 package net.objectzoo.appkata.csv.flow.displaypage;
 
+import com.google.inject.Inject;
+
 import net.objectzoo.appkata.csv.data.Page;
 import net.objectzoo.appkata.csv.data.Position;
 import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
@@ -36,8 +38,11 @@ import net.objectzoo.events.Event0;
 import net.objectzoo.events.impl.EventDelegate;
 import net.objectzoo.events.impl.EventDistributor;
 
-import com.google.inject.Inject;
-
+/**
+ * <img src="DisplayPageBoard.jpg" />
+ * 
+ * @author tilmann
+ */
 public class DisplayPageBoard implements CanProcess<Pair<Page, Position>>, SendsSignal
 {
 	private final Action<Pair<Page, Position>> processAction;
@@ -45,8 +50,10 @@ public class DisplayPageBoard implements CanProcess<Pair<Page, Position>>, Sends
 	private final Event0 signalEvent;
 	
 	@Inject
-	public DisplayPageBoard(MapToPageViewModel mapToPageViewModel, DetermineColumnLengths determineColumnLengths,
-							RenderPageViewModel renderPageViewModel, DisplayPageViewModel displayPageViewModel)
+	public DisplayPageBoard(MapToPageViewModel mapToPageViewModel,
+							DetermineColumnLengths determineColumnLengths,
+							RenderPageViewModel renderPageViewModel,
+							DisplayPageViewModel displayPageViewModel)
 	{
 		EventDelegate<PageViewModel> split = new EventDistributor<PageViewModel>();
 		JoinToPair<PageViewModel, int[]> join = new JoinToPair<PageViewModel, int[]>(true);
