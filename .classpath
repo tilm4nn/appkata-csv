@@ -17,6 +17,6 @@
 	<classpathentry kind="lib" path="lib/javax.inject.jar"/>
 	<classpathentry kind="lib" path="lib/events4j-1.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/events4j-async-1.2.1.jar"/>
-	<classpathentry kind="lib" path="lib/ebc4j-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/ebc4j-1.1.jar" sourcepath="/EBC4J"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

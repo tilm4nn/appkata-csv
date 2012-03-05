@@ -24,6 +24,8 @@
  */
 package net.objectzoo.appkata.csv.flow;
 
+import static net.objectzoo.ebc.builder.Flow.await;
+
 import com.google.inject.Inject;
 
 import net.objectzoo.appkata.csv.data.Page;
@@ -57,25 +59,27 @@ public class MainBoard implements EntryPoint
 		JoinToPair<Page, Position> join = new JoinToPair<Page, Position>(true);
 		startAction = repeatedWaitForCommand.startAction();
 		
-		repeatedWaitForCommand.signalEvent().subscribe(
+		await(determineFilename).then(determinePageOffsets.initFilenameAction());
+		await(determineFilename).then(loadPage.initFilenameAction());
+		
+		await(determinePageSize).then(determinePageOffsets.initPageSizeAction());
+		await(determinePageSize).then(loadPage.initPageSizeAction());
+		
+		await(repeatedWaitForCommand).then(
 			new Action0ToAsyncAction0(determinePageOffsets.startAction()));
-		determineFilename.resultEvent().subscribe(determinePageOffsets.initFilenameAction());
-		determineFilename.resultEvent().subscribe(loadPage.initFilenameAction());
-		determinePageSize.resultEvent().subscribe(determinePageOffsets.initPageSizeAction());
-		determinePageSize.resultEvent().subscribe(loadPage.initPageSizeAction());
-		determinePageOffsets.newPageOffsetEvent().subscribe(storeOffsetInIndex.processAction());
-		determinePageOffsets.resultEvent().subscribe(selectPage.processAction());
-		selectPage.getSelectedPageNumber().subscribe(loadPage.processAction());
-		loadPage.resultEvent().subscribe(join.input1Action());
-		selectPage.resultEvent().subscribe(join.input2Action());
-		join.resultEvent().subscribe(displayPage.processAction());
-		displayPage.signalEvent().subscribe(displayCommands.startAction());
-		repeatedWaitForCommand.nextPageCommandEvent().subscribe(selectPage.nextPageAction());
-		repeatedWaitForCommand.previousPageCommandEvent().subscribe(selectPage.previousPageAction());
-		repeatedWaitForCommand.firstPageCommandEvent().subscribe(selectPage.firstPageAction());
-		repeatedWaitForCommand.lastPageCommandEvent().subscribe(selectPage.lastPageAction());
-		repeatedWaitForCommand.jumpToPageCommandEvent().subscribe(inputPageNumber.startAction());
-		inputPageNumber.resultEvent().subscribe(selectPage.jumpToPageAction());
+		await(determinePageOffsets.newPageOffsetEvent()).then(storeOffsetInIndex);
+		await(determinePageOffsets).then(selectPage).then(join.input2Action());
+		
+		await(selectPage.getSelectedPageNumber()).then(loadPage).then(join.input1Action());
+		await(join).then(displayPage).then(displayCommands);
+		
+		await(repeatedWaitForCommand.nextPageCommandEvent()).then(selectPage.nextPageAction());
+		await(repeatedWaitForCommand.previousPageCommandEvent()).then(
+			selectPage.previousPageAction());
+		await(repeatedWaitForCommand.firstPageCommandEvent()).then(selectPage.firstPageAction());
+		await(repeatedWaitForCommand.lastPageCommandEvent()).then(selectPage.lastPageAction());
+		await(repeatedWaitForCommand.jumpToPageCommandEvent()).then(inputPageNumber).then(
+			selectPage.jumpToPageAction());
 	}
 	
 	@Override

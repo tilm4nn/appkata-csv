@@ -24,26 +24,26 @@
  */
 package net.objectzoo.appkata.csv.flow.displaypage;
 
+import static net.objectzoo.ebc.builder.Flow.await;
+
 import com.google.inject.Inject;
 
 import net.objectzoo.appkata.csv.data.Page;
 import net.objectzoo.appkata.csv.data.Position;
 import net.objectzoo.appkata.csv.data.displaypage.PageViewModel;
 import net.objectzoo.delegates.Action;
-import net.objectzoo.ebc.CanProcess;
-import net.objectzoo.ebc.SendsSignal;
+import net.objectzoo.ebc.ProcessAndSignalFlow;
 import net.objectzoo.ebc.join.JoinToPair;
+import net.objectzoo.ebc.split.SplitProcess;
 import net.objectzoo.ebc.util.Pair;
 import net.objectzoo.events.Event0;
-import net.objectzoo.events.impl.EventDelegate;
-import net.objectzoo.events.impl.EventDistributor;
 
 /**
  * <img src="DisplayPageBoard.jpg" />
  * 
  * @author tilmann
  */
-public class DisplayPageBoard implements CanProcess<Pair<Page, Position>>, SendsSignal
+public class DisplayPageBoard implements ProcessAndSignalFlow<Pair<Page, Position>>
 {
 	private final Action<Pair<Page, Position>> processAction;
 	
@@ -55,16 +55,15 @@ public class DisplayPageBoard implements CanProcess<Pair<Page, Position>>, Sends
 							RenderPageViewModel renderPageViewModel,
 							DisplayPageViewModel displayPageViewModel)
 	{
-		EventDelegate<PageViewModel> split = new EventDistributor<PageViewModel>();
 		JoinToPair<PageViewModel, int[]> join = new JoinToPair<PageViewModel, int[]>(true);
 		processAction = mapToPageViewModel.processAction();
 		
-		mapToPageViewModel.resultEvent().subscribe(split);
-		split.subscribe(determineColumnLengths.processAction());
-		split.subscribe(join.input1Action());
-		determineColumnLengths.resultEvent().subscribe(join.input2Action());
-		join.resultEvent().subscribe(renderPageViewModel.processAction());
-		renderPageViewModel.resultEvent().subscribe(displayPageViewModel.processAction());
+		SplitProcess<PageViewModel> split = await(mapToPageViewModel).thenSplit();
+		
+		await(split).then(join.input1Action());
+		await(split).then(determineColumnLengths).then(join.input2Action());
+		
+		await(join).then(renderPageViewModel).then(displayPageViewModel);
 		
 		signalEvent = displayPageViewModel.signalEvent();
 	}

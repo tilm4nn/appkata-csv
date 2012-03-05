@@ -24,6 +24,8 @@
  */
 package net.objectzoo.appkata.csv.flow.loadpage;
 
+import static net.objectzoo.ebc.builder.Flow.await;
+
 import java.util.List;
 
 import com.google.inject.Inject;
@@ -32,8 +34,7 @@ import net.objectzoo.appkata.csv.data.CsvLine;
 import net.objectzoo.appkata.csv.data.CsvRecord;
 import net.objectzoo.appkata.csv.data.Page;
 import net.objectzoo.delegates.Action;
-import net.objectzoo.ebc.CanProcess;
-import net.objectzoo.ebc.SendsResult;
+import net.objectzoo.ebc.ProcessAndResultFlow;
 import net.objectzoo.ebc.join.GenericJoin;
 import net.objectzoo.ebc.join.Join;
 import net.objectzoo.ebc.join.JoinToPair;
@@ -46,13 +47,13 @@ import net.objectzoo.events.impl.EventDistributor;
  * 
  * @author tilmann
  */
-public class LoadPageBoard implements CanProcess<Integer>, SendsResult<Page>
+public class LoadPageBoard implements ProcessAndResultFlow<Integer, Page>
 {
-	private final EventDelegate<Integer> processDelegate;
+	private final EventDelegate<Integer> processSplit;
 	
 	private final Event<Page> resultEvent;
 	
-	private final EventDelegate<Integer> initPageSizeDelegate;
+	private final EventDelegate<Integer> initPageSizeSplit;
 	
 	private final Action<String> initFilenameAction;
 	
@@ -68,22 +69,20 @@ public class LoadPageBoard implements CanProcess<Integer>, SendsResult<Page>
 			true)
 		{
 		};
-		processDelegate = new EventDistributor<Integer>();
-		initPageSizeDelegate = new EventDistributor<Integer>();
 		initFilenameAction = readPageLines.initFilenameAction();
 		
-		processDelegate.subscribe(computeRecordNumber.processAction());
-		processDelegate.subscribe(lookupPageOffset.processAction());
-		initPageSizeDelegate.subscribe(readPageLines.initPageSizeAction());
-		initPageSizeDelegate.subscribe(computeRecordNumber.initPageSizeAction());
-		lookupPageOffset.resultEvent().subscribe(readPageLines.processAction());
-		readPageLines.resultEvent().subscribe(splitLines.processAction());
-		splitLines.resultEvent().subscribe(separateHeaderAndData.processAction());
-		computeRecordNumber.resultEvent().subscribe(joinPageNumAndLines.input1Action());
-		separateHeaderAndData.newDataEvent().subscribe(joinPageNumAndLines.input2Action());
-		joinPageNumAndLines.resultEvent().subscribe(putInRecords.processAction());
-		separateHeaderAndData.newHeaderEvent().subscribe(joinToPage.input1Action());
-		putInRecords.resultEvent().subscribe(joinToPage.input2Action());
+		initPageSizeSplit = new EventDistributor<Integer>();
+		await(initPageSizeSplit).then(readPageLines.initPageSizeAction());
+		await(initPageSizeSplit).then(computeRecordNumber.initPageSizeAction());
+		
+		processSplit = new EventDistributor<Integer>();
+		await(processSplit).then(computeRecordNumber).then(joinPageNumAndLines.input1Action());
+		await(processSplit).then(lookupPageOffset).then(readPageLines).then(splitLines).then(
+			separateHeaderAndData);
+		await(separateHeaderAndData.newHeaderEvent()).then(joinToPage.input1Action());
+		
+		await(separateHeaderAndData.newDataEvent()).then(joinPageNumAndLines.input2Action());
+		await(joinPageNumAndLines).then(putInRecords).then(joinToPage.input2Action());
 		
 		resultEvent = joinToPage.resultEvent();
 	}
@@ -91,7 +90,7 @@ public class LoadPageBoard implements CanProcess<Integer>, SendsResult<Page>
 	@Override
 	public Action<Integer> processAction()
 	{
-		return processDelegate;
+		return processSplit;
 	}
 	
 	@Override
@@ -102,7 +101,7 @@ public class LoadPageBoard implements CanProcess<Integer>, SendsResult<Page>
 	
 	public Action<Integer> initPageSizeAction()
 	{
-		return initPageSizeDelegate;
+		return initPageSizeSplit;
 	}
 	
 	public Action<String> initFilenameAction()
