@@ -1,9 +1,6 @@
 The MIT License
 
-Copyright (C) 2011 Tilmann Kuhn
-
-http://www.object-zoo.net
-mailto:info@object-zoo.net
+Copyright (C) 2011 Tilmann Kuhn - http://www.object-zoo.net - mailto:info@object-zoo.net
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
