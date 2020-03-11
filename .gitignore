@@ -2,6 +2,10 @@
 bin
 build
 dist
-doc/api
-.settings
 appkata*.zip
+/build.properties
+.gradle
+.eclipse
+.idea
+*.iml
+generated
