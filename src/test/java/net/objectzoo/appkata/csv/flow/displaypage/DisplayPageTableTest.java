@@ -75,7 +75,7 @@ public class DisplayPageTableTest
 		mockery.checking(new Expectations()
 		{
 			{
-				allowing(consoleAdapterMock).output(with(Matchers.<String> anything()));
+				allowing(consoleAdapterMock).output(with(any(String.class)));
 			}
 		});
 		

@@ -68,10 +68,10 @@ public class ReadPageLinesTest
 		context.checking(new Expectations()
 		{
 			{
-				one(textFileAdapterMock).readLines(with(Matchers.<String> anything()),
-					with(equal(0L)), with(Matchers.<Integer> anything()));
-				one(textFileAdapterMock).readLines(with(Matchers.<String> anything()),
-					with(equal(1234567890L)), with(Matchers.<Integer> anything()));
+				one(textFileAdapterMock).readLines(with(any(String.class)),
+					with(equal(0L)), with(any(Integer.class)));
+				one(textFileAdapterMock).readLines(with(any(String.class)),
+					with(equal(1234567890L)), with(any(Integer.class)));
 			}
 		});
 		
@@ -88,10 +88,10 @@ public class ReadPageLinesTest
 		context.checking(new Expectations()
 		{
 			{
-				one(textFileAdapterMock).readLines(with(Matchers.<String> anything()),
-					with(Matchers.<Long> anything()), with(equal(1)));
-				one(textFileAdapterMock).readLines(with(Matchers.<String> anything()),
-					with(Matchers.<Long> anything()), with(equal(34)));
+				one(textFileAdapterMock).readLines(with(any(String.class)),
+					with(any(Long.class)), with(equal(1)));
+				one(textFileAdapterMock).readLines(with(any(String.class)),
+					with(any(Long.class)), with(equal(34)));
 			}
 		});
 		
@@ -106,11 +106,11 @@ public class ReadPageLinesTest
 		context.checking(new Expectations()
 		{
 			{
-				one(textFileAdapterMock).readLines(with(Matchers.<String> anything()),
-					with(Matchers.<Long> anything()), with(Matchers.<Integer> anything()));
+				one(textFileAdapterMock).readLines(with(any(String.class)),
+					with(any(Long.class)), with(any(Integer.class)));
 				will(returnValue(list("1")));
-				one(textFileAdapterMock).readLines(with(Matchers.<String> anything()),
-					with(Matchers.<Long> anything()), with(Matchers.<Integer> anything()));
+				one(textFileAdapterMock).readLines(with(any(String.class)),
+					with(any(Long.class)), with(any(Integer.class)));
 				will(returnValue(list("2", "3")));
 			}
 		});

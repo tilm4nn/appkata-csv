@@ -24,6 +24,7 @@
  */
 package net.objectzoo.appkata.csv.dependencies;
 
+import static net.objectzoo.appkata.csv.dependencies.TextFileAdapterTest.TEST_FILES_DIR;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -41,7 +42,7 @@ public class TextFileScannerTest
 	@Before
 	public void openFile() throws IOException
 	{
-		sut.openFile("files-test/TenLines.txt");
+		sut.openFile(TEST_FILES_DIR + "TenLines.txt");
 	}
 	
 	@After
@@ -63,15 +64,15 @@ public class TextFileScannerTest
 	{
 		Long result = sut.getNextPosition(1);
 		
-		assertThat(result, is(7L));
+		assertThat(result, is(6L));
 	}
 	
 	@Test
-	public void returns21After3Lines() throws IOException
+	public void returns18After3Lines() throws IOException
 	{
 		Long result = sut.getNextPosition(3);
 		
-		assertThat(result, is(21L));
+		assertThat(result, is(18L));
 	}
 	
 	@Test

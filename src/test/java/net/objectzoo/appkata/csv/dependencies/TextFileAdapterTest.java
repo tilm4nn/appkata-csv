@@ -34,13 +34,15 @@ import org.junit.Test;
 
 public class TextFileAdapterTest
 {
-	
+
+	public static final String TEST_FILES_DIR = "src/test/resources/net/objectzoo/appkata/csv/";
+
 	@Test
 	public void readFromEmptyFile() throws IOException
 	{
 		TextFileAdapterContract sut = new TextFileAdapter();
 		
-		List<String> actual = sut.readLines("files-test/ZeroLines.txt", 0, 1);
+		List<String> actual = sut.readLines(TEST_FILES_DIR + "ZeroLines.txt", 0, 1);
 		
 		assertEquals(list(), actual);
 	}
@@ -50,7 +52,7 @@ public class TextFileAdapterTest
 	{
 		TextFileAdapterContract sut = new TextFileAdapter();
 		
-		List<String> actual = sut.readLines("files-test/ThreeLines.txt", 0, 1);
+		List<String> actual = sut.readLines(TEST_FILES_DIR + "ThreeLines.txt", 0, 1);
 		
 		assertEquals(list("Line1"), actual);
 	}
@@ -60,7 +62,7 @@ public class TextFileAdapterTest
 	{
 		TextFileAdapterContract sut = new TextFileAdapter();
 		
-		List<String> actual = sut.readLines("files-test/ThreeLines.txt", 0, 3);
+		List<String> actual = sut.readLines(TEST_FILES_DIR + "ThreeLines.txt", 0, 3);
 		
 		assertEquals(list("Line1", "Line2", "Line3"), actual);
 	}
@@ -70,7 +72,7 @@ public class TextFileAdapterTest
 	{
 		TextFileAdapterContract sut = new TextFileAdapter();
 		
-		List<String> actual = sut.readLines("files-test/ThreeLines.txt", 0, 5);
+		List<String> actual = sut.readLines(TEST_FILES_DIR + "ThreeLines.txt", 0, 5);
 		
 		assertEquals(list("Line1", "Line2", "Line3"), actual);
 	}
@@ -80,7 +82,7 @@ public class TextFileAdapterTest
 	{
 		TextFileAdapterContract sut = new TextFileAdapter();
 		
-		List<String> actual = sut.readLines("files-test/ThreeLines.txt", 7, 1);
+		List<String> actual = sut.readLines(TEST_FILES_DIR + "ThreeLines.txt", 6, 1);
 		
 		assertEquals(list("Line2"), actual);
 	}
@@ -90,7 +92,7 @@ public class TextFileAdapterTest
 	{
 		TextFileAdapterContract sut = new TextFileAdapter();
 		
-		List<String> actual = sut.readLines("files-test/ThreeLines.txt", 7, 2);
+		List<String> actual = sut.readLines(TEST_FILES_DIR + "ThreeLines.txt", 6, 2);
 		
 		assertEquals(list("Line2", "Line3"), actual);
 	}
@@ -100,7 +102,7 @@ public class TextFileAdapterTest
 	{
 		TextFileAdapterContract sut = new TextFileAdapter();
 		
-		List<String> actual = sut.readLines("files-test/ThreeLines.txt", 7, 5);
+		List<String> actual = sut.readLines(TEST_FILES_DIR + "ThreeLines.txt", 6, 5);
 		
 		assertEquals(list("Line2", "Line3"), actual);
 	}
